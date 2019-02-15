@@ -1,0 +1,4 @@
+select *FROM iwItems where itemgroup = 'EXM' and purcprice > '0'
+
+
+UPDATE iwItems SET purcprice = '0', isInventory = 0 where itemgroup = 'EXM' and purcprice > '0'

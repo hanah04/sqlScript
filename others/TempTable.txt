@@ -1,0 +1,4 @@
+CREATE TABLE #TempTable 
+	(column_1 int, column_2 datetime, column_3 nvarchar(50),column_4 bit ) 
+SELECT * FROM #TempTable
+DROP TABLE #TempTable

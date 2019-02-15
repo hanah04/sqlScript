@@ -1,0 +1,17 @@
+SELECT 
+                                        a.PK_psPatCalcInv, c.patid, a.FK_psPatRegisters,
+	                                    b.registryno, d.registrydate, b.FK_psRooms,
+                                        d.FK_emdPatients, dbo.udf_GetFullName(d.FK_emdPatients) fullname,
+	                                    a.fk_mscPriceScheme_orig, a.fk_mscPriceScheme_new,
+	                                    SUM(e.debit) - SUM(e.credit) Balance
+                                            FROM psPatCalcInv a 
+	                                            INNER JOIN psAdmissions b ON a.FK_pspatregisters = b.FK_psPatRegisters
+	                                            INNER JOIN emdPatients c ON b.FK_emdPatients = c.PK_emdPatients
+	                                            INNER JOIN psPatRegisters d ON a.FK_psPatRegisters = d.PK_psPatRegisters 
+                                                    AND d.registrystatus NOT IN ('D', 'X')
+	                                            INNER JOIN psPatLedgers e ON a.FK_psPatRegisters = e.FK_psPatRegisters 
+                                                    AND e.cancelflag = 0
+                                                GROUP BY a.PK_psPatCalcInv, c.patid, b.registryno, d.registrydate,
+	                                                    b.FK_psRooms, d.FK_emdPatients, a.fk_mscPriceScheme_orig,
+	                                                    a.fk_mscPriceScheme_new, a.processflag, a.cancelflag, a.FK_psPatRegisters
+                                                     HAVING a.processflag = 0 AND a.cancelflag = 0 SET NO_BROWSETABLE OFF;

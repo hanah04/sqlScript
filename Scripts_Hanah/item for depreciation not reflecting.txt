@@ -1,0 +1,17 @@
+
+1)-- To identify assets that did not undergo depreciation
+select 
+a.itemdesc,
+b.refno,
+* from iwitems a
+join iwItemAssets b on PK_iwItems = FK_iwItems
+where nooftimesdep = 0.00
+
+2)-- To unpost transactions that did not reflect in depreciation
+update iwItemAssets set postflag = 0 where refno = ' '
+
+3) Repost the transaction manually
+
+4)-- To update the reference number based on original reference number of the transaction
+update iwItemAssets set refno = ' ' where refno = ' ' 
+

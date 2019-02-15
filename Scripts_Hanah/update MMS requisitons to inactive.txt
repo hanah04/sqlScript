@@ -1,0 +1,68 @@
+/*FOR STOCK REQUISITION*/
+select 
+dbo.udf_GetDepartmentName(FK_mscWarehouseDST) as RequestingDept,
+dbo.udf_GetDepartmentName(FK_mscWarehouseSRC) as IssuingDept, docno, docdate, totqty, status , inactiveflag, cancelflag
+from iwwhreqinv where status in ('NS','PS') and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+order by iwwhreqinv.docdate
+
+/*to UPDATE 'PS' requisitions to Inactive*/
+update iwwhreqinv set inactiveflag = 1 where status = 'PS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+/*to UPDATE 'NS' requisitions to Void*/
+update iwwhreqinv set cancelflag = 1 where status = 'NS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+-------------------------------------------------------------------------------------------------------------------------
+/*FOR EXPENSE REQUISITION*/
+select 
+dbo.udf_GetDepartmentName(FK_mscWarehouseDST) as RequestingDept,
+dbo.udf_GetDepartmentName(FK_mscWarehouseSRC) as IssuingDept, docno, docdate, totqty, status , inactiveflag, cancelflag
+from iwreqinv where status in ('NS','PS') and postflag = 1 and cancelflag = 0
+and convert(date,docdate) < '01/01/2017'
+order by iwreqinv.docdate
+
+/*to UPDATE 'PS' requisitions to Inactive*/
+update iwreqinv set inactiveflag = 1 where status = 'PS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+/*to UPDATE 'NS' requisitions to Void*/
+update iwreqinv set cancelflag = 1 where status = 'NS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+-------------------------------------------------------------------------------------------------------------------------
+/*FOR PURCHASE REQUISITION*/
+select 
+dbo.udf_GetDepartmentName(FK_mscWarehouseFROM) as RequestingDept,
+dbo.udf_GetDepartmentName(FK_mscWarehouseTO) as PurchasingDept, docno, docdate, totqty, status , inactiveflag, cancelflag
+from iwPRinv where status in ('NS','PS') and postflag = 1 and cancelflag = 0
+and convert(date,docdate) < '01/01/2017'
+order by iwPRinv.docdate
+
+/*to UPDATE 'PS' requisitions to Inactive*/
+update iwPRinv set inactiveflag = 1 where status = 'PS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+/*to UPDATE 'NS' requisitions to Void*/
+update iwPRinv set cancelflag = 1 where status = 'NS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+-------------------------------------------------------------------------------------------------------------------------
+/*FOR PURCHASE ORDER*/
+select 
+dbo.udf_GetDepartmentName(FK_mscWarehouse) as Department, docno, docdate, totqty, postatus , inactiveflag, cancelflag
+from iwPOinv where postatus in ('NS','PS') and postflag = 1 and cancelflag = 0
+and convert(date,docdate) < '01/01/2017'
+order by iwPOinv.docdate
+
+
+/*to UPDATE 'PS' requisitions to Inactive*/
+update iwPOinv set inactiveflag = 1 where postatus = 'PS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+/*to UPDATE 'NS' requisitions to Void*/
+update iwPOinv set cancelflag = 1 where postatus = 'NS' and postflag = 1 and cancelflag = 0
+and convert(date,docdate) between '@datefrom' and '@dateto'
+
+------------------------END OF SCRIPT :) -------------------------------------------------------------------------------

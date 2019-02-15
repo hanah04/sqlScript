@@ -1,0 +1,58 @@
+/*=====================================================================================================*/
+/*Journal Vouchers*/       
+DECLARE @glperiodfrom varchar(20)
+DECLARE @glperiodto varchar(20)
+SET @glperiodfrom = '01/01/2016'
+SET @glperiodto = '09/30/2016'
+
+SELECT 
+			grp			=	a.glbook,
+			jvno		=	b.jvno,
+			docdate		=	b.docdate,
+			jvdesc		=	b.description,
+			itemgroup	=	c.accttype,
+			sorter		=	a.sorter,
+			acctcode	=	dbo.udf_ConcatAcctGLACode2(PK_faGL),
+			acctdesc	=	dbo.udf_ConcatAcctGLADesc2(PK_faGL),
+			debit		=	sum(debit),
+			credit		=	sum(credit),
+			glperiod	=	glperiod
+FROM faGL a
+		INNER JOIN faJVMstr b ON a.FK_TRXNO = b.PK_TRXNO 
+		INNER JOIN faGLAcct c ON a.FK_faGLAcct = c.PK_faGlAcct
+			where convert(VARCHAR,glperiod,101) BETWEEN @glperiodfrom AND @glperiodto 
+			AND auditflag = 1 and JVModuleFlag = 1 and a.postflag = 1 and b.postflag = 1
+GROUP BY
+		a.glbook,b.jvno,b.docdate,b.description,c.accttype,a.sorter,
+		dbo.udf_ConcatAcctGLACode2(PK_faGL),dbo.udf_ConcatAcctGLADesc2(PK_faGL),a.glperiod
+
+union
+
+SELECT 
+			grp			=	a.glbook,
+			jvno		=	b.jvno,
+			docdate		=	b.docdate,
+			jvdesc		=	b.description,
+			itemgroup	=	c.accttype,
+			sorter		=	a.sorter,
+			acctcode	=	dbo.udf_ConcatAcctGLACode2(PK_faGL),
+			acctdesc	=	dbo.udf_ConcatAcctGLADesc2(PK_faGL),
+			debit		=	sum(debit),
+			credit		=	sum(credit),
+			glperiod	=	glperiod
+			
+FROM faGL a
+		INNER JOIN faJVMstr b ON a.FK_TRXNO = b.PK_TRXNO 
+		INNER JOIN faGLAcct c ON a.FK_faGLAcct = c.PK_faGlAcct
+			where convert(VARCHAR,glperiod,101) BETWEEN @glperiodfrom AND @glperiodto 
+			AND auditflag = 1 and JVModuleFlag = 0 and a.postflag = 1 and b.postflag = 1
+			and trangroup = 'JV' and doctype = 'JV' and b.isclosing = '0' and TranGroup_Cancel is null
+GROUP BY
+		a.glbook,b.jvno,b.docdate,b.description,c.accttype,a.sorter,
+		dbo.udf_ConcatAcctGLACode2(PK_faGL),dbo.udf_ConcatAcctGLADesc2(PK_faGL),a.glperiod
+
+ORDER BY jvno, sorter
+
+
+/*=====================================================================================================*/
+

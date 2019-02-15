@@ -1,0 +1,2 @@
+select * from faVPMstr where fk_psdatacenter = 1129 where ewtrate = NULL
+--update faVPMstr set ewtrate = '0.00' where fk_psdatacenter = 1129 where ewtrate = NULL

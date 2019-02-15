@@ -1,0 +1,32 @@
+
+select FK_psPatRegisters, dif = SUM(debit) - SUM(credit) from psPatLedgers a
+
+where a.docdate between '02/29/2012' and '07/31/2014' and cancelflag = 0
+group by FK_psPatRegisters
+having SUM(debit) - SUM(credit) < 0 
+order by dif 
+
+
+select FK_psPatRegisters, dif = SUM(debit) - SUM(credit) from psPatLedgers a
+
+where a.docdate between '02/29/2012' and '07/31/2014' and cancelflag = 0
+group by FK_psPatRegisters
+
+select billtrancode, SUM(debit), SUM(credit), SUM(debit-credit) from psPatLedgers
+ where FK_psPatRegisters = 328604
+--and cancelflag = 0
+ group by billtrancode
+ 
+ 
+ 
+ select b.FK_faGLAcct, SUM(a.credit), SUM(a.debit), SUM(isnull(b.debit, 0)), SUM(isnull(b.credit, 0))
+ 
+  from psPatLedgers as a
+  left outer join faGL as b on a.FK_TRXNO = b.FK_TRXNO and auditflag = 1 and b.credit > 0
+  
+ where FK_psPatRegisters = 328604
+ and a.cancelflag = 0
+ and billtrancode like 'DC%'
+ group by b.FK_faGLAcct
+ 
+ 

@@ -1,0 +1,25 @@
+declare @mscwarehouse varchar(max)= '1514',
+		@datefrom date = '01/01/2017',
+		@dateto date = '12/31/2017'
+
+select month(z.rendate) as month,
+(SELECT isnull(sum(pspatitem.renqty - pspatitem.retqty),0)
+FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+--JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+where --psPatitem.FK_iwItemsREN=y.PK_iwItems and 
+month(psPatinv.rendate)=month(z.rendate) and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @datefrom and @dateto and pspatitem.fk_mscWarehouse=@mscwarehouse
+) as itemcount,
+(SELECT isnull( cast(sum( (pspatitem.renqty - pspatitem.retqty)*pspatitem.renprice) as decimal(10,2))  ,0)
+    FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+    --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+    WHERE --psPatitem.FK_iwItemsREN=y.PK_iwItems and 
+        month(psPatinv.rendate)=month(z.rendate) and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @datefrom and @dateto  and pspatitem.fk_mscWarehouse=@mscwarehouse
+    ) as itemamount
+     FROM  iwitems y join pspatitem x on x.FK_iwItemsREN=y.PK_iwItems
+     LEFT OUTER JOIN pspatinv z on x.fk_trxno = z.pk_trxno 
+     where 
+     convert(date,z.rendate) between @datefrom and @dateto 
+     and x.fk_mscWarehouse=@mscwarehouse
+     group by month(z.rendate)
+
+order by month

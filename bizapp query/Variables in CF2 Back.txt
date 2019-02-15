@@ -1,0 +1,25 @@
+CF2-Back Variables
+------------------------------------------------------------a------------------------------------------------------------
+=Sum(Fields!debit.Value, "hospfamount")
++ Sum(Fields!RC.Value, "hospfamount")
+- Sum(Fields!cn.Value, "hospfamount")
+- Sum(Fields!CNRC.Value, "hospfamount")
+- Sum(Fields!CADJ.Value, "hospfamount")
++Sum(Fields!DADJ.Value, "hospfamount")
+------------------------------------------------------------b------------------------------------------------------------
+=Variables!a.Value
+- Sum(Fields!DCCredit.Value, "hospfamount")
++ Sum(Fields!DCDebit.Value, "hospfamount")
+- Sum(Fields!PHIC.Value, "hospfamount")
+------------------------------------------------------------c------------------------------------------------------------
+=Sum(Fields!netamount.Value, "pfamount")
+- Sum(Fields!phicamount.Value, "pfamount")
+------------------------------------------------------------d------------------------------------------------------------
+=Sum(Fields!gntrhosp.Value, "hospfamount")
++ Sum(Fields!gntrpf.Value, "hospfamount")
++ Sum(Fields!oramountpf.Value, "hospfamount")
++ Sum(Fields!oramounthosp.Value, "hospfamount")
++ Sum(Fields!oramounthosp.Value, "hospfamount")
++ Sum(Fields!DCCredit.Value, "hospfamount")
++ Sum(Fields!discount.Value, "pfamount")
++ Sum(Fields!scamount.Value, "pfamount")

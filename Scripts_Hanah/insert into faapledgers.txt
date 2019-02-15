@@ -1,0 +1,13 @@
+insert into faapledgers 
+(FK_mscBranches,FK_TRXNO,FK_TRXNO_CV,FK_TRXNO_DM,FK_psDatacenter,FK_mscTranTypesAP,FK_mscVendorTypes,terms,aptype,cvtype,doctype,vatinclflag,docno,docdate,
+apdate,apamount,debit,credit,cvamount,dmamount,discrate,discamount,ewtrate,ewtamount,regdate,cancelflag,canceldate,postflag,postdate,deleteflag,
+deletedate,remarks,pfamount,appliedflag,apcancelamount,cvcancelamount,dmcancelamount,pfcancelamount,PFRFtagRefno,PFRFtype,FK_mscEWTs,FK_TRXNO_Reference)
+
+select a.FK_mscBranches, a.PK_TRXNO, NULL as fk_trxno_CV, NULL as fk_trxno_DM, a.FK_psDatacenter, a.FK_mscTranTypesAP,
+a.FK_mscVendorTypes, 0 as terms, a.aptype, '' as cvtype, a.aptype, a.vatinclflag, a.docno, a.docdate, NULL as apdate, 
+0 as apamount, 0 as debit, a.amount, 0 as cvamount, 0 as dmamount, 0 as discrate, 0 as discamount, a.ewtrate, a.ewtamount, a.postdate, a.cancelflag, a.canceldate, a.postflag,
+a.postdate,a.deleteflag, a.deletedate, NULL as remarks, 0 as pfamount,  0 as appliedflag, 0 as apcancelamount, 0 as cvcancelamount, 0 as dmacancelamount, 0 as pfcancelamount,
+0 as pfrftagrefno, NULL as PFRFtype, NULL as fk_mscewts, 0 as FK_trxno_reference
+from favpmstr a
+left  join faApledgers b on a.PK_TRXNO = b.FK_TRXNO
+where a.glpostflag = 1 and b.fK_TRXNO is NULL

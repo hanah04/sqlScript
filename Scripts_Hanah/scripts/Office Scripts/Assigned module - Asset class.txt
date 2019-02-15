@@ -1,0 +1,4 @@
+Insert into appsysSubModules
+(PK_appsysSubmodules, FK_appsysModules, description, selected, addflag, editflag, deleteflag, postflag, cancelflag, fullyqualifiedname, isrequireuseraccess)
+values
+('FS76', 'FA05', 'Asset Class', '1', '1', '1', '1', '0', '0', 'BizBox.MaterialsManagementSystem.Templates.Main.frmTempAssetClass', '1')

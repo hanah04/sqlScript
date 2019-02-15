@@ -1,0 +1,71 @@
+declare @sql nvarchar(max)
+declare @periodto2 nvarchar(30)
+	set @periodto2 = replace(@periodto, '23:59:59', '23:59:29')
+	set @sql =	
+					'select AccountCode,
+							AccountDesc,
+							BegBalance,
+							Debit,
+							Credit,
+							NormalSide
+						from (
+					SELECT 
+							FK_faGLAcct as AccountCode, Description as AccountDesc, 
+							sum(BegBalance) as BegBalance, sum(Debit) as Debit, sum(Credit) as Credit, jrnlcolumn as NormalSide
+							from
+					(select 
+							FK_faGLAcct,
+							b.description, 
+							case when b.jrnlcolumn = ''D'' then sum(debit) - sum(credit)
+								 else SUM(credit) - SUM(debit) end as BegBalance,
+							--BegBalance	=	sum(debit)- sum(credit),
+							Debit		=	0 , 
+							Credit		=	0 ,
+							b.jrnlcolumn
+						from faGLA a
+							inner join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+							where b.accttype in (''A'',''B'',''C'', ''D'', ''E'')	
+							and a.glperiod < ''' + @periodfrom + '''
+								group by FK_faGLAcct,b.description,b.jrnlcolumn
+					union		 
+	
+					select 
+					FK_faGLAcct,
+					b.description, 
+					BegBalance	=	0 ,
+					Debit		=	sum(debit) , 
+					Credit		=	sum(credit) ,
+					b.jrnlcolumn
+						from faGLA a
+							inner join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+							where b.accttype in (''A'',''B'',''C'')	
+							and a.glperiod between ''' + @periodfrom + ''' and ''' + @periodto2 + '''
+							--and a.ismonthlyclosedflag = 0
+								group by FK_faGLAcct,b.description,b.jrnlcolumn 
+					union
+
+					select 
+					FK_faGLAcct, 
+					b.description, 
+					BegBalance	=	0 ,
+					Debit		=	sum(debit) , 
+					Credit		=	sum(credit) ,
+					b.jrnlcolumn
+						from faGLA a
+							inner join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+							where b.accttype in (''D'',''E'')
+							and a.glperiod between ''' + @periodfrom + ''' and ''' + @periodto2 + '''
+							--and isMonthlyClosedFlag = 0
+								group by FK_faGLAcct,b.description,b.jrnlcolumn) As x
+									
+					GROUP BY FK_faGLAcct, description, jrnlcolumn) as tb
+					where	
+							BegBalance != 0
+						or	Debit != 0
+						or	Credit != 0
+					
+					--HAVING 
+					--(sum(BegBalance) + (sum(Debit) - sum(Credit)))! = 0.00'
+									
+
+exec (@sql)

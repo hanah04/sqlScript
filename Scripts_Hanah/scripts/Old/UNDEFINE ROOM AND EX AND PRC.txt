@@ -1,0 +1,14 @@
+select *from fagl where FK_faGLAcctGrp2 in ('IC0040', 'IC0023','IC0043') and glbook= 'JB' and trangroup = 'SA'
+
+
+---delete fagl where FK_faGLAcctGrp2 in ('IC0040', 'IC0023','IC0043') and glbook= 'JB' and trangroup = 'SA'
+
+select *from fagl where glbook = 'SB'and FK_faGLAcct = 'XXXX-XXXX'and trangroup = 'RM'
+and sorter = 1
+
+
+update fagl set FK_faGLAcct  = '100060' where glbook = 'SB'and FK_faGLAcct = 'XXXX-XXXX'and trangroup = 'RM'
+and sorter = 1
+
+update fagl set FK_faGLAcct  = '400030'where glbook = 'SB'and FK_faGLAcct = 'XXXX-XXXX'and trangroup = 'RM'
+and sorter = 2

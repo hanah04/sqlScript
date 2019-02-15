@@ -1,0 +1,32 @@
+-------------------- SUMMARY -----------------------------------------------
+select 
+ dbo.udf_GetDepartmentName(a.FK_mscwarehouse) as Dept,d.description as ItemCategory,
+sum(c.purcprice*b.renqty) as Amount from psPatinv a   
+inner join faGL e on e.FK_TRXNO = a.FK_TRXNO_faJVMstr  
+inner join psPatitem  b on b.FK_TRXNO = a.PK_TRXNO and b.FK_emdPatients = e.FK_psDatacenter 
+inner join iwItems c on c.PK_iwItems = b.FK_iwItemsREN
+inner join mscItemCategory d on d.PK_mscItemCategory = b.FK_mscItemCategory where
+b.purcprice = '0.00' and b.renflag = 1 and 
+a.invenflag = 1 and e.glbook = 'JB' and e.trangroup = 'SA'
+and e.debit = 0 and credit = 0  
+and CONVERT(varchar, a.rendate, 101) between '09/01/2014' and '09/30/2014'
+group by d.description, a.FK_mscwarehouse
+ order by  a.FK_mscwarehouse, ItemCategory
+
+
+----------------- DETAILED--------------------------------------
+select a.rendate as Date, a.doctype, a.docno, dbo.udf_GetFullName(a.FK_emdPatients) as PatientName, a.PK_TRXNO,
+a.FK_TRXNO_faJVMstr, dbo.udf_GetItemDescription(b.FK_iwItemsREN) as ItemDesc,
+ dbo.udf_GetDepartmentName(a.FK_mscwarehouse) as Dept,d.description as ItemCategory,b.purcprice as RenderedCost, 
+c.purcprice as CurrentCost, b.renqty from psPatinv a   
+inner join faGL e on e.FK_TRXNO = a.FK_TRXNO_faJVMstr  
+inner join psPatitem  b on b.FK_TRXNO = a.PK_TRXNO and b.FK_emdPatients = e.FK_psDatacenter 
+inner join iwItems c on c.PK_iwItems = b.FK_iwItemsREN
+inner join mscItemCategory d on d.PK_mscItemCategory = b.FK_mscItemCategory where
+b.purcprice = '0.00' and b.renflag = 1 and 
+a.invenflag = 1 and e.glbook = 'JB' and e.trangroup = 'SA'
+and e.debit = 0 and credit = 0  
+and CONVERT(varchar, b.rendate, 101) between '01/01/2014' and '01/31/2014'
+group by a.rendate, a.doctype, a.docno, a.FK_emdPatients, a.PK_TRXNO, 
+a.FK_TRXNO_faJVMstr, b.FK_iwItemsREN, d.description,a.FK_mscwarehouse, 
+ b.purcprice, c.purcprice , b.renqty order by  a.FK_mscwarehouse, ItemCategory

@@ -1,0 +1,152 @@
+*****january****
+
+select * from fajvmstr where jvno = '710484' and convert(date,docdate) = '01/31/2015' and  isclosing = 1 
+update fajvmstr set cancelflag = 1  where jvno = '710484' and convert(date,docdate) = '01/31/2015' and  isclosing = 1 
+
+select * from faGL where docno = '710484' and FK_TRXNO = '3090907' and convert(date,glperiod) = '01/31/2015' and isMonthlyClosedFlag = '1' 
+ update fagl set cancelflag = '1' where docno = '710484' and FK_TRXNO = '3090907' and convert(date,glperiod) = '01/31/2015' and isMonthlyClosedFlag = '1' 
+ 
+ 
+ select * from faGLAuditTrans where docno = '710484'
+ delete faGLAuditTrans where docno = '710484'
+
+ 
+ select * from faGLAudit where remarks like '%Monthly Closing Entries-710484-1/31/2015 12:00:00 AM-Posted By-DALGUNTAS, CHARMAINE  -7/16/2015 3:24:18 PM%'
+ and amount = '9845413.9685'
+delete faGLAudit  where remarks like '%Monthly Closing Entries-710484-1/31/2015 12:00:00 AM-Posted By-DALGUNTAS, CHARMAINE  -7/16/2015 3:24:18 PM%'
+ and amount = '9845413.9685'
+ 
+select * from fagla where convert(date,glperiod) = '01/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710484' and FK_TRXNO = '3090907')
+delete faGLA where convert(date,glperiod) = '01/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710484' and FK_TRXNO = '3090907')
+
+
+
+*****april****
+
+select * from fajvmstr where jvno = '710547' and convert(date,docdate) = '04/30/2015' and  isclosing = 1 
+update fajvmstr set cancelflag = 1  where jvno = '710547' and convert(date,docdate) = '04/30/2015' and  isclosing = 1 
+
+select * from faGL where docno = '710547' and FK_TRXNO = '3091324' and convert(date,glperiod) = '04/30/2015' and isMonthlyClosedFlag = '1' 
+ update fagl set cancelflag = '1' where docno = '710547' and FK_TRXNO = '3091324' and convert(date,glperiod) = '04/30/2015' and isMonthlyClosedFlag = '1' 
+ 
+ 
+ select * from faGLAuditTrans where docno = '710547'
+ delete faGLAuditTrans where docno = '710547'
+
+ 
+ select * from faGLAudit where remarks like '%Monthly Closing Entries-710547%'
+ and amount = '9508903.1224'
+delete faGLAudit  where remarks like '%Monthly Closing Entries-710547%'
+ and amount = '9508903.1224'
+ 
+select * from fagla where convert(date,glperiod) = '04/30/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710547' and FK_TRXNO = '3091324')
+delete faGLA where convert(date,glperiod) = '04/30/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710547' and FK_TRXNO = '3091324')
+
+
+*****may****
+(1)
+select * from fajvmstr where jvno = '710559' and convert(date,docdate) = '05/31/2015' and  isclosing = 1 
+update fajvmstr set cancelflag = 1  where jvno = '710559' and convert(date,docdate) = '05/31/2015' and  isclosing = 1 
+
+select * from faGL where docno = '710559' and FK_TRXNO = '3091413' and convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = '1' 
+ update fagl set cancelflag = '1' where docno = '710559' and FK_TRXNO = '3091413' and convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = '1' 
+ 
+ 
+ select * from faGLAuditTrans where docno = '710559'
+ delete faGLAuditTrans where docno = '710559'
+
+ 
+ select * from faGLAudit where remarks like '%Monthly Closing Entries-710559%'
+ and amount = '10374828.8644'
+delete faGLAudit  where remarks like '%Monthly Closing Entries-710559%'
+ and amount = '10374828.8644'
+ 
+select * from fagla where convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710559' and FK_TRXNO = '3091413')
+delete faGLA where convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710559' and FK_TRXNO = '3091413')
+
+(2)
+select * from fajvmstr where jvno = '710583' and convert(date,docdate) = '05/31/2015' and  isclosing = 1 
+update fajvmstr set cancelflag = 1  where jvno = '710583' and convert(date,docdate) = '05/31/2015' and  isclosing = 1 
+
+select * from faGL where docno = '710583' and FK_TRXNO = '3091501' and convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = '1' 
+ update fagl set cancelflag = '1' where docno = '710583' and FK_TRXNO = '3091501' and convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = '1' 
+ 
+ 
+ select * from faGLAuditTrans where docno = '710583'
+ delete faGLAuditTrans where docno = '710583'
+
+ 
+ select * from faGLAudit where remarks like '%Monthly Closing Entries-710583%'
+ and amount = '10374828.8644'
+delete faGLAudit  where remarks like '%Monthly Closing Entries-710583%'
+ and amount = '10374828.8644'
+ 
+select * from fagla where convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710583' and FK_TRXNO = '3091501')
+delete faGLA where convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710583' and FK_TRXNO = '3091501')
+
+(3)
+
+select * from fajvmstr where jvno = '710587' and convert(date,docdate) = '05/31/2015' and  isclosing = 1 
+update fajvmstr set cancelflag = 1  where jvno = '710587' and convert(date,docdate) = '05/31/2015' and  isclosing = 1 
+
+select * from faGL where docno = '710587' and FK_TRXNO = '3091530' and convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = '1' 
+ update fagl set cancelflag = '1' where docno = '710587' and FK_TRXNO = '3091530' and convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = '1' 
+ 
+ 
+ select * from faGLAuditTrans where docno = '710587'
+ delete faGLAuditTrans where docno = '710587'
+
+ 
+ select * from faGLAudit where remarks like '%Monthly Closing Entries-710587%'
+ and amount = '10374828.8644'
+delete faGLAudit  where remarks like '%Monthly Closing Entries-710587%'
+ and amount = '10374828.8644'
+ 
+select * from fagla where convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710587' and FK_TRXNO = '3091530')
+delete faGLA where convert(date,glperiod) = '05/31/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710587' and FK_TRXNO = '3091530')
+
+
+
+*****june****
+
+select * from fajvmstr where jvno = '710598' and convert(date,docdate) = '06/30/2015' and  isclosing = 1 
+update fajvmstr set cancelflag = 1  where jvno = '710598' and convert(date,docdate) = '06/30/2015' and  isclosing = 1 
+
+select * from faGL where docno = '710598' and FK_TRXNO = '3091613' and convert(date,glperiod) = '06/30/2015' and isMonthlyClosedFlag = '1' 
+ update fagl set cancelflag = '1' where docno = '710598' and FK_TRXNO = '3091613' and convert(date,glperiod) = '06/30/2015' and isMonthlyClosedFlag = '1' 
+ 
+ 
+ select * from faGLAuditTrans where docno = '710598'
+ delete faGLAuditTrans where docno = '710598'
+
+ 
+ select * from faGLAudit where remarks like '%Monthly Closing Entries-710598%'
+ and amount = '8650196.5835'
+delete faGLAudit  where remarks like '%Monthly Closing Entries-710598%'
+ and amount = '8650196.5835'
+ 
+select * from fagla where convert(date,glperiod) = '06/30/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710598' and FK_TRXNO = '3091613')
+delete faGLA where convert(date,glperiod) = '06/30/2015' and isMonthlyClosedFlag = 1 
+and PK_faGLA in (select FK_faGLA from fagl  where docno = '710598' and FK_TRXNO = '3091613')
+
+
+
+
+
+
+
+
+
+
+

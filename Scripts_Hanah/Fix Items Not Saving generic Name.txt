@@ -1,0 +1,5 @@
+INSERT INTO [iwItemMedicines] ([FK_iwItems], [FK_mscGenerics], [rxlineitem]) 
+(select 
+	PK_iwItems, 1000, '''' + itemdesc + ' () 0  /  # 0                                                        Sig:    ' 
+		from iwitems 
+			where itemgroup = 'MED' and PK_iwItems not in (select FK_iwitems from iwItemMedicines))

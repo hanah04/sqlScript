@@ -1,0 +1,21 @@
+
+Select * from (
+Select a.PK_TRXNO,a.ordate,a.appliedamount,isnull((select sum(x.amount) from faCROthers x where x.FK_TRXNO = a.PK_TRXNO),0) as OT,
+isnull((select sum(x.amount) from faCROthers x where x.FK_TRXNO = a.PK_TRXNO),0) + sum(b.credit) as credit,
+a.appliedamount-(sum(b.credit) + isnull((select sum(x.amount) from faCROthers x where x.FK_TRXNO = a.PK_TRXNO),0)) as Total 
+
+from faCRMstr a 
+inner join faArledgers b on a.PK_TRXNO = b.FK_TRXNO_CR
+where a.cancelflag = 0 group by a.PK_TRXNO,a.appliedamount,a.ordate
+) as a where appliedamount <> credit 
+order by Total
+--and a.PK_TRXNO = '10505108'
+
+/*
+Declare @pk_trxno varchar(max) = '10854914'
+select * from faCRMstr where PK_TRXNO = @pk_trxno
+Select * from faArledgers where FK_TRXNO_CR = @pk_trxno
+*/
+
+--Select * from faArinv where PK_TRXNO = '10505108'
+--Select * from faArledgers where FK_TRXNO = '10505108'

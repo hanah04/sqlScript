@@ -1,0 +1,88 @@
+declare @glBook nvarchar(10), 
+		@FK_psDatacenter int, 
+		@FK_faGLAcctGrp nvarchar(30), 
+		@docType nvarchar(10), 
+		@docNo int,
+		@debit decimal(14,2),
+		@glperiod smalldatetime,
+		@wareId smallint,
+		@patinvTrxno bigint,
+		@patinv_Trxno_Jvmstr bigint, 
+		@newTrxno bigint,
+		@newJvno bigint
+		
+declare c cursor for
+	select 
+		glbook,
+		FK_psDatacenter, 
+		FK_faGLAcctGrp, 
+		doctype, 
+		docno, 
+		glperiod = max(glperiod),
+		SUM(debit) as debit 
+	from
+			faGL 
+	where 
+			glperiod > '12/31/2014' and glbook = 'JB' and FK_TRXNO = '0'
+	group by 
+			FK_psDatacenter, FK_faGLAcctGrp, doctype, docno, glbook, trangroup
+		
+Open c	
+Fetch next From c into @glBook, @FK_psDatacenter, @FK_faGLAcctGrp, @docType, @docNo, @glperiod, @debit
+
+While @@Fetch_Status = 0 
+Begin
+	--Get Department Id
+	select @wareId = PK_mscWarehouse from mscWarehouse where FK_faGLAcctGrp = @FK_faGLAcctGrp
+	--Get corresponding psPatinv
+	set @patinv_trxno_jvmstr = isnull((select top 1 FK_TRXNO_faJVMstr from psPatinv where FK_TRXNO_faJVMstr = 0 and doctype = @docType and docno = @docNo and FK_mscWarehouse = @wareId),-1)
+
+	If (@patinv_trxno_jvmstr = 0) --Check if psPatinv exists and psPatinv.FK_TRXNO_faJVMstr = 0
+	Begin
+	set @patinvTrxno = (select top 1 PK_TRXNO from psPatinv where FK_TRXNO_faJVMstr = 0 and doctype = @docType and docno = @docNo and FK_mscWarehouse = @wareId)
+		--Get current Trxno and jvno
+		update mscSeriesNo set @newTrxno = seriesno = seriesno + 1 where doccode = 'TRK'
+		update mscSeriesNo set @newJvno = seriesno = seriesno + 1 where doccode = 'JVN'
+		
+		--Create faJVMstr
+		INSERT INTO fajvmstr (
+									            PK_TRXNO,ownerID,FK_mscBranches,FK_psDatacenter,FK_ASUPost,
+									            FK_ASUCancel,FK_ASUGLPost,FK_mscCashFlowTypes,jevno,jvno,
+									            description,docid,docdate,glremarks,amount,
+									            jvmark,isclosing,glpostflag, glpostdate, canceldate,
+									            cancelflag,cancelrem,postdate,postflag
+									            )
+		                            select 
+				                                @newTrxno, ownerID,FK_mscBranches, @FK_psDatacenter, FK_ASUGLPost, 
+                                                null,null,1000,0,@newJvno, 
+                                                'Cost of Sales','JV',@glperiod,'',
+                                                @debit,
+                                                'False','False', 'True',@glperiod,null, 
+                                                'False',null,@glperiod,'True'
+                                                from psPatinv where PK_TRXNO = @patinvTrxno
+		--Update faGL.FK_TRXNO
+		update faGL set FK_TRXNO = @newTrxno where FK_TRXNO = 0 and 
+				glbook = 'JB' and trangroup = 'SA' and doctype = @docType and
+				docno = @docNo and FK_faGLAcctGrp = @FK_faGLAcctGrp and FK_psDatacenter = @FK_psDatacenter
+				
+		--Update psPatinv.FK_TRXNO_faJVMstr
+		update psPatinv set FK_TRXNO_faJVMstr = @newTrxno where PK_TRXNO = @patinvTrxno
+	End	
+	Else
+	Begin
+		If (@patinv_trxno_jvmstr > 0) --Check if psPatinv exists and psPatinv.FK_TRXNO_faJVMstr != 0
+		Begin
+		
+		--Update faGL.FK_TRXNO
+		update faGL set FK_TRXNO = @patinv_trxno_jvmstr where FK_TRXNO = 0 and 
+				glbook = 'JB' and trangroup = 'SA' and doctype = @docType and
+				docno = @docNo and FK_faGLAcctGrp = @FK_faGLAcctGrp and FK_psDatacenter = @FK_psDatacenter
+		End	
+	End
+
+	Fetch next From c into @glBook, @FK_psDatacenter, @FK_faGLAcctGrp, @docType, @docNo, @glperiod, @debit
+End
+
+Close c
+Deallocate c
+

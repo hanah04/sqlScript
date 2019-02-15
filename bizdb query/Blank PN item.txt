@@ -1,0 +1,16 @@
+select *From psPatLedgers where FK_psPatRegisters=191097 and billtrancode like 'PN%'
+
+select dbo.udf_GetFullName(FK_emdPatients),*From psGntrLedgers where FK_psPatRegisters=191097
+select *From psGntrLedgerItems where FK_psPatRegisters=191097
+select *From psGntrLedgerRooms where FK_psPatRegisters=191097
+select *From psGntrLedgerPF where FK_psPatRegisters=191097
+
+select *From psGntrLedgers where PK_TRXNO=3641443
+select *From psGntrLedgerItems where FK_psPatRegisters=179832
+select *From psGntrLedgerRooms where FK_psPatRegisters=179832
+select *From psGntrLedgerPF where FK_psPatRegisters=179832
+
+select *From psGntrLedgers where PK_TRXNO=3758857
+select *From psGntrLedgerItems where FK_psPatRegisters=179832
+select *From psGntrLedgerRooms where FK_psPatRegisters=179832
+select *From psGntrLedgerPF where FK_psPatRegisters=179832

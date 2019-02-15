@@ -1,0 +1,63 @@
+
+----------------- Partial process to proceed ---------------------
+--update faVPMstr set netamount = (netamount + 0.0001) from (
+Select * from (
+Select aa.*,isnull(bb.amount,0) as CSamt,isnull(cc.amount,0) as GBamt,
+case	when PK_cash = 0 and bb.amount = cc.amount and VP_GNTR = bb.amount then PK_gntr
+		when PK_gntr = 0 and bb.amount = cc.amount and VP_CASH = cc.amount then PK_cash
+		else 0 end as PK_Trxno_favpmstr
+From (Select PK_faCRMstrPF,sum(Cash_trxno) as PK_cash,sum(Gntr_trxno) as PK_gntr,sum(CashAmount) as CashAmount,sum(GntrAmount) as GntrAmount,
+isnull((select netamount from faVPMstr x where x.PK_TRXNO = sum(Cash_trxno)),0) as VP_CASH,
+isnull((select netamount from faVPMstr x where x.PK_TRXNO = sum(Gntr_trxno)),0) as VP_GNTR
+From (Select FK_TRXNO_faCRMstrPF as PK_faCRMstrPF,
+isnull((select a.PK_TRXNO from faCRMstrPFRemit x where x.FK_TRXNO_faVPMstr = a.PK_TRXNO),0) as Cash_trxno,
+isnull((select a.PK_TRXNO from faCRMstrPFRemitCH x where x.FK_TRXNO_faVPMstr = a.PK_TRXNO),0) as Gntr_trxno,
+isnull((select x.amount from faCRMstrPFRemit x where x.FK_TRXNO_faVPMstr = a.PK_TRXNO),0) as CashAmount,
+isnull((select x.amount from faCRMstrPFRemitCH x where x.FK_TRXNO_faVPMstr = a.PK_TRXNO),0) as GntrAmount
+From faVPMstr a where a.FK_TRXNO_faCRMstrPF <> 0) as a
+--where PK_faCRMstrPF = '12045' 
+group by PK_faCRMstrPF) as aa
+---------------------------------------------------------------------------------------------------------------------------------------
+left join faCRMstrPF bb on aa.PK_faCRMstrPF = bb.PK_faCRMstrPF
+left join faCRMstrPFCh cc on aa.PK_faCRMstrPF = cc.PK_faCRMstrPFCh
+where aa.PK_faCRMstrPF in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 group by FK_TRXNO_faCRMstrPF having count(PK_TRXNO) = 1)
+) as final where PK_Trxno_favpmstr <> 0
+
+order by PK_faCRMstrPF
+--) as final where PK_TRXNO = PK_Trxno_favpmstr
+
+----------------------------------------------------------------------------------------------------------------------------------------
+---------------------- For Posted ---------------------------
+--update faVPMstr set dmamount = round(dmamount,2),balance = round(balance,2) where FK_TRXNO_faCRMstrPF
+Select dmamount,round(dmamount,2) as Rdm,balance,round(balance,2) as Rbal from faVPMstr where FK_TRXNO_faCRMstrPF 
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 group by FK_TRXNO_faCRMstrPF)
+
+--update faVPMstr set netamount = round(netamount,2) where FK_TRXNO_faCRMstrPF
+Select netamount,round(netamount,2) as Rnet from faVPMstr where FK_TRXNO_faCRMstrPF 
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 
+group by FK_TRXNO_faCRMstrPF having count(PK_TRXNO) = 2)
+
+--update faVPMstr set netamount = round(netamount,2),dmamount = round(dmamount,2),balance = round(balance,2) where FK_TRXNO_faCRMstrPF
+Select netamount,round(netamount,2) as Rnet,dmamount,round(dmamount,2) as Rdm,balance,round(balance,2) as Rbal from faVPMstr where FK_TRXNO_faCRMstrPF 
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 group by FK_TRXNO_faCRMstrPF)
+
+---------------------- For Ledger ---------------------------
+--update faApledgers set debit = round(debit,2), credit = round(credit,2) where FK_TRXNO_DM
+Select debit,round(debit,2) as roundedDebit,credit,round(credit,2) as roundedcredit from faApledgers where FK_TRXNO_DM 
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+where a.FK_TRXNO_faCRMstrPF <> 0)
+
+---------------------- For Debit Memo ---------------------------
+--update faDMCMPayeeTrans set memoamount = round(memoamount,2) where FK_TRXNO_faVPMstr
+Select memoamount,round(memoamount,2) as rounded from faDMCMPayeeTrans where FK_TRXNO_faVPMstr 
+in (Select PK_TRXNO from faVPMstr where FK_TRXNO_faCRMstrPF <> 0)
+
+--update faDMCMPayee set amount = round(amount,2) where PK_TRXNO
+select amount,round(amount,2) as rounded from faDMCMPayee where PK_TRXNO
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+where a.FK_TRXNO_faCRMstrPF <> 0) and isDebitAdvice = 0
+
+--update faGL set debit = round(debit,2), credit = round(credit,2) where FK_TRXNO
+select debit,round(debit,2) as roundedDebit,credit,round(credit,2) as roundedcredit from faGL where FK_TRXNO
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+inner join faDMCMPayee c on b.FK_TRXNO = c.PK_TRXNO where a.FK_TRXNO_faCRMstrPF <> 0 and c.isDebitAdvice = 0)

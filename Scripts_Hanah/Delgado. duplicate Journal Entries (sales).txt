@@ -1,0 +1,8 @@
+
+select a.fk_trxno, a.docno, a.doctype, sum(a.debit) as GLDebit, sum(a.credit) as GLCredit , a.glperiod
+dbo.udf_getfullname (fk_psdatecenter) as EntityName
+from fagl a 
+inner join pspatinv b on a.FK_TRXNO = b.PK_TRXNO
+where b.doctype in ('CH', 'CA')
+group by a.docno, a.doctype, b.renamount, a.FK_TRXNO, a.glperiod, a.fk_psdatcenter
+having sum(a.debit) <> b.renamount or sum(a.credit) <> b.renamount

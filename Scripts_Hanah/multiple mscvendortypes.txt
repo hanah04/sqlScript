@@ -1,0 +1,26 @@
+Declare @ConcatVendorsAndVendorTypes varchar(max)
+
+	Declare multipleVendortypes cursor for 
+	    select 
+			convert(varchar,FK_mscVendorTypes) + convert(varchar,FK_faVendors) 
+				from faVendorsCateg 
+                     group by FK_mscVendorTypes, FK_faVendors 
+                     having count(FK_mscVendorTypes) > 1 
+	
+	Open multipleVendortypes
+	Fetch next from multipleVendortypes into @ConcatVendorsAndVendorTypes
+	While @@FETCH_STATUS = 0
+		Begin
+
+		Delete faVendorsCateg where Convert(varchar,FK_mscVendorTypes) +  Convert(varchar,FK_faVendors) = @ConcatVendorsAndVendorTypes
+		and PK_faVendorsCateg not in
+		(
+			select top 1 PK_faVendorsCateg from faVendorsCateg 
+						where convert(varchar,FK_mscVendorTypes) + convert(varchar,FK_faVendors) = @ConcatVendorsAndVendorTypes
+		)
+
+	Fetch next from multipleVendortypes into @ConcatVendorsAndVendorTypes
+		End
+
+	Close multipleVendortypes
+	Deallocate multipleVendortypes

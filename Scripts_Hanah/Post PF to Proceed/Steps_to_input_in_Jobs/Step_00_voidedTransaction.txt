@@ -1,0 +1,4 @@
+if((Select count(dbupdate) from appsysDBUpdates where dbupdate = '8.26.7.18') = 0)
+update faVPMstr set netamount = (netamount + 0.0001) where FK_TRXNO_faCRMstrPF
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 and cancelflag = 1
+group by FK_TRXNO_faCRMstrPF)

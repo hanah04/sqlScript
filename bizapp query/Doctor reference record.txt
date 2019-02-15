@@ -1,0 +1,12 @@
+SELECT sum(mycount)
+                                            from (
+                                            select count(*) as mycount FROM psPatitem where FK_psPatRegisters = @FK_PatRegistryID AND renflag = 1 AND (FK_emdDoctors = @FK_EmdDoctor OR FK_emdDoctorsREQ = @FK_EmdDoctor) AND retqty != renqty and renqty > 0
+                                            UNION
+                                            select count(*) as mycount FROM psPatitem a inner join psPatinv b on a.FK_TRXNo = b.PK_TRXNo where a.FK_psPatRegisters = @FK_PatRegistryID AND a.renflag = 0 AND (a.FK_emdDoctors = @FK_EmdDoctor OR a.FK_emdDoctorsREQ = @FK_EmdDoctor) AND b.cancelflag = 0
+                                            UNION
+                                            select count(*) as mycount FROM psPatinv where FK_psPatRegisters = @FK_PatRegistryID AND (FK_emdDoctors = @FK_EmdDoctor OR FK_emdDoctors_Referral = @FK_EmdDoctor)  and cancelflag = 0 and PK_TRXNO not in (select FK_TRXNO_CN from pspatinv where FK_TRXNO_CN is not null and FK_psPatRegisters = @FK_PatRegistryID) and doctype <> ''CN''
+                                            UNION
+                                            select count(*) as mycount FROM psDctrLedgers where FK_psPatRegisters = @FK_PatRegistryID  AND FK_emdDoctors = @FK_EmdDoctor AND pfamount > 0
+                                            UNION
+                                            select count(*) as mycount from psPatRegisters a inner join psPHICSurgProc b on a.PK_psPatRegisters = b.FK_psPatRegisters where PK_psPatRegisters = @FK_PatRegistryID and FK_emdDoctors_Surgeon = @FK_EmdDoctor
+                                            ) as Alist

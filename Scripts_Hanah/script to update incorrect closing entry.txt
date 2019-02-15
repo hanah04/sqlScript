@@ -1,0 +1,17 @@
+select sum(debit),sum(credit) from fagl where  convert(Date,glperiod) between '09/01/2016' and '09/30/2016' and AUDITFLAG = 1
+and FK_faGLAcct in (select pk_faglacct from faglacct where fstype = 'I') and cancelflag = 0
+
+select sum(debit),sum(credit) from fagla where convert(Date,glperiod) between '09/01/2016' and '09/30/2016' 
+and FK_faGLAcct in (select pk_faglacct from faglacct where fstype = 'I')
+
+select * from faJVMstr where jvno = 201625 and PK_TRXNO = 922043
+--update fajvmstr set amount = 18412069.729 where jvno = 201625 and PK_TRXNO = 922043
+--18412069.729
+--21257405.2456 **before
+select * from fagl where fk_trxno = 922043 and FK_faGLAcct = '400000'
+--update fagl set debit = (debit-2845335.5166) where fk_trxno = 922043 and FK_faGLAcct = '400000'
+--2845335.5166
+--21257405.2456 **before
+select * from fagla where PK_faGLA = 196303
+--update fagla set debit = 18412069.729 where PK_faGLA = 196303
+--21257405.2456

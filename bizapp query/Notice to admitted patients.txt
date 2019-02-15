@@ -1,0 +1,46 @@
+declare @startdate date = '2017-10-01'
+declare @enddate date = '2018-01-01'
+
+select
+	                        [regdate]'RegistryDate',
+	                        [regno]'RegistryNo',
+	                        [patid]'PatientID',
+	                        [room]'Room',
+	                        [nstation]'NurseStation',
+	                        [patname]'PatientName',
+	                        isnull([HB],0) 'HospitalBill',
+	                        isnull([PF],0) 'ProfessionalFee',
+	                        isnull([HB],0)+isnull([PF],0)'Statement',
+	                        (isnull([HB],0)+isnull([PF],0))-(isnull([Disc],0)+iSNULL([gntr],0)+ISNULL([phic],0)+ISNULL([pay],0))'Balance',
+	                        isnull([Disc],0)'Discount',
+	                        ISNULL([gntr],0)'Guaranteed',
+	                        ISNULL([phic],0)'PHIC',
+	                        ISNULL([pay],0)'Payment',
+	                        [dctrname]'AttendingDoctor',
+	                        [gntrname]'GuanrantorName',
+	                        [billremarks] 'BillRemarks'
+                        from
+                        (select
+	                        b.registrydate'regdate',
+	                        b.registryno 'regno',
+	                        c.patid 'patid',
+	                        a.FK_psRooms 'room',
+	                        d.description 'nstation',
+	                        e.fullname 'patname',
+	                        ((select isnull(sum(debit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode in ('HC','RC','DADJ','RT'))
+							- (select isnull(sum(credit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode in ('HC','RC','CADJ')))'HB',		
+	                        (select isnull(sum(debit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode = 'PF')'PF',
+	                        (select isnull(sum(credit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode like 'DC%' and cancelflag = 0)'Disc',
+	                        (select isnull(sum(credit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode in ('GAHB','GAADJ','GAPF','GAPR','PNADJ','PNHB','PNPF','PNPR') and cancelflag = 0)'gntr',
+	                        (select isnull(sum(credit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode = 'PHIC' and cancelflag = 0)'phic',
+	                        (select isnull(sum(credit),0) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode = 'PAYMENT' and cancelflag = 0)'pay',
+	                        (select dbo.udf_ConcatAllAttendingDr (b.PK_psPatRegisters)) 'dctrname',
+	                        (select dbo.udf_ConcatAllGuarantorsPerRegistry (b.PK_psPatRegisters)) 'gntrname',
+	                        b.billremarks 'billremarks'
+                        from psAdmissions a
+                        join psPatRegisters b on a.FK_psPatRegisters = b.PK_psPatRegisters
+                        join emdPatients c on a.FK_emdPatients = c.PK_emdPatients
+                        join mscNrstation d on a.FK_mscNrstation = d.PK_mscNrstation
+                        join psDatacenter e on a.FK_emdPatients = e.PK_psDatacenter
+                        where b.pattrantype = 'I' and b.registrystatus not in ('D','X') and b.cancelflag = 0 and convert(date,b.registrydate) between @startdate and @enddate) as a
+                        order by patname

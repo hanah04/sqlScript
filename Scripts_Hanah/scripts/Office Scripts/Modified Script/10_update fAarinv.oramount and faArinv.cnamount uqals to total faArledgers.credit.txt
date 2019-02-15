@@ -1,0 +1,47 @@
+/********************** Retrieve faArinv with oramount or cnamount not equal to detailed application ********************/
+select 
+		a.PK_TRXNO,
+		a.oramount,
+		a.cnamount,
+		ledgerOR = sum(isnull(case when b.doctype = 'OR' then credit else 0 end,0)),
+		ledgerCM = sum(isnull(case when b.doctype = 'CM' then credit else 0 end,0))
+from 
+		faArinv as a
+		left outer join faArledgers as b on a.PK_TRXNO = b.FK_TRXNO 
+						and b.doctype in ('CM', 'OR') 
+						and b.cancelflag = 0 
+						and b.deleteflag = 0
+where a.postflag = 1 and a.cancelflag = 0 and a.deleteflag = 0 
+group by
+		a.PK_TRXNO,
+		a.oramount,
+		a.cnamount
+
+having a.oramount <> sum(isnull(case when b.doctype = 'OR' then credit else 0 end,0))
+		or a.cnamount <> sum(isnull(case when b.doctype = 'CM' then credit else 0 end,0))
+
+
+/********************** Update faArinv with oramount or cnamount not equal to detailed application ********************/
+update aa set oramount = bb.ledgerOR, cnamount = bb.ledgerCM from faArinv as aa
+inner join (
+select 
+		a.PK_TRXNO,
+		a.oramount,
+		a.cnamount,
+		ledgerOR = sum(isnull(case when b.doctype = 'OR' then credit else 0 end,0)),
+		ledgerCM = sum(isnull(case when b.doctype = 'CM' then credit else 0 end,0))
+from 
+		faArinv as a
+		left outer join faArledgers as b on a.PK_TRXNO = b.FK_TRXNO 
+						and b.doctype in ('CM', 'OR') 
+						and b.cancelflag = 0 
+						and b.deleteflag = 0
+where 
+		a.postflag = 1 and a.cancelflag = 0 and a.deleteflag = 0 
+group by
+		a.PK_TRXNO,
+		a.oramount,
+		a.cnamount
+having a.oramount <> sum(isnull(case when b.doctype = 'OR' then credit else 0 end,0))
+		or a.cnamount <> sum(isnull(case when b.doctype = 'CM' then credit else 0 end,0))
+) as bb on aa.PK_TRXNO = bb.PK_TRXNO

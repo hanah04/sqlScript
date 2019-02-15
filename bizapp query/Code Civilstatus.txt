@@ -1,0 +1,11 @@
+
+		WHEN 'CO' THEN 'Co-Habilitation'
+		WHEN 'S' THEN 'Single'
+		WHEN 'M' THEN 'Married'
+		WHEN 'W' THEN 'Widow'
+		WHEN 'D' THEN 'Defacto'
+		WHEN 'T' THEN 'Traditional'
+		WHEN 'C' THEN 'Child'
+		WHEN 'N' THEN' Newborn'
+		WHEN 'L' THEN 'Seperated'
+else ''

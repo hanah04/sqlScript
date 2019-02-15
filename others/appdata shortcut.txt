@@ -1,0 +1,7 @@
+
+
+Local and LocalLow are not actually in %AppData%. As Hand-E-Food said, %AppData% = %UserProfile%\AppData\Roaming.
+
+Use %userprofile%\appdata\locallow and either %userprofile%\appdata\local or %localappdata%.
+
+There is no variable (eg %LocalAppDataLow%) by default that points to the low-privilege local profile, but you could easily create one for yourself (you can also create a localappdata variable in XP; for that matter, you can create all sorts of envvar shortcuts to different parts of your file-system).

@@ -1,0 +1,18 @@
+--insert into faDMCMPayeeTrans (FK_TRXNO, FK_TRXNO_faVPMstr, FK_mscTranTypesAP, cvamount, cramount, dmamount, memoamount, ewtamount, ewtrate, discamount)
+select 
+a.PK_TRXNO,
+d.PK_TRXNO,
+d.FK_mscTranTypesAP,
+'0.00' as cvamount,
+'0.00' as cramount,
+'0.00' as dmamount,
+c.debit,
+'0.00' as ewtamount,
+NULL as ewtrate,
+NULL as discamount
+from faDMCMPayee a 
+left join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO
+left join faApledgers c on a.PK_TRXNO = c.FK_TRXNO_DM
+left join faVPMstr d on d.PK_TRXNO = c.FK_TRXNO
+where a.PK_TRXNO = '6248799' and d.PK_TRXNO not in (select FK_TRXNO_faVPMstr from faDMCMPayeeTrans)
+group by d.PK_TRXNO, a.PK_TRXNO, d.FK_mscTranTypesAP,c.debit

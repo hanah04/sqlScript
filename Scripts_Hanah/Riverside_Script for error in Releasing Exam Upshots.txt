@@ -1,0 +1,7 @@
+select FK_iwItems, * from psExamResultMstr where FK_TRXNO = 27842333
+select FK_psExamResultMstr, FK_mscExamTypes, issingletest, FK_iwitemsREN, retqty, * from psPatitem where FK_TRXNO = 27842333
+select * from vwExamResultsMstrList where FK_TRXNO = 27842333
+
+--1732
+--2190
+update psexamresultmstr set FK_iwitems = '1732' where PK_psExamResultMstr = 1862258 --FK_TRXNO = 27842333

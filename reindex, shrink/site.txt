@@ -1,0 +1,5 @@
+http://www.cartegraph.com/help/8_3/Content/Basic/Administrator/DatabaseManagement/SQLShrink_Task.htm
+
+https://blog.sqlauthority.com/2007/01/31/sql-server-reindexing-database-tables-and-update-statistics-on-tables/
+
+https://www.mssqltips.com/sqlservertip/1367/sql-server-script-to-rebuild-all-indexes-for-all-tables-and-all-databases/

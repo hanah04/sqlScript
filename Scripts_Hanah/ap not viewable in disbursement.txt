@@ -1,0 +1,31 @@
+ 1. --to check the APV---
+  --for single transaction--
+ select dbo.udf_GetFullName(FK_psDatacenter), aptype,docno,* 
+ from faVPMstr where aptype = 'PF' and docno = '2210'
+ 
+ --for multiple transactions--
+ select dbo.udf_GetFullName(FK_psDatacenter), aptype,docno,* 
+ from faVPMstr where aptype = 'PF' and docno in (2210,2211)
+
+ 
+ 2. --To make APV viewable in Disbursement--
+
+  --for single transaction--
+--update faVPMstr set netamount = amount + ewtamount
+ where aptype = 'a' and docno = 'a'
+
+ --for multiple transactions-- 
+ --update faVPMstr set netamount = amount + ewtamount
+ where aptype = 'a' and docno in (a)
+ 
+ 
+ 
+ 3. --To fix the APV Amount---
+ 
+  --for single transaction--
+--update faVPMstr set netamount = amount - ewtamount
+ where aptype = 'PF' and docno = '2210'
+ 
+ --for multiple transactions-- 
+ --update faVPMstr set netamount = amount - ewtamount
+ where aptype = 'PF' and docno in (2210,2211)

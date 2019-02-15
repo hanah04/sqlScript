@@ -1,0 +1,23 @@
+4230 - Post charges error
+4481 - Cash Receipts Error
+4567 - PF tagging error		(In progress, on going remote with sir chard)
+4695 - Errors Encountered in various modules
+4696 - slow phic processing  (not associated with exe update)  
+4717 - cancellation of OR  
+4841 - phic processing error
+4842 - balance for paid items (not associated with exe update)
+
+Resolution: 
+select dbo.udf_GetFullName(FK_faCustomers), * from facrmstr where PK_TRXNO = '10921386'
+select * from faCRCards where FK_TRXNO = '10921386'
+
+select * from faArledgers where FK_TRXNO = '10921386'
+
+
+select dbo.udf_GetFullName(FK_emdPatients), * from faArinv where FK_psPatRegisters = '261492' and FK_faCustomers = '274192'
+
+select dbo.udf_GetFullName(fk_facustomers), * from mscCards where PK_mscCards = '1001'
+
+--update faCRCards set FK_TRXNO_faArinv = 0 where PK_faCRCards = '12769'
+
+select  dbo.udf_GetFullName(FK_emdPatients), * from psPatRegisters where PK_psPatRegisters = '261492'

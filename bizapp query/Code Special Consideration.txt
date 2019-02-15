@@ -1,0 +1,16 @@
+when 'HD' then 'Hemodialysis' when 'PT' then 'Peritonea'
+				   when 'RTL' then 'Radiotherapy (LINAC)' when 'RTC' then 'Radiotherapy (COBALT)'			
+				   when 'BT' then 'Brachytherapy' when 'BTF' then 'Blood Transfusion'		
+				   when 'CT' then 'Chemotherapy' when 'DB' then 'Simple Debridement' when 'IMRT' then 'Intensity Moderated Radiotherapy'		
+
+
+
+pHemoDates = HD
+pPeritonealDates = PT
+pLINACDates = RTL
+pCOBALTDates = RTC
+pBrachyDates = BT
+pTransfusionDates = BTF
+pChemoDates = CT
+pDebridementDates = DB
+pIMRT = IMRT

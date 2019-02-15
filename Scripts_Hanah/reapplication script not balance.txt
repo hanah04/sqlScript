@@ -1,0 +1,8 @@
+select glbook, trangroup, 
+(select description from faglacct where  PK_faGLAcct = fagl.FK_faGLAcct) as motheraccount,
+(select description from faGLAcctGrp where PK_faGLAcctGrp = fagl.FK_faGLAcctGrp) as accountgroup,
+(select description from faGLAcctGrp where PK_faGLAcctGrp = fagl.FK_faGLAcctGrp2) as thirdlayer,
+FK_faGLAcct, FK_faGLAcctGrp2, docno, debit, credit, *  from fagl 
+where docno = 1220443 and glbook = 'jb'
+
+**docno=ORNO

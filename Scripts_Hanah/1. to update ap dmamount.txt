@@ -1,0 +1,39 @@
+ /** DMCM Amount **/
+   
+    declare @APTrxno int,
+			@FaVpmstrAmt decimal(18,2),
+			@FaApledgerAmt decimal(18,2)
+
+	declare DMCMamount cursor for
+			
+			
+			select
+			PK_TRXNO,
+			round(dmamount,2) as FaVpmstrAmt, 
+			FaApledgerAmt = (select isnull(round(sum(a.debit),2),0)
+						from faapledgers as a
+						where a.FK_TRXNO = favpmstr.PK_TRXNO and a.aptype not in ('DM', 'CS', 'CK') 
+						and a.doctype = 'DM' 
+						and a.cancelflag = 0 and a.debit <> 0)
+			from favpmstr where cancelflag <> 1 
+			group by PK_TRXNO, dmamount
+			having 
+			round(dmamount,2) <> (select isnull(round(sum(a.debit),2),0)
+						from faapledgers as a
+						where a.FK_TRXNO = favpmstr.PK_TRXNO and a.aptype not in ('DM', 'CS', 'CK') 
+						and a.doctype = 'DM' 
+						and a.cancelflag = 0 and a.debit <> 0)
+
+Open DMCMamount
+	fetch next from DMCMamount into @APTrxno, @FaVpmstrAmt, @FaApledgerAmt
+
+	While @@FETCH_STATUS = 0
+	Begin
+
+			Update faVpmstr set dmamount = @FaApledgerAmt where PK_TRXNO = @APTrxno
+
+    fetch next from DMCMamount into @APTrxno, @FaVpmstrAmt, @FaApledgerAmt
+
+	End
+	Close DMCMamount
+	deallocate DMCMamount

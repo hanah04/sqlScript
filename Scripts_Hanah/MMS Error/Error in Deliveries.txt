@@ -1,0 +1,35 @@
+IF NOT EXISTS(SELECT * FROM appsysGlobalSettings WHERE settingcode ='EnforceInvoiceNumber')
+BEGIN
+    INSERT INTO[dbo].[appsysGlobalSettings]
+    (FK_appsysSystems,
+    groupmodule,
+    settingcode,
+    description,
+    datatype,
+    controltype,
+    value,
+    isMultiSelection,
+    WithButtonSelection,
+    formselection,
+    isWithPercMaskInput,
+    isIncluded,
+    valuedesc,
+    glsetupgroup,
+    datevalue)
+VALUES
+    (3,
+    'Miscellaneous',
+    'EnforceInvoiceNumber',
+    'Enforce Input of Invoice Number in Receiving Module',
+    'BOOLEAN',
+    'C',
+    'No',
+    1,
+    0,
+    NULL,
+    0,
+    1,
+    'No',
+    'A-AA',
+    NULL)
+END

@@ -1,0 +1,84 @@
+to verify unbalanced entry of Phic 
+
+step 1 get or no. 
+note:
+its the reference no. in the unbalance journal entry
+
+step 2 
+
+execute script 
+
+select * from faCRMstr where orno = ''
+
+
+
+
+select glbook, trangroup, 
+(select description from faglacct where  PK_faGLAcct = fagl.FK_faGLAcct) as motheraccount,
+(select description from faGLAcctGrp where PK_faGLAcctGrp = fagl.FK_faGLAcctGrp) as accountgroup,
+(select description from faGLAcctGrp where PK_faGLAcctGrp = fagl.FK_faGLAcctGrp2) as thirdlayer,
+FK_faGLAcct, FK_faGLAcctGrp2, docno, debit, credit,*  from fagl
+ where docno = 'OR NO' note change here
+ 
+
+
+step 3
+
+execute this script
+
+
+
+
+
+ SELECT 
+                docno	=	'361372',
+                particulars = CASE WHEN Particulars IS NULL THEN Remarks ELSE Particulars end, 
+                hbamount = sum(HospitalBill), 
+				membership = membership,
+                pfamount = sum(ProfessionalFee), 
+                others = SUM(Others),
+                totalpayment = sum(TotalPayment), 
+                paymentdate,
+                PatientType
+
+                from 
+                (SELECT 
+                Particulars = case when b.FK_psPatRegisters is null or b.FK_psPatRegisters = '0' 
+                                    then CONVERT(nvarchar,b.remarks) else
+									dbo.udf_GetFullName(b.FK_emdpatients) + ' / Registry No. ' + 
+									convert(varchar,c.registryno) + ' / Registry Date - ' + 
+									convert(varchar,c.registrydate,101) + ' / ' + 
+									case when c.pattrantype = 'I' then 'IPD' 
+									     when c.pattrantype = 'O' then 'OPD' 
+									     when c.pattrantype = 'E' then 'ERD' end  +  
+								    isnull(' / Discharge Date - ' + Convert(nvarchar(10),c.dischdate,101),'') end,
+                HospitalBill = case when b.artype in ('IS','RB','MC', 'PH') then a.credit ELSE 0.00 end,
+                ProfessionalFee = case when b.artype in ('PF') then a.credit ELSE 0.00 end,
+                Others = case when b.artype = 'OT' then a.credit ELSE 0.00 end,
+                TotalPayment = a.credit,
+				membership = d.description,
+                PaymentDate = a.postdate,
+                RegisterNo = b.FK_psPatRegisters,
+                PatientType = c.pattrantype,
+                FK_faCustomers = a.FK_faCustomers,
+                FK_TRXNO_CR = FK_TRXNO_CR,
+                Remarks = convert(nvarchar,b.remarks)
+
+            FROM faarledgers a
+            INNER JOIN faArinv b ON a.FK_TRXNO = b.PK_TRXNO
+            left outer join psPatRegisters as c on b.FK_psPatRegisters = c.PK_psPatRegisters
+			left outer join mscPHICMemberships as d on c.FK_mscPHICMemberships = d. PK_mscPHICMemberships
+                    where a.artype NOT IN ('CM','OR')
+                    AND ((a.crtype is null and a.artype = 'PH') or a.crtype in ('CM','OR'))
+                    AND a.doctype IN ('OR')
+                    AND a.credit > 0.00
+                    and a.cancelflag = 0
+                    and a.deleteflag = 0
+                    AND a.postflag = 1
+                    --and a.FK_faCustomers = @customerid 
+                    and (a.FK_TRXNO = 1190276 or a.FK_TRXNO_CR = 1190276 )) as ARListTable
+				--Change here--
+
+            GROUP BY Particulars, PaymentDate,  RegisterNo, FK_faCustomers, FK_TRXNO_CR, Remarks,membership, PatientType
+            
+            order by membership

@@ -1,0 +1,5 @@
+>item compo na di bumabawas - global settings -dept - automatic update
+
+reagent for posting:
+Prompt user for exam... - yes
+enforce auto update of IC - no

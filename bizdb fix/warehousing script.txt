@@ -1,0 +1,5 @@
+UPDATE x SET isViewable = 1, isTrade = 1
+ FROM iwWareitem x 
+ INNER JOIN iwitems AS y ON y.PK_iwItems = x.FK_iwItems
+ WHERE x.FK_mscWarehouse in ('<insert your department code here>' )
+  -- AND y.itemgroup in ('MED') and y.FK_mscItemCategory = '1001'

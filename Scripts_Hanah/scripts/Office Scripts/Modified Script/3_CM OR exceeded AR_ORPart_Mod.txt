@@ -1,0 +1,91 @@
+declare @FK_TRXNO bigint,
+		@dif decimal(20,4)
+
+declare @PK_faArledgers int,
+		@credit decimal(20,4),
+		@FK_TRXNO_CR bigint,
+		@ORamt decimal(20, 4),
+		@TotalLedgerAppliedOR decimal(20, 4),
+		@orDif decimal(20, 4),
+		@appliedOR decimal(20, 4),
+		@AllowedAmtToApply  decimal(20, 4)
+
+declare @sql nvarchar(max)
+		
+
+
+declare a cursor for
+					select 
+							a.FK_TRXNO, 
+							dif = sum(b.credit) - a.debit
+					from
+							faArledgers as a
+							inner join faArledgers as b on a.FK_TRXNO = b.FK_TRXNO
+															and b.doctype in ('CM', 'OR') 
+															and b.cancelflag = 0 and  b.deleteflag = 0
+					where a.doctype not in ('CM', 'OR') 
+						  and a.cancelflag = 0 and a.deleteflag = 0
+						 
+					group by
+							a.FK_TRXNO, 
+							a.debit
+					having
+							a.debit < sum(b.credit)
+					order by
+							a.FK_TRXNO
+
+open a
+
+	Fetch next from a into @FK_TRXNO, @dif
+	While(@@FETCH_STATUS = 0)
+	Begin
+		set @appliedOR = 0
+		--Iterate on every OR applied
+		declare b cursor for select PK_faArledgers, credit, FK_TRXNO_CR from faArledgers where
+										FK_TRXNO = @FK_TRXNO 
+										and doctype  = 'OR' 
+										and cancelflag = 0 and deleteflag = 0
+										order by PK_faArledgers desc
+		open b
+		 
+		 Fetch next from b into @PK_faArledgers, @credit, @FK_TRXNO_CR
+		 While (@@FETCH_STATUS = 0 and @dif > 0)
+			Begin
+
+				set @sql = ''
+				select @TotalLedgerAppliedOR = sum(credit), @ORamt = sum(cramount), @orDif = sum(credit) - sum(cramount) - @appliedOR from faArledgers where  (FK_TRXNO_CR = @FK_TRXNO_CR or FK_TRXNO = @FK_TRXNO_CR) and cancelflag = 0 and deleteflag = 0
+
+				set @AllowedAmtToApply = case when @orDif < @dif then @orDif else @dif end
+
+				set @AllowedAmtToApply = case when @credit < @AllowedAmtToApply then @credit else @AllowedAmtToApply end
+
+				if (@AllowedAmtToApply > 0)
+				Begin
+					if (@AllowedAmtToApply = @credit)
+					Begin
+						set @sql = 'update faArledgers set cancelflag = 1 where PK_faArledgers = ' + Convert(varchar(20), @PK_faArledgers)
+						set @appliedOR = @appliedOR + @credit
+						set @dif = @dif - @credit
+						print @sql
+
+					End
+					Else
+					Begin
+						set @sql = 'update faArledgers set credit  = credit - ' +  Convert(varchar(20),@AllowedAmtToApply) + ' where PK_faArledgers = ' + Convert(varchar(20), @PK_faArledgers)
+						set @appliedOR = @appliedOR + @AllowedAmtToApply
+						set @dif = @dif - @AllowedAmtToApply
+							
+						print @sql
+					End
+				End
+
+			Fetch next from b into @PK_faArledgers, @credit, @FK_TRXNO_CR
+			End
+		close b 
+		deallocate b
+
+		Fetch next from a into @FK_TRXNO, @dif
+	End
+
+close a
+deallocate a

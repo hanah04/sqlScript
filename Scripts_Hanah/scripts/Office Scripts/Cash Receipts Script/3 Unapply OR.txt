@@ -1,0 +1,94 @@
+
+declare @CrTrxno varchar(20),
+		@JvTrxno varchar(20),
+		@glDebit decimal(18,4),
+		@glCredit decimal(18,4),
+		@CmTrxno varchar(20)
+
+declare c cursor for 
+select 
+	CrTrxno = a.PK_TRXNO, 
+	JvTrxno = b.PK_TRXNO, 
+	glDebit = sum(c.debit), 
+	glCredit = sum(c.credit) from faCRMstr as a
+inner join faJVMstr as b on a.PK_TRXNO = b.FK_TRXNO_faCRMstr
+inner join faGL as c on b.PK_TRXNO = c.FK_TRXNO
+where a.cancelflag = 0 and b.cancelflag = 0 and b.deleteflag = 0 
+		and convert(date, ordate) between '05/14/2013' and '05/14/2013'
+group by a.PK_TRXNO, b.PK_TRXNO, b.amount, convert(date, ordate)
+having sum(c.debit) != sum(c.credit)
+
+open c
+fetch next from c into @CrTrxno, @JvTrxno, @glDebit, @glCredit
+while @@FETCH_STATUS = 0
+begin
+	If Not Exists (select * from fagl where FK_TRXNO in (@CrTrxno, @JvTrxno) and auditflag = 1)
+	Begin
+		If Not Exists (select * from faCRMstrPFCh as a
+							inner join faCRMstrPFRemitCH as b on a.PK_faCRMstrPFCh = b.FK_faCRMstrPFCH
+							where a.FK_TRXNO_faCRMstr = @CrTrxno)
+		Begin
+			If Not Exists (select * from faCRMstrPF as a
+								inner join faCRMstrPFRemit as b on a.PK_faCRMstrPF = b.FK_faCRMstrPF
+								where a.FK_TRXNO_faCRMstr = @CrTrxno)
+			Begin
+				/*================== OR application ==================*/
+				/*===  Update O.R. applied amount ===*/
+				update faCRMstr set hbamount = 0, appliedamount = 0, otheramount = 0 where PK_TRXNO = @CrTrxno
+
+				/*===  Update FaJVMstr.deleteflag and FaJVMstr.postflag ===*/
+				update faJVMstr set postflag = 0, deleteflag = 1 where PK_TRXNO = @JvTrxno
+
+				/*===  delete corresponding FaGL of FaJVMstr ===*/
+				delete fagl where FK_TRXNO = @JvTrxno
+
+				/*===  update deleteflag and cancelflag of corresponding AR Ledgers ===*/
+				update faArledgers set cancelflag = 1, deleteflag = 1 where FK_TRXNO_CR = @CrTrxno and cancelflag = 0 and deleteflag = 0 and credit <> 0 and artype <> 'OR'
+
+
+				/*================== Other Credit Adjustment and Credit Memo ==================*/
+				If Exists (select * from faCROthers where FK_TRXNO = @CrTrxno)
+				Begin
+
+					set @CmTrxno = (select FK_TRXNO_faDMCMPayer from faCROthers where FK_TRXNO = @CrTrxno)
+
+					/*===  update deleteflag and postflag of faDMCMPayer and corresponding ledger ===*/
+					update faDMCMPayer set postflag = 0, deleteflag = 1 where PK_TRXNO = @CmTrxno
+					update faArledgers set cancelflag = 1, deleteflag = 1 where (FK_TRXNO_CM = @CmTrxno or FK_TRXNO = @CmTrxno)
+
+
+					/*===  delete corresponding FaGL of faDMCMPayer ===*/
+					delete fagl where FK_TRXNO = @CmTrxno
+
+					/*===  delete corresponding faCROthers ===*/
+					Delete faCROthers where FK_TRXNO = @CrTrxno
+
+				End
+
+				/*================== Reset faArinv oramount and cnamount ==================*/
+				update aa set aa.oramount = bb.oramt, aa.cnamount = bb.cnamt from faarinv as aa
+					inner join
+					(
+					select 
+							b.FK_TRXNO, 
+							oramt = round(sum(case when b.doctype = 'OR' then b.credit else 0 end),2),
+							cnamt = round(sum(case when b.doctype = 'CM' then b.credit else 0 end),2)
+					from 
+							faArledgers as a
+							inner join faArledgers as b on a.FK_TRXNO = b.FK_TRXNO
+					 where 
+							a.FK_TRXNO_CR = @CrTrxno and a.artype not in ('OR') and b.credit > 0
+							and b.cancelflag = 0 and b.deleteflag = 0
+					group by b.FK_TRXNO) as bb on aa.PK_TRXNO = bb.FK_TRXNO
+					where aa.oramount != bb.oramt or aa.cnamount != bb.cnamt
+
+
+			End
+		End
+	End
+	fetch next from c into @CrTrxno, @JvTrxno, @glDebit, @glCredit
+end
+close c
+deallocate c
+
+

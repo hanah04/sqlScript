@@ -1,0 +1,24 @@
+Declare @dateFrom as nvarchar(20)
+Declare @dateTo as nvarchar(20)
+
+set @dateFrom = '02/22/2014'
+set @dateTo = '02/22/2014'
+
+select 
+	(dbo.udf_GetFullName(b.FK_emdPatients)) as PatientName,
+	(dbo.udf_GetFullName(b.FK_emdDoctors)) as DoctorName,
+	b.phicamount as PFAmount,
+	a.processdate as DocDate,
+	a.fk_pspatregisters,
+	b.fk_emddoctors
+
+	from psPHICLedgers a
+	inner join psDctrLedgers b on a.PK_TRXNO = b.FK_TRXNO_PHIC
+	where a.cancelflag = 0 and
+			a.IsDelete = 0 and 
+			b.phicamount > 0
+			and (select COUNT(*) from psPHICLedgersPF c 
+			where c.FK_TRXNO_psPHICLedgers = a.PK_TRXNO and 
+			c.FK_TRXNO_psDctrLedgers = b.PK_TRXNO and 
+			c.FK_emdDoctors = b.FK_emdDoctors) = 0
+			and convert(date,a.processdate) between @dateFrom and @dateTo

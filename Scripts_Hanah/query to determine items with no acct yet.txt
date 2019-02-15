@@ -1,0 +1,5 @@
+select c.itemdesc,* from psPatitem as a 
+left join psPatitemComp as b on a.PK_psPatitem = b.FK_psPatitem
+left join iwitems as c on a.FK_iwItemsREN = c.PK_iwItems
+where a.FK_psPatRegisters = 244324 and a.FK_TRXNO = 3278297
+and a.FK_mscItemCategory = 1056 and c.isInventory = 1

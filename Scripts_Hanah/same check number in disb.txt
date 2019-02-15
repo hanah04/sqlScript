@@ -1,0 +1,17 @@
+select * from faCVChecks where checkno = 505140 and PK_faCVChecks = 3729
+--update faCVChecks set checkno = 505160 where checkno = 505140 and PK_faCVChecks = 3729 
+
+select * from faCVChecks where checkno = 505141 and PK_faCVChecks = 3730
+--update faCVChecks set checkno = 505161 where checkno = 505141 and PK_faCVChecks = 3730
+
+select * from faCVChecks where checkno = 505139 and PK_faCVChecks = 3728
+--update faCVChecks set checkno = 505159 where checkno = 505139 and PK_faCVChecks = 3728
+
+select * from faCVChecks where checkno = 5005154  and PK_faCVChecks = 3723
+--update faCVChecks set checkno = 505154 where checkno = 5005154  and PK_faCVChecks = 3723
+
+select * from faCVChecks where checkno = 505416 and PK_faCVChecks = 3715
+--update faCVChecks set checkno = 505146 where checkno = 505416 and PK_faCVChecks = 3715
+
+
+

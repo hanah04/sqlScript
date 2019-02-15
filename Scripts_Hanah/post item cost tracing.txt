@@ -1,0 +1,3 @@
+select * from iwCostMstr where PK_TRXNO = 149676
+
+select * from iwCostitems where FK_iwItems = 'SUPP00481' 

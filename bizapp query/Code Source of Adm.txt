@@ -1,0 +1,5 @@
+		case admsource	WHEN 'A' THEN 'Emergency Room'
+						WHEN 'B' THEN 'Direct Admission'
+						WHEN 'C' THEN 'Delivery Room'
+						WHEN 'D' THEN 'Outpatient'
+						ELSE ''

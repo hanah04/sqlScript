@@ -1,0 +1,18 @@
+/*for faarinv msctrantypesAR*/
+select a.FK_mscCustomerTypes,a.FK_mscTranTypesAR, c.FK_mscTranTypesAR, b.FK_mscPHICEntities, * from faarinv a
+inner join psPHICLedgers b on a.FK_psPatRegisters = b.FK_psPatRegisters
+inner join mscPHICEntities c on b.FK_mscPHICEntities = c.PK_mscPHICEntities
+inner join mscTranTypesAR d on c.FK_mscTranTypesAR = d.PK_mscTranTypesAR
+where a.FK_faCustomers = 1003 and a.FK_mscCustomerTypes = 1000 and b.fk_mscphicentities <> 1000
+and a.artype <> 'PF' and a.glpostflag = 1
+
+--update a set a.fk_msctrantypesAR = c.fk_msctrantypesAR
+from faarinv a
+inner join psPHICLedgers b on a.FK_psPatRegisters = b.FK_psPatRegisters
+inner join mscPHICEntities c on b.FK_mscPHICEntities = c.PK_mscPHICEntities
+inner join mscTranTypesAR d on c.FK_mscTranTypesAR = d.PK_mscTranTypesAR
+where a.FK_faCustomers = 1003 and a.FK_mscCustomerTypes = 1000  and b.fk_mscphicentities <> 1000
+and a.artype <> 'PF' and a.glpostflag = 1
+
+
+

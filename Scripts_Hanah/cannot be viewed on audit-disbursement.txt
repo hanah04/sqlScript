@@ -1,0 +1,22 @@
+--SCRIPT 1. 
+select a.postdate, b.postdate,* from fagl as a 
+inner join facvmstr as b
+on a.fk_trxno = b.pk_trxno
+where a.glbook = 'DB' and a.postdate is NULL and a.postflag = '0'
+and convert(date,b.postdate) > '12/31/2015'
+
+--SCRIPT 2. 
+update a set a.postflag = 1 from
+ fagl as a 
+inner join facvmstr as b
+on a.fk_trxno = b.pk_trxno
+where a.glbook = 'DB' and a.postdate is NULL and a.postflag = '0'
+and convert(date,b.postdate) > '12/31/2015'
+
+--SCRIPT 3.
+update a set a.postdate = b.postdate from
+ fagl as a 
+inner join facvmstr as b
+on a.fk_trxno = b.pk_trxno
+where a.glbook = 'DB' and a.postdate is NULL 
+and convert(date,b.postdate) > '12/31/2015'

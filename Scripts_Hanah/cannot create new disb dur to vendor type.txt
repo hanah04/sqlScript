@@ -1,0 +1,10 @@
+select * from faVendors where suppid in (09150813,03140078)
+--update faVendors set vatcond = 'N' where suppid = 09150813
+--update faVendors set isDoctor = 0 where suppid in (09150813,03140078)
+select * from mscVendorTypes 
+select * from faVendorsCateg where FK_faVendors = 1106
+
+select * from faVPMstr where ewtrate is NULL
+update faVPMstr set ewtrate = '0.00' where ewtrate is NULL
+
+select * from psDatacenter where fullname like '%dacumos%'

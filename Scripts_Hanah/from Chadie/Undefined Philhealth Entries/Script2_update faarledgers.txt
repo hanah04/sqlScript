@@ -1,0 +1,21 @@
+select a.PK_faArledgers, 
+b.docno as ARNo, 
+a.docno as LedgerNo, 
+a.doctype as LedgerDoctype, 
+a.FK_mscCustomerTypes as Ledger,
+b.FK_mscCustomerTypes as ARInv,
+a.FK_msctrantypesAR as LedgerTranType,
+b.FK_msctrantypesAR as ARInvTranType
+from faArledgers a
+inner join faarinv b on a.FK_TRXNO = b.PK_TRXNO
+where b.FK_faCustomers = 1003 and b.glpostflag = 1 and b.cancelflag = 0 and a.FK_mscCustomerTypes = '1000'
+and a.doctype not in ('CM','OR') and a.FK_mscCustomerTypes <> b.FK_mscCustomerTypes
+
+
+--update a set a.fk_msccustomertypes = b.fk_msccustomertypes, a.FK_mscTranTypesAR = b.FK_mscTranTypesAR
+from faArledgers a
+inner join faarinv b on a.FK_TRXNO = b.PK_TRXNO
+where b.FK_faCustomers = 1003 and b.glpostflag = 1 and b.cancelflag = 0 and a.FK_mscCustomerTypes = '1000'
+and a.doctype not in ('CM','OR') and a.FK_mscCustomerTypes <> b.FK_mscCustomerTypes
+
+

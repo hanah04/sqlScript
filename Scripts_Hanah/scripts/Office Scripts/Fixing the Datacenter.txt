@@ -1,0 +1,29 @@
+select *from psDatacenter where lvendor = 1 
+and PK_psDatacenter not in (select pk_favendors from faVendors)
+
+update psDatacenter set lvendor = 0 where lvendor = 1 
+and PK_psDatacenter not in (select pk_favendors from faVendors)
+
+select *from psDatacenter where lsysuser = 1 
+and PK_psDatacenter not in (select PK_appsysUsers from appsysusers)
+
+update psDatacenter set lsysuser = 0 where lsysuser = 1 
+and PK_psDatacenter not in (select PK_appsysUsers from appsysusers)
+
+select *from psDatacenter where ldoctor = 1 
+and PK_psDatacenter not in (select PK_emdDoctors from emdDoctors)
+
+update psDatacenter set ldoctor = 0 where ldoctor = 1 
+and PK_psDatacenter not in (select PK_emdDoctors from emdDoctors)
+
+select *from psDatacenter where lcustomer = 1 
+and PK_psDatacenter not in (select PK_faCustomers from faCustomers)
+
+update psDatacenter set lcustomer = 0 where lcustomer = 1 
+and PK_psDatacenter not in (select PK_faCustomers from faCustomers)
+
+select *from psDatacenter where lpatient = 1 
+and PK_psDatacenter not in (select PK_emdPatients from emdPatients)
+
+update psDatacenter set lpatient = 0 where lpatient = 1 
+and PK_psDatacenter not in (select PK_emdPatients from emdPatients)

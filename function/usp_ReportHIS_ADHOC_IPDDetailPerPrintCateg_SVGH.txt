@@ -1,0 +1,89 @@
+USE [LiveDB_SVGH]
+GO
+/****** Object:  StoredProcedure [dbo].[usp_ReportHIS_ADHOC_IPDDetailPerPrintCateg_SVGH]    Script Date: 7/26/2018 9:21:54 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[usp_ReportHIS_ADHOC_IPDDetailPerPrintCateg_SVGH]  --1127,'','','False'
+	@pk_pspatregisters varchar(25),
+	@startdate varchar(25),
+	@enddate varchar(25),
+	@isDateCheck bit
+AS
+BEGIN
+	declare @sql nvarchar(max)
+	declare @where nvarchar(max)
+	
+	set @where = ' a.billtrancode != ''RC'' and a.cancelflag <> 1 and a.FK_psPatRegisters = ''' + @pk_pspatregisters + ''''
+	
+	if(@isDateCheck = 1)
+		begin
+			set @where = @where + ' and a.docdate between ''' + @startdate + ''' and ''' + @enddate + ''''
+		end
+
+	SELECT @sql = 'SELECT        a.billtrancode, 
+			  CONVERT(nvarchar(20), a.docdate, 101) AS docdate, 
+			  c.refdocno, 
+			  b.renqty,
+			  CASE WHEN b.isvatapplied = 1 THEN (b.renqty * b.renprice) - b.vatprice ELSE 
+			  b.renprice END as [renprice],
+			  b.reqqty,
+			  b.retqty,
+			  b.reqprice, 
+			  b.unit,
+			  a.phicamount,
+			  c.doctype,
+			  c.docno, 
+			  a.credit,
+			  dbo.udf_GetDepartment(a.fk_trxno) AS Department,
+			  dbo.udf_GetAttendingDoctors(a.fk_pspatregisters) as DoctorName,
+			  dbo.udf_GetFullName(c.FK_ASURenUser) AS UID,
+			  dbo.udf_GetDepartmentName(h.fk_mscwarehouse) as ReqDept,
+				CASE WHEN a.billtrancode = ''hc'' THEN  g.description 	 
+					 ELSE
+						  d.description 
+					 END as BillPrintCategory,
+				CASE WHEN a.billtrancode = ''hc'' THEN  dbo.udf_GetDepartment(a.fk_trxno) 
+					 ELSE
+						  d.description 
+					 END AS Description,
+				CASE WHEN a.billtrancode = ''hc'' THEN /*CASE WHEN b.isvatapplied = 1 THEN (b.renqty * b.renprice) - b.vatprice ELSE (b.renqty * b.renprice) END*/
+				CASE 
+										WHEN (select count(FK_mscDiscounts) from psPatDiscounts ss where ss.FK_psPatRegisters = a.FK_psPatRegisters and ss.FK_mscDiscounts = 1001) > 0 and (select count(ss.isFrontEndDisc) from psPatDiscounts ss where ss.FK_psPatRegisters = a.FK_psPatRegisters and ss.isFrontEndDisc = 1) > 0 and (select isvatapplied from psPatitem where PK_psPatitem = b.PK_psPatitem) = 1
+											THEN Round(b.renqty * b.renprice - b.vatprice,2)	
+										ELSE Round(b.renqty * b.renprice,2)
+									END 
+					 ELSE Round((a.debit - a.credit),2)
+					 END AS amount,
+				CASE when a.billtrancode = ''pf'' then  dbo.udf_GetFullName(e.fk_emddoctors) 
+					 when a.billtrancode = ''rc'' then  dbo.udf_NurseStation(a.fk_pspatregisters) 
+					 when a.billtrancode = ''phic'' then d.description 
+					 when a.billtrancode like ''DC%'' then dbo.udf_ConcatAllDiscountsPerRegistry(a.fk_pspatregisters)
+					 when a.billtrancode = ''PAYMENT'' then dbo.udf_GetPaymentTypes_SVGH(a.fk_pspatregisters)
+					 when a.billtrancode = ''GAHB'' or a.billtrancode = ''GAPR'' or a.billtrancode = ''GAPF'' then dbo.udf_ConcatAllGuarantorsPerRegistry(a.fk_pspatregisters)
+					 else dbo.udf_GetItemDescription(b.fk_iwitemsren) end as ItemDesc
+						  
+
+				FROM    psPatLedgers AS a 
+						left JOIN psPatinv  c ON a.FK_TRXNO = c.PK_TRXNO 
+						left JOIN pspatitem b ON C.PK_TRXNO = b.FK_TRXNO 
+						left join mscbilltemplate d on d.pk_mscbilltemplate = a.fk_mscbilltemplate 
+						left join psdctrledgers e on a.FK_TRXNO = e.PK_TRXNO --and a.FK_psPatRegisters = e.FK_psPatRegisters
+						left join iwitems f on b.fk_iwitemsren = f.pk_iwitems 
+						left join mscprintcategory g on f.fk_mscprintcategory = g.pk_mscprintcategory 
+						left join appsysusers h on c.fk_asurenuser = h.pk_appsysusers --or c.fk_asurequser = h.pk_appsysusers
+				where ' + @where + '
+						 '
+	
+						 
+	
+						
+print @sql	
+exec sp_executesql @sql
+END

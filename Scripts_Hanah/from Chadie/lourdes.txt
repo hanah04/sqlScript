@@ -1,0 +1,17 @@
+
+Select * from (
+Select 
+d.PK_TRXNO as CRPK,
+sum(a.amount) as amount,
+sum(a.netamount) as netamount,
+sum(b.Amount) as remitPF,
+(Select SUM(x.amount) from faCRMstrPF x inner join faCRMstr y on x.FK_TRXNO_faCRMstr = y.PK_TRXNO
+where y.PK_TRXNO = d.PK_TRXNO and y.cardamount <> 0 and y.pfamount <> 0 ) as PF
+from faVPMstr a
+inner join faCRMstrPFRemitCH b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr
+inner join faCRMstrPFCh c on b.FK_faCRMstrPFCH = c.PK_faCRMstrPFCh
+inner join faCRMstr d on c.FK_TRXNO_faCRMstr = d.PK_TRXNO
+where d.cardamount <> 0 and d.pfamount <> 0 and d.paysource = 'P'
+
+Group by d.PK_TRXNO
+) as a where remitPF <> PF

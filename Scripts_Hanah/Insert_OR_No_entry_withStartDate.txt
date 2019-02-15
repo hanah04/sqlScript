@@ -1,0 +1,102 @@
+Declare @DateStart date = ''
+
+ /*
+Insert Into faGL(
+sorter, ownerID, FK_mscBranches, FK_TRXNO, FK_psDatacenter, glbook,
+trangroup, doctype,  docno, glperiod, debit, credit, FK_faGLAcct,
+FK_faGLAcctGrp, FK_faGLAcctGrp2, postflag, postdate, cancelflag, canceldate,
+auditflag, auditdate, isMonthlyClosedFlag, isAdjustingEntries ) 
+*/
+
+Select Sorter, OwnerID, BranchID, TrxNo, EntityID, GLBook,
+TranGroup, DocType, DocNo, DocDate, 
+Debit, Credit, AcctCode, 
+SubAcctCode, SubAcctCode2, PostFlag, PostDate, CancelFlag, 
+CancelDate, AuditFlag, AuditDate, isMonthlyClosedFlag, isAdjustingEntries From (
+
+select Sorter, OwnerID, BranchID, TrxNo, EntityID, GLBook, TranGroup, DocType, DocNo, DocDate, Debit = Sum(Debit), Credit = Sum(Credit), 
+	AcctCode, SubAcctCode, SubAcctCode2, PostFlag, PostDate, CancelFlag, CancelDate, AuditFlag, AuditDate,
+	isMonthlyClosedFlag, isAdjustingEntries from (  
+		Select 1 As Sorter, a.ownerID As OwnerID, a.FK_mscBranches As BranchID, a.PK_TRXNO As TrxNo, a.FK_faCustomers As EntityID, 'CB' As GLBook,
+            'CR' As TranGroup, a.type As DocType, a.orno As DocNo, a.ordate As DocDate, 
+            a.cashamount As Debit, 0 As Credit, 
+            isnull((Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and settingcode = 'CashCollections'),'XXXX-XXXX') As AcctCode,
+            '000000' As SubAcctCode, 
+            '000000' As SubAcctCode2, 
+            1 As PostFlag, a.postdate As PostDate, 0 As CancelFlag, null As CancelDate, 0 As AuditFlag, null As AuditDate, 0 as isMonthlyClosedFlag, 
+			0 as isAdjustingEntries 
+            From faCRMstr a inner join psPatRegisters b on a.FK_psPatRegisters = b.PK_psPatRegisters
+            Where a.PK_TRXNO in (Select PK_TRXNO from faCRMstr a left join faGL b on a.PK_TRXNO = b.FK_TRXNO 
+			where a.glpostflag = 0 and a.cardamount = 0 and b.FK_TRXNO is null and a.paysource = 'P' and a.ordate > @DateStart)
+            
+		Union All
+            
+
+		Select 1 As Sorter, a.ownerID As OwnerID, a.FK_mscBranches As BranchID, a.PK_TRXNO As TrxNo, a.FK_faCustomers As EntityID, 'CB' As GLBook,
+            'CR' As TranGroup, a.type As DocType, a.orno As DocNo, a.ordate As DocDate, 
+            a.checkamount As Debit, 0 As Credit, 
+            isnull((Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and settingcode = 'CheckCollections'),'XXXX-XXXX') As AcctCode, 
+            '000000' As SubAcctCode, 
+            '000000' As SubAcctCode2, 
+            1 As PostFlag, a.postdate As PostDate, 0 As CancelFlag, null As CancelDate, 0 As AuditFlag, null As AuditDate, 0 as isMonthlyClosedFlag, 
+			0 as isAdjustingEntries 
+            From faCRMstr a inner join psPatRegisters b on a.FK_psPatRegisters = b.PK_psPatRegisters
+            Where a.checkamount <> 0
+			and a.PK_TRXNO in (Select PK_TRXNO from faCRMstr a left join faGL b on a.PK_TRXNO = b.FK_TRXNO 
+			where a.glpostflag = 0 and a.cardamount = 0 and b.FK_TRXNO is null and a.paysource = 'P' and a.ordate > @DateStart) 
+			
+                    
+		Union All
+
+		Select 2 As Sorter, a.ownerID As OwnerID, a.FK_mscBranches As BranchID, a.PK_TRXNO As TrxNo, a.FK_faCustomers As EntityID, 'CB' As GLBook,
+			'CR' As TranGroup, a.type As DocType, a.orno As DocNo, a.ordate As DocDate, 
+			0 As Debit, (isnull(a.cashamount,0) + isnull(a.checkamount,0))  - isnull(a.pfamount,0) + isnull((Select sum(bb.amount)
+			From faCRMstr aa inner join psPatRegisters ee on aa.FK_psPatRegisters = ee.PK_psPatRegisters
+            left outer join faCRMstrPF bb on aa.PK_TRXNO = bb.FK_TRXNO_faCRMstr
+			inner join faJVMstr ff on aa.PK_TRXNO = ff.FK_TRXNO_faCRMstr and bb.FK_TRXNO_Reference = ff.PK_TRXNO
+			where aa.PK_TRXNO = a.PK_TRXNO and aa.pfamount <> 0),0)
+			As Credit, 
+			isnull(
+			case when b.pattrantype = 'I' then (Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and settingcode = 'PatientReceivableIPD')
+			when b.pattrantype = 'O' then (Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and settingcode = 'PatientReceivableOPD') 
+			when b.pattrantype = 'E' then (Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and settingcode = 'PatientReceivableERD') 
+			end,'XXXX-XXXX') As AcctCode, 
+			isnull((Select x.FK_faGLAcctGrp from mscCustomerTypes x where x.PK_mscCustomerTypes = a.FK_mscCustomerTypes),'000000') As SubAcctCode, 
+			isnull((select x.FK_faGLAcctGrp from mscTranTypesAR x where x.PK_mscTranTypesAR = a.FK_mscTranTypesAR),'000000') As SubAcctCode2, 
+			1 As PostFlag, a.postdate As PostDate, 0 As CancelFlag, null As CancelDate, 0 As AuditFlag, null As AuditDate, 0 as isMonthlyClosedFlag, 
+			0 as isAdjustingEntries 
+			From faCRMstr a inner join psPatRegisters b on a.FK_psPatRegisters = b.PK_psPatRegisters
+			Where a.PK_TRXNO in (Select PK_TRXNO from faCRMstr a left join faGL b on a.PK_TRXNO = b.FK_TRXNO 
+			where a.glpostflag = 0 and a.cardamount = 0 and b.FK_TRXNO is null and a.paysource = 'P'  and a.ordate > @DateStart)
+			
+		Union All
+
+		Select distinct 2 As Sorter, a.ownerID As OwnerID, a.FK_mscBranches As BranchID, a.PK_TRXNO As TrxNo, a.FK_faCustomers As EntityID, 'CB' As GLBook,
+			'CR' As TranGroup, a.type As DocType, a.orno As DocNo, a.ordate As DocDate, 
+			0 As Debit, isnull(b.amount,0) As Credit, 
+			isnull((Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and 
+			settingcode = 'AccountsPayablePFClearing'),'XXXX-XXXX') As AcctCode, 
+			'000000' As SubAcctCode, 
+			'000000' As SubAcctCode2, 
+			1 As PostFlag, a.postdate As PostDate, 0 As CancelFlag, null As CancelDate, 0 As AuditFlag, null As AuditDate, 
+			0 as isMonthlyClosedFlag, 0 as isAdjustingEntries 
+			From faCRMstr a inner join psPatRegisters e on a.FK_psPatRegisters = e.PK_psPatRegisters
+                            left outer join faCRMstrPF b on a.PK_TRXNO = b.FK_TRXNO_faCRMstr and a.PK_TRXNO = b.FK_TRXNO_Reference 
+			                inner join mscTranTypesAR c on a.FK_mscTranTypesAR = c.PK_mscTranTypesAR
+			                inner join mscCustomerTypes d on a.FK_mscCustomerTypes = d.PK_mscCustomerTypes
+			Where a.pfamount <> 0 
+			and a.PK_TRXNO in (Select PK_TRXNO from faCRMstr a left join faGL b on a.PK_TRXNO = b.FK_TRXNO 
+			where a.glpostflag = 0 and a.cardamount = 0 and b.FK_TRXNO is null and a.paysource = 'P' and a.ordate > @DateStart) 
+			
+
+		) as a 
+				group by Sorter, OwnerID, BranchID, TrxNo, EntityID, GLBook, TranGroup, DocType, DocNo, DocDate, AcctCode, SubAcctCode, 
+					SubAcctCode2, PostFlag, PostDate, CancelFlag, CancelDate, AuditFlag, AuditDate,isMonthlyClosedFlag, isAdjustingEntries 
+	) faGLTemp 
+
+--order by TrxNo,Sorter
+
+/*Update faCRMstr Set faCRMstr.glpostflag = 1, faCRMstr.glpostdate = x.postdate from 
+(Select a.PK_TRXNO,a.postdate from faCRMstr a left join faGL b on a.PK_TRXNO = b.FK_TRXNO where a.glpostflag = 0 and a.cardamount = 0 and b.FK_TRXNO is null
+and a.paysource = 'P' and a.ordate > @DateStart) as x
+where faCRMstr.PK_TRXNO = x.PK_TRXNO*/

@@ -1,0 +1,6 @@
+--update faArledgers set FK_mscCustomerTypes = a.MasterFile from 
+(Select * from (Select a.PK_faArledgers,a.FK_TRXNO,a.FK_TRXNO_CM,dbo.udf_GetFullName(a.FK_faCustomers) as Name,a.doctype,
+(select x.FK_mscCustomerTypes from faCustomers x where x.PK_faCustomers = a.FK_faCustomers) as MasterFile,
+a.FK_mscCustomerTypes as Transactions, b.remarks from faArledgers a inner join faDMCMPayer b on a.FK_TRXNO_CM = b.PK_TRXNO)  
+as a where a.MasterFile <> a.Transactions and a.MasterFile = '1005' and a.remarks like '%Unpost A/R Transfer%') 
+--as a where faArledgers.PK_faArledgers = a.PK_faArledgers

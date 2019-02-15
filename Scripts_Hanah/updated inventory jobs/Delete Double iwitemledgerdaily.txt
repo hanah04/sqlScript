@@ -1,0 +1,30 @@
+
+/*Query to select double entry dates still found in iwItemLedgerDaily after eliminating negative entries of salesqty column.*/
+select max(pk_iwitemledgerdaily) from iwitemledgerdaily
+where (convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+in
+(select 
+(convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+from iwitemledgerdaily 
+group by  (convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+having  count((convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))) > 1)
+group by (convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+------------------------------------------------------------------------
+
+/*Delete double entry dates still found in iwItemLedgerDaily to eliminate further rows causing imbalances of iwItemLedgerDaily from iwItemLedger*/
+delete iwitemledgerdaily where PK_iwitemledgerdaily
+in
+(select max(pk_iwitemledgerdaily) from iwitemledgerdaily
+where (convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+in
+(select 
+(convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+from iwitemledgerdaily 
+group by  (convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))
+having  count((convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101))) > 1)
+group by (convert(varchar,FK_iwItems) + convert(varchar,FK_mscWarehouse) + convert(varchar,refdate,101)))
+
+/*Take note that you have to re-run the delete statement until there were 0 row(s) affected shown in sql*/
+
+
+After running the delete statement, run our Update Iwwareitem script to tally all 3 tables involved.

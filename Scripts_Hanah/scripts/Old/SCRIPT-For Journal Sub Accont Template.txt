@@ -1,0 +1,24 @@
+select distinct fk_faGLAcct Mother, FK_faGLAcctGrp [Sub-Acct], FK_faGLAcctGrp2 [Sub-Acct2],
+(select description from faGLAcct where PK_faGlAcct = FK_faGLAcct) Mother,
+(select description from faGLAcctgrp where PK_faGlAcctgrp = FK_faGLAcctGrp) [Sub-Acct],
+(select description from faGLAcctgrp where PK_faGlAcctgrp = FK_faGLAcctgrp2) [Sub-Acct2]
+  from fagl where FK_faGLAcct not in  ('XXXX-XXXX','') and
+   (FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2) not in (select (FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2) 
+   from faGLAcctSubs)
+
+
+
+
+--INSERT INTO faglacctsubs (FK_faGLAcct, FK_faGLAcctGrp, FK_faGLAcctGrp2)
+select distinct fk_faGLAcct, FK_faGLAcctGrp, FK_faGLAcctGrp2
+from fagl where FK_faGLAcct not in  ('XXXX-XXXX','')  and
+   (FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2) not in (select (FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2) 
+   from faGLAcctSubs)
+
+
+************ INSERT ALL MOTHER ACCOUNTS ****************
+
+--INSERT INTO faglacctsubs (FK_faGLAcct, FK_faGLAcctGrp, FK_faGLAcctGrp2)
+select distinct pk_faGLAcct, '000000', '000000'
+from faglacct where isactive = 1 and (pK_faGLAcct + '000000' + '000000') not in (select (FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2) 
+   from faGLAcctSubs)

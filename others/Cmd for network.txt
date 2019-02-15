@@ -1,0 +1,7 @@
+Disable the LAN network connection
+
+C:\> netsh interface set interface name="Local Area Connection" admin=disabled
+
+Enable the LAN network connection
+
+C:\> netsh interface set interface name="Local Area Connection" admin=enabled

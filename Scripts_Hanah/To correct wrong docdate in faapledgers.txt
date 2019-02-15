@@ -1,0 +1,11 @@
+/*To correct wrong docdate stamps in faapledgers from post rf payables*/
+select a.docdate as APdocdate, b.docdate as SLdate, c.glperiod as GLdate from faVPMstr a
+inner join faApledgers b on a.PK_TRXNO = b.FK_TRXNO and b.PFRFtype = 'PF'
+inner join faGL c on a.PK_TRXNO = c.fk_trxno and sorter = 2
+where a.docdate <> b.docdate and a.PFRFtype = 'RF'
+
+
+--update b set b.docdate = a.docdate from faVPMstr a
+inner join faApledgers b on a.PK_TRXNO = b.FK_TRXNO and b.pfrftype = 'RF'
+inner join faGL c on a.PK_TRXNO = c.fk_trxno and sorter = 2
+where a.docdate <> b.docdate and a.PFRFtype = 'RF'

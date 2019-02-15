@@ -1,0 +1,4 @@
+EXEC sp_updatestats
+GO
+DBCC FREEPROCCACHE() 
+GO

@@ -1,0 +1,5 @@
+select SUM(credit)-SUM(debit) from faGL where auditflag = 1 and cancelflag = 0 
+and convert(date,glperiod) between '08/01/2016' and '08/31/2016'
+and fk_faglacct in (select FK_faGLAcct from faGLISClassAcctsOpt2 where accttype in ('D','E')) 
+and fk_faglacctgrp in (select FK_faGLAcctgrp from faGLISClassAcctsOpt2 where accttype in ('D','E')) 
+and fk_faglacctgrp2 in (select FK_faGLAcctgrp2 from faGLISClassAcctsOpt2 where accttype in ('D','E')) 

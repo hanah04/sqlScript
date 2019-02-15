@@ -1,0 +1,34 @@
+
+--Unassigned
+SELECT DISTINCT  
+Glcode = (a.FK_faGLAcct+ '-' +a.FK_faGLAcctGrp+ '-' +a.FK_faGLAcctGrp2),
+Gldesc = (b.description 
++ case when a.fk_faglacctgrp <> '000000' then '-' else '' end
++ case when a.fk_faglacctgrp <> '000000' then c.description else '' end
++ case when a.FK_faGLAcctGrp2 <> '000000' then '-' else '' end
++ case when a.fk_faglacctgrp2 <> '000000' then d.description else '' end)
+from faGL as a join 
+faGLAcct as b on a.FK_faGLAcct = b.PK_faGlAcct 
+left outer join faGLAcctGrp as c on a.FK_faGLAcctGrp = c.PK_faGLAcctGrp
+left outer join faGLAcctGrp as d on a.FK_faGLAcctGrp2 = d.PK_faGLAcctGrp
+WHERE b.accttype in ('A','B','C') and convert(nvarchar,a.glperiod,101) between
+'01/01/2015' and '06/30/2016' and
+(a.FK_faGLAcct + a.FK_faGLAcctGrp + a.FK_faGLAcctGrp2) NOT IN
+(select FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2 from faGLBSClassAccts
+where FK_faGLBSClass in 
+(select PK_faGLBSClass from faGLBSClass where FK_faGLFSReports = '1001')) 
+order by GLcode
+
+
+---Duplicate
+select * from 
+(select Glcode = (FK_faGLAcct),a.acctclass,acctdesc from faGLBSClassAccts as a
+ join faGLBSClass as b on a.FK_faGLBSClass = b.PK_faGLBSClass where b.FK_faGLFSReports = '1001') as x
+where x.Glcode in
+(select 
+Glcode
+from
+(select Glcode = (FK_faGLAcct) from faGLBSClassAccts where FK_faGLBSClass in
+(select PK_faglbsclass from faGLBSClass where FK_faGLFSReports = '1001')) as a
+group by glcode
+having COUNT(Glcode) > '1')

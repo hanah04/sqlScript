@@ -1,0 +1,30 @@
+
+(1.)
+select a.PFAmount, b.phicamount, *from psPHICLedgersPF a 
+ join psDctrLedgers b on a.FK_TRXNO_psDctrLedgers = b.PK_TRXNO
+ where a.PFAmount <> b.phicamount
+ 
+ --update a set a.pfamount = b.phicamount from psPHICLedgersPF a 
+ join psDctrLedgers b on a.FK_TRXNO_psDctrLedgers = b.PK_TRXNO
+ where a.PFAmount <> b.phicamount
+
+(2.)
+ select a.amount, b.PFAmount, *from faArinv a
+ join psPHICLedgersPF b on a.FK_TRXNO_Source = b.PK_TRXNO
+ where a.amount <> b.PFAmount and a.deleteflag = 0 and a.cancelflag = 0
+ 
+ --update a set a.amount = b.pfamount from faArinv a
+ join psPHICLedgersPF b on a.FK_TRXNO_Source = b.PK_TRXNO
+ where a.amount <> b.PFAmount and a.deleteflag = 0 and a.cancelflag = 0
+
+
+(3.)
+select a.debit, b.amount, *from faarledgers a
+join faArinv b on a.FK_TRXNO = b.PK_TRXNO
+ where a.FK_faCustomers = 1003 and a.artype = 'PF' and a.cancelflag = 0
+ and a.debit <> b.amount
+ 
+--update a set a.debit = b.amount from faarledgers a
+join faArinv b on a.FK_TRXNO = b.PK_TRXNO
+ where a.FK_faCustomers = 1003 and a.artype = 'PF' and a.cancelflag = 0
+ and a.debit <> b.amount

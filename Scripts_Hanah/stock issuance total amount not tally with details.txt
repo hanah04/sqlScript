@@ -1,0 +1,10 @@
+select * from iwWhinv
+where amount != (select sum(netcost) from iwWhitem where iwWhinv.PK_TRXNO = iwWhitem.FK_TRXNO)
+--update iwWhinv set amount = (select sum(netcost) from iwWhitem where iwWhinv.PK_TRXNO = iwWhitem.FK_TRXNO) 
+where amount != (select sum(netcost) from iwWhitem where iwWhinv.PK_TRXNO = iwWhitem.FK_TRXNO)
+
+select (qty*conversion*price),netcost, * from iwwhitem where (qty*conversion*price) !=netcost 
+--update iwwhitem set netcost = (qty*conversion*price) where (qty*conversion*price) !=netcost
+
+select * from iwWhinv where PK_TRXNO in (select fk_trxno from iwwhitem 
+where (qty*conversion*price) !=netcost)

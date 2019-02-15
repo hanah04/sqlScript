@@ -1,0 +1,4 @@
+if((Select count(dbupdate) from appsysDBUpdates where dbupdate = '8.26.7.18') = 0)
+update faGL set debit = round(debit,2), credit = round(credit,2) where FK_TRXNO
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+inner join faDMCMPayee c on b.FK_TRXNO = c.PK_TRXNO where a.FK_TRXNO_faCRMstrPF <> 0 and c.isDebitAdvice = 0)

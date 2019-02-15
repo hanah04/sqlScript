@@ -1,0 +1,22 @@
+select *from psPatDiscounts where docno = 38487
+
+select d.description, d.FK_faGLAcctGrp,
+sum(amount) as DiscountAmount
+from psPatDiscountItems a inner join 
+iwItems b 
+on a.FK_iwItems = b.PK_iwItems  inner join mscItemCategory d on b.FK_mscItemCategory =  d.PK_mscItemCategory
+where FK_TRXNO = 332041 group by d.description, d.FK_faGLAcctGrp
+
+select c.FK_faGLAcct, c.FK_faGLAcctGrp, c.FK_faGLAcctGrp2, 
+sum(debit) as DR, sum(credit) as CR
+from faGL c where c.FK_TRXNO = 332041
+and c.doctype = 'DS' and glbook = 'SB'
+group by c.FK_faGLAcct, c.FK_faGLAcctGrp, c.FK_faGLAcctGrp2
+
+
+
+>>>get the doc no.
+>>>run the first script
+>>>get the pk_trxno
+>>>incode the number to second and third script
+>>>run all the script

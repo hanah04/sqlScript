@@ -1,0 +1,22 @@
+validate Balance sheet with cashflow
+
+
+
+
+Select * from (select 
+Glcode = a.FK_faGLAcct+ '-' +a.FK_faGLAcctGrp+ '-' +a.FK_faGLAcctGrp2,
+Gldesc = b.description +
+			case when a.FK_faGLAcctGrp = '000000' then '' else '-' + c.description end +
+			case when a.FK_faGLAcctGrp2 = '000000' then '' else '-' + d.description end
+ 
+From faGL a
+inner join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+inner join faGLAcctGrp c on a.FK_faGLAcctGrp = c.PK_faGLAcctGrp
+inner join faGLAcctGrp d on a.FK_faGLAcctGrp2 = d.PK_faGLAcctGrp
+where (a.FK_faGLAcct+a.FK_faGLAcctGrp+a.FK_faGLAcctGrp2) not in 
+(select (x.FK_faGLAcct+x.FK_faGLAcctGrp+x.FK_faGLAcctGrp2) from faGLBSClassAcctsOpt2 x 
+inner join faGLBSClass y on x.FK_faGLBSClass = y.PK_faGLBSClass where y.FK_faGLFSReports = '1006')---- change here
+and a.glperiod between '07/01/2016' and '07/31/2016'--change here
+and b.accttype in ('A','B','C')) as a  
+group by Glcode,Gldesc order by a.Glcode
+

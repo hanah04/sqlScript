@@ -1,0 +1,18 @@
+1. Check your inventory data for unbalances.
+ *Run script [check for inventory unbalances]
+
+2. Run scripts for missing items in deliveries, stock issuances & item charges by inserting them to iwitemLedger and iwitemLedgerdaily.
+ *change rendate value for item charges to capture all missing charges since beginning.
+
+3. Update your iwitemLedgerDaily & iwWareitem tables.
+ *Run script [update iwitemLedgerDaily & update iwWareitem]
+ *Or you can just run the MMS Validation(Updating) Tool
+
+4. When your done correcting all inventory balance inconsistencies, there might still instances wherein item charges will not commit to tables. 
+Therefore you need to schedule a SQL JOB for this event. These scripts must be in chronological order. Time schedule will be on client's discretion. 
+Example, once a day, twice a day, etc. Take note that this is a sql job and might consume server resources. 
+Therefore we suggest, schedule the sql job during off-peak hours. 
+(This is only for item charges since based on the recent R25 releases, deliveries and stock issuances are now working properly.)
+*Look scripts in chronological order in folder SQL JOBS for missing item charged.
+
+5. End.

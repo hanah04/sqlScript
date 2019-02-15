@@ -1,0 +1,1 @@
+update appsysReports set customdesc = description where customdesc is NULL 

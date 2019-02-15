@@ -1,0 +1,51 @@
+
+/*********** Retrieve faCRMstr where appliedamount not tally with application details ************/
+select a.PK_TRXNO,
+		a.appliedamount,
+		a.otheramount,
+		totalapplied = appliedamount - otheramount,
+		ledgerTotal = sum(isnull(b.credit,0))
+from 
+		faCRMstr as a
+		left outer join faArledgers as b on a.PK_TRXNO = b.FK_TRXNO_CR 
+										and credit > 0 
+										and b.cramount = 0
+										and b.cancelflag = 0
+										and b.deleteflag = 0
+where
+		a.paysource = 'A' and a.isCashNontrade = 0 and a.cancelflag = 0
+group by
+		a.appliedamount,
+		a.otheramount,
+		a.totalamount,
+		a.PK_TRXNO
+		
+having round(appliedamount - otheramount,2) != round(sum(isnull(b.credit,0)),2)
+
+
+/*********** Update faCRMstr where appliedamount not tally with application details ************/
+update aa set appliedamount = bb.ledgerTotal + bb.otheramount from faCRMstr as aa
+inner join (
+select a.PK_TRXNO,
+		a.appliedamount,
+		a.otheramount,
+		totalapplied = appliedamount + otheramount,
+		ledgerTotal = sum(isnull(b.credit,0))
+from 
+		faCRMstr as a
+		left outer join faArledgers as b on a.PK_TRXNO = b.FK_TRXNO_CR 
+										and credit > 0 
+										and b.cramount = 0
+										and b.cancelflag = 0
+										and b.deleteflag = 0
+where
+		a.paysource = 'A' and a.isCashNontrade = 0 and a.cancelflag = 0
+group by
+		a.appliedamount,
+		a.otheramount,
+		a.totalamount,
+		a.PK_TRXNO
+		
+having round(appliedamount - otheramount,2) != round(sum(isnull(b.credit,0)),2)
+) as bb on aa.PK_TRXNO = bb.PK_TRXNO
+		

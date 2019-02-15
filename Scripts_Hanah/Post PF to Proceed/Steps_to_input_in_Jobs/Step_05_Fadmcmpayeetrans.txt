@@ -1,0 +1,3 @@
+if((Select count(dbupdate) from appsysDBUpdates where dbupdate = '8.26.7.18') = 0)
+update faDMCMPayeeTrans set memoamount = round(memoamount,2) where FK_TRXNO_faVPMstr
+in (Select PK_TRXNO from faVPMstr where FK_TRXNO_faCRMstrPF <> 0)

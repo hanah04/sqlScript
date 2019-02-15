@@ -1,0 +1,170 @@
+declare @FK_psPatRegisters int	= 209266,
+		@FK_mscWarehouse int	= 1015
+
+SELECT
+
+	CreditRemarks =
+					CASE
+						WHEN LEN(MIN(a.CreditDesc)) > LEN(MAX(a.CreditDesc)) THEN MIN(a.CreditDesc)
+						ELSE MAX(a.CreditDesc)
+					END,
+	PK_TRXNO,
+	itemdesc,
+	renqty = MAX(renqty),
+	price = MAX(a.renprice),
+	renprice = SUM(CASE
+		WHEN doctype IN ('CA', 'CH') THEN CASE
+				WHEN SC_FrontEnd = 1 THEN GrossAmt - vatamount
+				ELSE GrossAmt
+			END
+		ELSE 0
+	END),
+	credit = SUM(ABS(CASE
+		WHEN doctype IN ('CN') THEN CASE
+				WHEN SC_FrontEnd = 1 AND
+					SC_BackEnd = 1 AND
+					isCNthenSC = 0 THEN GrossAmt - vatamount - FrontendDiscount
+				WHEN SC_FrontEnd = 1 AND
+					SC_BackEnd = 1 AND
+					isCNthenSC = 1 THEN GrossAmt - vatamount - FrontendDiscount
+
+				ELSE GrossAmt
+			END
+		ELSE CASE
+				WHEN SC_FrontEnd = 0 AND
+					SC_BackEnd = 1 THEN vatamount
+				ELSE 0
+			END + a.discount + a.oramount + a.gntramount + a.phicamount
+	END)),
+	discount = SUM(CASE
+		WHEN doctype != 'CN' THEN discount
+		ELSE 0
+	END),
+	vatamount = SUM(CASE
+		WHEN doctype != 'CN' THEN vatamount
+		ELSE 0
+	END),
+	CreditDesc =
+				CASE
+					WHEN LEN(MIN(a.CreditDesc)) > LEN(MAX(a.CreditDesc)) THEN MIN(a.CreditDesc)
+					ELSE MAX(a.CreditDesc)
+				END
+
+FROM (SELECT
+	CreditDesc = (CASE
+		WHEN b.cnamount > 0 THEN 'Hospital Charges - CREDIT NOTE, '
+		ELSE ''
+	END) +
+	(CASE
+		WHEN b.oramount > 0 THEN 'Payment, '
+		ELSE ''
+	END) +
+	(CASE
+		WHEN b.gntramount > 0 THEN 'Guaranteed Hospital Bill, '
+		ELSE ''
+	END) +
+	(CASE
+		WHEN b.discount > 0 THEN 'Discount, '
+		ELSE ''
+	END) +
+	(CASE
+		WHEN b.phicamount > 0 THEN 'Philhealth Benefits, '
+		ELSE ''
+	END) +
+	(CASE
+		WHEN (SELECT TOP 1
+				billtrancode
+			FROM pspatledgers
+			WHERE FK_psPatRegisters = @FK_psPatRegisters
+			AND billtrancode = 'CADJ')
+			= 'CADJ' AND
+			(SELECT
+				COUNT(*)
+			FROM psPatDiscounts AS y
+			WHERE y.FK_psPatRegisters = @FK_psPatRegisters
+			AND y.FK_mscDiscounts = 1001
+			AND y.isFrontEndDisc = 0
+			AND y.cancelflag = 0)
+			> 0 THEN 'Output Tax Exemption - Credit, '
+		ELSE ''
+	END),
+	PK_TRXNO =
+				CASE
+					WHEN a.doctype != 'CN' THEN a.PK_TRXNO
+					ELSE a.FK_TRXNO_CN
+				END,
+	itemdesc = dbo.udf_GetItemDescription(b.FK_iwItemsREN),
+	b.renqty,
+	b.renprice,
+	GrossAmt = b.renqty * b.renprice,
+	vatamount = b.vatprice,
+	FrontendDiscount = ISNULL((SELECT
+		ISNULL(SUM(y.amount), 0.00)
+	FROM pspatdiscounts x
+	INNER JOIN psPatDiscountItems AS y
+		ON x.PK_TRXNO = y.FK_TRXNO
+	WHERE x.FK_TRXNO = a.PK_TRXNO
+	AND y.FK_psPatitems = b.PK_psPatitem
+	AND processtype = 'O'), 0),
+	discount = ISNULL((SELECT
+		ISNULL(SUM(bb.amount), 0.00)
+	FROM psPatitem AS aa
+	INNER JOIN psPatDiscountItems AS bb
+		ON aa.PK_psPatitem = bb.FK_psPatitems
+	INNER JOIN psPatDiscounts AS cc
+		ON bb.FK_TRXNO = cc.PK_TRXNO
+		AND cc.cancelflag = 0
+	WHERE aa.PK_psPatitem = b.PK_psPatitem), 0),
+	--b.discount,
+	FK_mscDiscounts = ISNULL(a.FK_mscDiscounts, 1000),
+	SC_FrontEnd =
+					CASE
+						WHEN ISNULL(a.FK_mscDiscounts, 1000) = 1001 THEN 1
+						ELSE 0
+					END,
+	SC_BackEnd =
+				CASE
+					WHEN (SELECT
+							COUNT(*)
+						FROM psPatitem AS aa
+						INNER JOIN psPatDiscountItems AS bb
+							ON aa.PK_psPatitem = bb.FK_psPatitems
+						INNER JOIN psPatDiscounts AS cc
+							ON bb.FK_TRXNO = cc.PK_TRXNO
+							AND cc.cancelflag = 0
+						WHERE cc.FK_mscDiscounts = 1001
+						AND aa.FK_TRXNO = a.PK_TRXNO)
+						> 0 THEN 1
+					ELSE 0
+				END,
+	isCNthenSC =
+				CASE
+					WHEN (SELECT
+							COUNT(*)
+						FROM psPatitem AS aa
+						INNER JOIN psPatDiscountItems AS bb
+							ON aa.PK_psPatitem = bb.FK_psPatitems
+						INNER JOIN psPatDiscounts AS cc
+							ON bb.FK_TRXNO = cc.PK_TRXNO
+							AND cc.cancelflag = 0
+						INNER JOIN psPatinv AS dd
+							ON aa.FK_TRXNO = dd.PK_TRXNO
+						WHERE cc.FK_mscDiscounts = 1001
+						AND ISNULL(dd.FK_mscDiscounts, '') != 1001
+						AND aa.FK_TRXNO = a.FK_TRXNO_CN)
+						> 0 THEN 1
+					ELSE 0
+				END,
+	a.doctype,
+	b.oramount,
+	b.gntramount,
+	b.phicamount
+FROM pspatinv AS a
+INNER JOIN psPatitem AS b
+	ON a.PK_TRXNO = b.FK_TRXNO
+WHERE a.FK_psPatRegisters = @FK_psPatRegisters
+and a.FK_mscWarehouse = @FK_mscWarehouse
+AND a.status NOT IN ('N', 'C')) AS a
+
+GROUP BY	a.PK_TRXNO,
+			a.itemdesc

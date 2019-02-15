@@ -1,0 +1,59 @@
+
+--GOAL
+--1. Insert missing faGLAcctGrp based on mscItemcategory and update mscItemcategory.FK_faGLAcctGrp
+
+--Procedure
+--1. Declare necessary variables
+		declare @itemCategId int,
+				@description nvarchar(255),
+				@glgrpIterator int = 0,
+				@glgrpSB varchar(10)
+
+
+--2. Update faGLAcctgrp description based on default
+
+	update b set description = a.description, b.glcustomdesc = a.description from mscItemCategory as a inner join faGLAcctGrp as b on a.FK_faGLAcctGrp = b.PK_faGLAcctGrp
+		and a.description != b.description
+		where a.isSystemDefault = 1
+
+
+--3. Get all Item Category without faGLAcctGrp and store in temp table/cursor
+		
+		declare a cursor for
+		select PK_mscItemCategory, description from mscItemCategory where description not in (select description from faGLAcctGrp where glgrp = 'IC')
+
+
+--4. Iterate each row then insert faGLAcctGrp and update mscItemCategory
+open a
+
+Fetch Next from a into @itemCategId, @description
+while @@FETCH_STATUS = 0
+Begin
+
+/**********Get next fk_glacctgrp and update mscSeriesno*************/
+
+set @glgrpIterator = (select max(Convert(int, replace(PK_faGLAcctGrp, 'IC',''))) from faGLAcctGrp where glgrp = 'IC') + 1
+
+
+update mscSeriesNo set seriesno = @glgrpIterator where doccode = 'IC'
+
+set @glgrpSB = 'IC' + Right('0000' + Convert(varchar(4), @glgrpIterator), 4)
+
+/******************************************/
+
+/******Insert new row in faglacctgrp*******/
+insert into faGLAcctGrp
+	(PK_faGLAcctGrp, glgrp, subacctcode, description, isSystemDefault, glcustomdesc)
+values
+	(@glgrpSB, 'IC', @glgrpSB, @description, 0, @description)
+/******************************************/
+
+/******Update Item Category*******/
+update mscItemCategory set FK_faGLAcctGrp = @glgrpSB where PK_mscItemCategory = @itemCategId
+/******************************************/
+
+Fetch Next from a into @itemCategId, @description
+End
+
+close a
+deallocate a

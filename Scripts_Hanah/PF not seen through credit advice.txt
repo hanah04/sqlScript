@@ -1,0 +1,86 @@
+declare @PK_faCRMstrPF int,
+		@orno int,
+		@dctrTrxno bigint,
+		@dmTrxno bigint,
+		@crTrxno bigint,
+		@patRegId int,
+		@arTrxno bigint,
+		@pfamount decimal(20,4),
+		@totalDMPFAmt decimal(20,4),
+		@amtToApply decimal(20, 4),
+		@pfAppliedAmt decimal(20,4)
+
+declare c cursor for
+select 
+		d.PK_faCRMstrPF, a.orno, d.FK_TRXNO_psDctrLedgers, f.PK_TRXNO,a.PK_TRXNO, d.FK_psPatRegisters, c.PK_TRXNO, d.amount, e.pfapplied 
+from 
+		faCRMstr as a
+		inner join faCRCards as b on a.PK_TRXNO = b.FK_TRXNO
+		inner join faArinv as c on b.FK_TRXNO_faArinv = c.PK_TRXNO
+		inner join faCRMstrPF as d on a.PK_TRXNO = d.FK_TRXNO_faCRMstr
+		inner join faDMCMPayerTrans as e on c.PK_TRXNO = e.FK_TRXNO_faArinv
+		inner join faDMCMPayer as f on e.FK_TRXNO = f.PK_TRXNO
+		left outer join faCRMstrPFCh as g on a.PK_TRXNO = g.FK_TRXNO_faCRMstr and d.FK_TRXNO_psDctrLedgers = g.FK_TRXNO_psDctrLedgers
+where 
+		
+		c.cancelflag = 0 and 
+		a.cancelflag = 0 and 
+		c.glpostflag = 1 and 
+		((c.amount + c.dmamount) - (c.oramount + c.cnamount)) = 0 and
+		f.iscreditadvice = 1 
+		and g.PK_faCRMstrPFCh is null
+		and e.pfapplied > 0
+
+open c
+
+Fetch next from c into @PK_faCRMstrPF, 
+		@orno ,
+		@dctrTrxno ,
+		@dmTrxno,
+		@crTrxno ,
+		@patRegId ,
+		@arTrxno ,
+		@pfamount ,
+		@totalDMPFAmt
+while @@FETCH_STATUS = 0
+begin
+	If Not Exists (select * from faCRMstrPFRemit where FK_faCRMstrPF = @PK_faCRMstrPF)
+	Begin
+		set @pfAppliedAmt = isnull((select sum(amount) from faCRMstrPFCh where FK_TRXNO_Arinv = @arTrxno),0) 
+
+		set @amtToApply = @totalDMPFAmt - @pfAppliedAmt
+		set @amtToApply = case when @amtToApply >= @pfamount 
+								then @amtToApply 
+							else 
+								case when @amtToApply > 0 then @amtToApply else 0 end 
+							end
+
+
+		insert into faCRMstrPFCh (refdoctype, 
+									refdocno, 
+									FK_TRXNO_psDctrLedgers, 
+									FK_TRXNO_faCRMstr, 
+									FK_psPatRegisters, 
+									FK_TRXNO_Arinv, 
+									amount, 
+									ispaid, 
+									instrfeeamtpaid)
+		values ( 'OR', @orno, @dctrTrxno, @crTrxno, @patRegId, @arTrxno, @amtToApply, 1, 0)
+
+	End
+
+Fetch next from c into @PK_faCRMstrPF,
+		@orno ,
+		@dctrTrxno ,
+		@dmTrxno,
+		@crTrxno ,
+		@patRegId ,
+		@arTrxno ,
+		@pfamount ,
+		@totalDMPFAmt
+end
+
+close c
+deallocate c
+
+

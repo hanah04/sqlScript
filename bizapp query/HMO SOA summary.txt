@@ -1,0 +1,40 @@
+select		 
+	b.registryno,
+	b.dischdate,
+        b.registrydate, 
+        a.FK_emdPatients,
+        dbo.udf_GetFullName(a.FK_emdPatients) as PatientName,
+        isnull(dbo.udf_GetHBwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0) as [HBAmount],
+        isnull(dbo.udf_GetPFwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0) as [PFAmount],
+        (isnull(dbo.udf_GetPFwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0) + isnull	(dbo.udf_GetHBwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0)) AS [Total]
+                                        from faArinv a inner join psPatRegisters b
+where a.FK_faBillTranMstr = @FK_faBillTranMstr AND B.pattrantype = @RegistryType and artype <> 'PF' and a.terms is not null
+group by b.registrydate, 
+	a.FK_emdPatients, 
+	a.FK_emdDoctors, 
+	a.FK_faBillTranMstr, 
+	a.FK_psPatRegisters,
+	b.registryno,
+	b.dischdate,
+	a.FK_facustomers
+union
+select		 
+	b.registryno,
+	b.dischdate,
+        b.registrydate, 
+        a.FK_emdPatients,
+        dbo.udf_GetFullName(a.FK_emdPatients) as PatientName,
+        isnull(dbo.udf_GetHBwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0) as [HBAmount],
+        isnull(dbo.udf_GetPFwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0) as [PFAmount],
+        (isnull(dbo.udf_GetPFwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0) + isnull		(dbo.udf_GetHBwithBillNo(a.FK_emdPatients, a.FK_psPatRegisters, a.FK_facustomers, b.registryno, a.FK_faBillTranMstr), 0)) AS [Total]
+from faArinv a inner join psPatRegisters b
+where a.FK_faBillTranMstr = @FK_faBillTranMstr AND B.pattrantype = @RegistryType and artype = 'PF' and a.terms is not null
+group by b.registrydate, 
+	a.FK_emdPatients, 
+	a.FK_emdDoctors, 
+	a.FK_faBillTranMstr, 
+	a.FK_psPatRegisters,
+	b.registryno,
+	b.dischdate,
+	a.FK_facustomers
+			                                  

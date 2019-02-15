@@ -1,0 +1,24 @@
+select 
+c.doctype,
+c.docno,
+c.rendate,
+aa.fk_trxno, 
+dbo.udf_getitemdescription(aa.FK_iwItemsRA) as item,
+aa.FK_iwItemsRA,
+aa.qty, 
+dbo.udf_getdepartmentname(aa.FK_mscWarehouse) as department,
+aa.FK_mscWarehouse,
+bb.fk_trxno,
+bb.FK_iwItems,
+bb.qtyledger,
+bb.FK_mscWarehouse
+from
+(select sum(qty) as qty, FK_TRXNO, fk_iwitemsRA, FK_mscWarehouse from psPatitemComp group by FK_TRXNO, FK_iwItemsRA, FK_mscWarehouse) as aa
+inner join 
+(select sum(qtyout) as qtyledger, FK_TRXNO, FK_iwItems, FK_mscWarehouse from iwItemLedger group by FK_TRXNO, FK_iwItems, FK_mscWarehouse) as bb
+on aa.FK_TRXNO = bb.FK_TRXNO and aa.FK_iwItemsRA = bb.FK_iwItems and aa.FK_mscWarehouse = bb.FK_mscWarehouse
+inner join psPatinv as c on aa.FK_TRXNO = c.PK_TRXNO
+where 
+aa.qty <>bb.qtyledger and 
+convert(date,c.rendate) between '01/01/2016' and '08/31/2016'
+and c.doctype in ('CA','CH')

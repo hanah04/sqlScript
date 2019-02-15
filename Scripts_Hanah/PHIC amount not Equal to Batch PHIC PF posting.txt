@@ -1,0 +1,4 @@
+update b set pfamount = a.phicamount
+from psDctrLedgers a inner join psPHICLedgersPF b on a.PK_TRXNO = b.FK_TRXNO_psDctrLedgers
+and b.FK_TRXNO_psPHICLedgers = a.Fk_trxno_PHIC
+where b.pfamount <> a.phicamount

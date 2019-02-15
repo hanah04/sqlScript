@@ -1,0 +1,24 @@
+declare @startdate as nvarchar(Max), @enddate as nvarchar(Max)
+
+set @startdate = '2016-01-01' --YYYY-MM-DD
+set @enddate ='2016-01-31'
+
+
+select
+
+[trackno] = x.PK_TRXNO,
+[patientname] = dbo.udf_getfullname(x.FK_emdPatients),
+[admissionno] = b.registryno,
+[nursestation] = a.description,
+[room] = x.FK_psRooms,
+[bed] = x.bedno,
+[roomprice] = x.price,x.refdate,
+[discount] = discount
+
+from psPatRooms x join
+mscNrstation a on a.PK_mscNrstation = x.FK_mscNrstation join
+psPatRegisters b on b.PK_psPatRegisters = x.FK_psPatRegisters
+
+
+where x.refdate between @startdate and @enddate and x.discount > 0
+

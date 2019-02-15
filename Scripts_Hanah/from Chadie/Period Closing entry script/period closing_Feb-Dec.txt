@@ -1,0 +1,198 @@
+Declare @year varchar(4) = 2017, @month varchar(2) = 2
+
+IF((Select isclosed from mscGLPeriodDtls x where x.FK_mscGLPeriod = @year and datepart(month,x.periodstart) = @month - 1 and datepart(month,x.periodend) = @month - 1) = 1 and
+(Select isclosed from mscGLPeriodDtls x where x.FK_mscGLPeriod = @year and datepart(month,x.periodstart) = @month and datepart(month,x.periodend) = @month) = 0)
+BEGIN
+
+DECLARE @SeriesTRK NVARCHAR(10)
+DECLARE @SeriesJVN NVARCHAR(10)
+DECLARE @PK_mscGLPeriodDtls NVARCHAR(MAX)
+DECLARE @FK_mscGLPeriod NVARCHAR(4)
+DECLARE @periodstart Date
+DECLARE @periodend Date
+DECLARE @PeriodDate NVARCHAR(MAX)
+DECLARE @Revenue decimal(14,4)
+DECLARE @Expense decimal(14,4)
+DECLARE @periodClosingDescription NVARCHAR(MAX)
+DECLARE @periodClosingEntries NVARCHAR(MAX)
+DECLARE @Total decimal(14,4)
+DECLARE @accountcode NVARCHAR(MAX)
+DECLARE @accountdescription NVARCHAR(MAX)
+DECLARE @Debit decimal(14,4)
+DECLARE @Credit decimal(14,4)
+DECLARE @FK_faGLAcct NVARCHAR(MAX)
+DECLARE @FK_faGLAcctGrp NVARCHAR(MAX)
+DECLARE @FK_faGLAcctGrp2 NVARCHAR(MAX)
+
+SET @SeriesTRK = CAST((select seriesno + 1 from mscSeriesNo where doccode = 'TRK') as varchar)
+SET @SeriesJVN = CAST((select seriesno + 1 from mscSeriesNo where doccode = 'JVN') as varchar)
+
+UPDATE mscSeriesNo set seriesno = @SeriesTRK where doccode = 'TRK'
+UPDATE mscSeriesNo set seriesno = @SeriesJVN where doccode = 'JVN'
+
+DECLARE PeriodClosing cursor FOR
+
+Select
+a.PK_mscGLPeriodDtls,
+a.FK_mscGLPeriod,
+a.periodstart,
+a.periodend,
+a.PeriodDate,
+a.Revenue,
+a.Expense,
+a.periodClosingDescription,
+a.periodClosingEntries,
+a.Total
+
+From 
+(Select aa.PK_mscGLPeriodDtls,
+aa.FK_mscGLPeriod,aa.periodstart,aa.periodend,
+convert(varchar,aa.periodstart,101) + ' 12:00:00 AM' + ' - ' + convert(varchar,aa.periodend,101) + ' 12:00:00 AM' as PeriodDate,
+(select isnull(sum(isnull(a.credit, 0) - isnull(a.debit, 0)), 0) as Revenue
+from fagla a inner join faglacct b on a.FK_faGLAcct = b.PK_faGLAcct 
+where b.accttype = 'D' and a.isMonthlyClosedFlag = 0
+and a.IsPostClosing = 0 and a.glperiod between aa.periodstart and replace(aa.periodend, ' 00:00:00',' 23:59:59')) as Revenue
+,
+(select isnull(sum(isnull(a.debit, 0) - isnull(a.credit, 0)), 0) as Expense
+from fagla a inner join faglacct b on a.FK_faGLAcct = b.PK_faGLAcct 
+where b.accttype = 'E' and a.isMonthlyClosedFlag = 0
+and a.IsPostClosing = 0 and a.glperiod between aa.periodstart and replace(aa.periodend, ' 00:00:00',' 23:59:59')) Expense
+,
+(Select description from appsysGlobalSettings 
+where groupmodule = 'General Ledger' and settingcode = 'IncomeAndExpenseSummary') as periodClosingDescription,
+(Select value from appsysGlobalSettings 
+where groupmodule = 'General Ledger' and settingcode = 'IncomeAndExpenseSummary') as periodClosingEntries
+,
+(select isnull(sum(isnull(a.credit, 0) - isnull(a.debit, 0)), 0) as Revenue
+from fagla a inner join faglacct b on a.FK_faGLAcct = b.PK_faGLAcct 
+where b.accttype = 'D' and a.isMonthlyClosedFlag = 0
+and a.IsPostClosing = 0 and a.glperiod between aa.periodstart and replace(aa.periodend, ' 00:00:00',' 23:59:59'))
+-
+(select isnull(sum(isnull(a.debit, 0) - isnull(a.credit, 0)), 0) as Expense
+from fagla a inner join faglacct b on a.FK_faGLAcct = b.PK_faGLAcct 
+where b.accttype = 'E' and a.isMonthlyClosedFlag = 0
+and a.IsPostClosing = 0 and a.glperiod between aa.periodstart and replace(aa.periodend, ' 00:00:00',' 23:59:59')) as Total
+
+from mscGLPeriodDtls aa 
+where aa.FK_mscGLPeriod = @year
+and DATEPART(month,aa.periodstart) = @month and DATEPART(month,aa.periodend) = @month
+) as a
+
+Open PeriodClosing
+fetch next from PeriodClosing into @PK_mscGLPeriodDtls,@FK_mscGLPeriod,@periodstart,@periodend,@PeriodDate,@Revenue,@Expense,@periodClosingDescription,@periodClosingEntries,@Total
+
+WHILE @@fetch_status = 0
+BEGIN
+
+INSERT INTO [faJVMstr] ([PK_TRXNO], [ownerID], [FK_mscBranches], [FK_psDatacenter], [FK_ASUPost], [FK_ASUCancel], [FK_ASUGLPost], [FK_mscCashFlowTypes], 
+[jevno], [jvno], [description], [docid], [docdate], [glremarks], [amount], [jvmark], [isclosing], [glpostflag], [glpostdate], [canceldate], [cancelflag], [cancelrem], [postdate], 
+[postflag],FK_TRXNO_CancelTran, [TranGroup_Cancel], [deleteflag], [deletedate], [FK_ASUdelete], [JVModuleFlag], [FK_TRXNO_faCRMstr], [FK_ASUUnpost], [reverse], [unpostdate], [isAdjustingEntries], 
+[isappliedOR], [isappliedCM], [FK_psPatitem], [FK_TRXNO_faCVMstr], [docbarcodeid], [docbarcodeidstring], [FK_TRXNO_PsPatInv], [deleterem])
+Select (select seriesno from mscSeriesNo where doccode = 'TRK'),'000000','1000','1000','1001',NULL,'1001','1000',NULL,
+(select seriesno from mscSeriesNo where doccode = 'JVN'), 'Monthly Closing Entries-' + @PeriodDate,'JV',convert(varchar,@periodend,120) + ' 00:00:00',
+'Monthly Closing Entries-' + convert(varchar,(select seriesno from mscSeriesNo where doccode = 'JVN')) + '-' + convert(varchar,@periodend,101) + ' 12:00:00 AM-Posted By-Administrative Account-' 
++ CONVERT(VARCHAR(10), GETDATE(), 101) + ' ' + LTRIM(RIGHT(CONVERT(CHAR(20), GETDATE(), 22), 11)),abs(@Total),0,1,1,convert(varchar,GETDATE(),120),NULL,0,NULL,convert(varchar,GETDATE(),120),1,0,NULL,0,NULL,NULL,0,NULL,
+NULL,0,NULL,0,0,0,NULL,NULL,NULL,NULL,NULL,NULL
+
+INSERT INTO [faGLAudit] ([ownerID], [FK_mscBranches], [FK_ASUPost], [auditdate], [glbook], [trangroup], [amount], [remarks])
+Select '000000','1000','1001',convert(varchar,GETDATE(),120),'JB','JV',abs(@Total),'Monthly Closing Entries-' + 
+convert(varchar,(select seriesno from mscSeriesNo where doccode = 'JVN')) + '-' + convert(varchar,@periodend,101) + ' 12:00:00 AM-Posted By-Administrative Account-' 
++ CONVERT(VARCHAR(10), GETDATE(), 101) + ' ' + LTRIM(RIGHT(CONVERT(CHAR(20), GETDATE(), 22), 11))
+
+		DECLARE TransactionEntries cursor FOR
+			Select
+				a.accountcode,
+				a.accountdescription,
+				sum(a.credit) as Debit,
+				sum(a.debit) as Credit,
+				a.FK_faGLAcct,
+				a.FK_faGLAcctGrp,
+				a.FK_faGLAcctGrp2 
+			from (
+				select 1 as sorter,  	
+				a.FK_faGLAcct + '-' + (select z.subacctcode from faGLAcctGrp z where z.PK_faGLAcctGrp = a.FK_faGLAcctGrp) 
+				+ '-' + (select z.subacctcode from faGLAcctGrp z where z.PK_faGLAcctGrp = a.FK_faGLAcctGrp2) as [accountcode],
+				case when a.FK_faGLAcctGrp = '000000' then (select z.description from faGLAcct z where z.PK_faGLAcct = a.FK_faGLAcct)
+				when a.FK_faGLAcctGrp2 = '000000' then (select z.description from faGLAcct z where z.PK_faGLAcct = a.FK_faGLAcct) 
+				+ '-' + (select z.glcustomdesc from faGLAcctGrp z where z.PK_faGLAcctGrp = a.FK_faGLAcctGrp)
+				else (select z.description from faGLAcct z where z.PK_faGLAcct = a.FK_faGLAcct) 
+				+ '-' + (select z.glcustomdesc from faGLAcctGrp z where z.PK_faGLAcctGrp = a.FK_faGLAcctGrp) 
+				+ '-' + (select z.glcustomdesc from faGLAcctGrp z where z.PK_faGLAcctGrp = a.FK_faGLAcctGrp2)
+				end as [accountdescription],convert(varchar,a.glperiod,101) as glperiod,
+				case when a.debit > a.credit then a.debit - a.credit else 0 end as debit,
+				case when a.debit < a.credit then a.credit - a.debit else 0 end as credit, 
+				a.FK_faGLAcct,a.FK_faGLAcctGrp,a.FK_faGLAcctGrp2 
+				from fagla a inner join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+				where b.accttype in ('D','E')  and a.isMonthlyClosedFlag = 0 and a.IsPostClosing = 0 and a.glperiod between
+				(Select aa.periodstart from mscGLPeriodDtls aa where aa.FK_mscGLPeriod = @year and DATEPART(month,aa.periodstart) = @month) and
+				(Select aa.periodend from mscGLPeriodDtls aa where aa.FK_mscGLPeriod = @year and DATEPART(month,aa.periodend) = @month)
+			Union ALL
+				SELECT 2 as sorter,
+				(Select x.value from appsysGlobalSettings x where x.groupmodule = 'General Ledger' and x.settingcode = 'IncomeAndExpenseSummary') + '-000000' + '-000000' as [accountcode],
+				(Select x.description from appsysGlobalSettings x where x.groupmodule = 'General Ledger' and x.settingcode = 'IncomeAndExpenseSummary') as [accountdescription],'' as glperiod,
+				case when sum(a.debit) < sum(a.credit) then sum(a.credit - a.debit) else 0 end as debit,
+				case when sum(a.debit) > sum(a.credit) then sum(a.debit - a.credit) else 0 end as credit,
+				(Select value from appsysGlobalSettings where groupmodule = 'General Ledger' and settingcode = 'IncomeAndExpenseSummary') as FK_faGLAcct,
+				'000000' as FK_faGLAcctGrp,'000000' as FK_faGLAcctGrp2
+				from fagla a	
+				inner join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+				where b.accttype in ('D','E')  and a.isMonthlyClosedFlag = 0 and a.IsPostClosing = 0 and a.glperiod between
+				(Select aa.periodstart from mscGLPeriodDtls aa where aa.FK_mscGLPeriod = @year and DATEPART(month,aa.periodstart) = @month) and
+				(Select aa.periodend from mscGLPeriodDtls aa where aa.FK_mscGLPeriod = @year and DATEPART(month,aa.periodend) = @month)
+			) as a
+			Group by a.accountcode,a.accountdescription,a.FK_faGLAcct,a.FK_faGLAcctGrp,a.FK_faGLAcctGrp2,a.sorter
+			order by a.sorter
+			
+
+			Open TransactionEntries
+			FETCH NEXT FROM TransactionEntries into @accountcode,@accountdescription,@Debit,@Credit,@FK_faGLAcct,@FK_faGLAcctGrp,@FK_faGLAcctGrp2
+
+			WHILE @@fetch_status = 0
+			BEGIN
+
+			INSERT INTO [faGLAuditTrans] ([FK_faGLAudit], [FK_TRXNO], [FK_psDatacenter], [trangroup], [doctype], [docno], [docdate], [debit], [credit])
+			Select (Select top 1 x.PK_faGLAudit from faGLAudit x where x.glbook = 'JB' and x.trangroup = 'JV' and x.remarks like '%Monthly Closing%' order by x.PK_faGLAudit desc),
+			(select seriesno from mscSeriesNo where doccode = 'TRK'),'1000','JB','JV',(select seriesno from mscSeriesNo where doccode = 'JVN'),convert(varchar,@periodend,120) + ' 00:00:00',@Debit,@Credit
+
+			INSERT INTO [faGLA] ([ownerID], [FK_mscBranches], [glperiod], [FK_faGLAcct], [FK_faGLAcctGrp], 
+			[begdebit], [begcredit], [debit], [credit], [enddebit], [endcredit], [isdebit], [iscredit], [bsdebit], [bscredit], [FK_faGLAcctGrp2], 
+			[IsPostClosing], [IsPreclosing], [isMonthlyClosedFlag], [isAdjustment], [pattrantype])
+			Select '000000','1000',convert(varchar,@periodend,120) + ' 00:00:00',@FK_faGLAcct,@FK_faGLAcctGrp,0,0,@Debit,@Credit,0,0,0,0,0,0,@FK_faGLAcctGrp2,0,0,1,0,'I'
+
+			INSERT INTO [faGL] ([ownerID], [FK_mscBranches], [FK_TRXNO], [FK_psDatacenter], [FK_faGLAcct], [FK_faGLAcctGrp], 
+			[glbook], [trangroup], [doctype], [docno], [glperiod], [debit], [credit], [postdate], [postflag], [cancelflag], [canceldate], [auditflag], [auditdate], 
+			[FK_faGLAcctGrp2], [sorter], [FK_ASUAudit], [FK_faGLA], [IsPostClosing], [IsPreclosing], [isMonthlyClosedFlag], [isAdjustingEntries], [remarks], [pattrantype])
+			Select '000000','1000',(select seriesno from mscSeriesNo where doccode = 'TRK'),'1000',@FK_faGLAcct,@FK_faGLAcctGrp,'JB','JV','JV',(select seriesno from mscSeriesNo where doccode = 'JVN'),
+			convert(varchar,@periodend,120) + ' 00:00:00',@Debit,@Credit,convert(varchar,GETDATE(),120),1,0,NULL,1,convert(varchar,GETDATE(),120),@FK_faGLAcctGrp2,
+			case when @Debit > @Credit then 1 when @Debit < @Credit then 2 else 1 end,0,
+			(Select x.PK_faGLA from faGLA x where x.isMonthlyClosedFlag = 1 and x.glperiod = convert(varchar,@periodend,120) + ' 00:00:00' 
+			and x.FK_faGLAcct = @FK_faGLAcct and x.FK_faGLAcctGrp = @FK_faGLAcctGrp and x.FK_faGLAcctGrp2 = @FK_faGLAcctGrp2),0,0,1,0,NULL,'I'
+
+			FETCH NEXT FROM TransactionEntries into @accountcode,@accountdescription,@Debit,@Credit,@FK_faGLAcct,@FK_faGLAcctGrp,@FK_faGLAcctGrp2
+			END
+			CLOSE TransactionEntries
+			DEALLOCATE TransactionEntries
+
+UPDATE mscGLPeriodDtls SET isclosed = 1, FK_TRXNO_JV = (select seriesno from mscSeriesNo where doccode = 'TRK') where PK_mscGLPeriodDtls = @PK_mscGLPeriodDtls
+
+UPDATE appsysGlobalSettings SET value = convert(varchar,@periodend,101) + ' 12:00:00 AM', valuedesc = convert(varchar,@periodend,101) + ' 12:00:00 AM', 
+datevalue = convert(varchar,@periodend,101) + ' 00:00:00.000' where groupmodule = 'General Ledger' and settingcode = 'PreClosingDate'
+
+FETCH next from PeriodClosing into @PK_mscGLPeriodDtls,@FK_mscGLPeriod,@periodstart,@periodend,@PeriodDate,@Revenue,@Expense,@periodClosingDescription,@periodClosingEntries,@Total
+
+END
+CLOSE PeriodClosing
+DEALLOCATE PeriodClosing
+END
+
+IF((Select isclosed from mscGLPeriodDtls x where x.FK_mscGLPeriod = @year and datepart(month,x.periodstart) = @month - 1 and datepart(month,x.periodend) = @month - 1) = 1 and
+(Select isclosed from mscGLPeriodDtls x where x.FK_mscGLPeriod = @year and datepart(month,x.periodstart) = @month and datepart(month,x.periodend) = @month) = 1)
+BEGIN
+Select 'Period Closing is Closed' as [Alert Message]
+END
+
+IF((Select isclosed from mscGLPeriodDtls x where x.FK_mscGLPeriod = @year and datepart(month,x.periodstart) = @month - 1 and datepart(month,x.periodend) = @month - 1) = 0 and
+(Select isclosed from mscGLPeriodDtls x where x.FK_mscGLPeriod = @year and datepart(month,x.periodstart) = @month and datepart(month,x.periodend) = @month) = 0)
+BEGIN
+SELECT 'Please close the previous period'
+END

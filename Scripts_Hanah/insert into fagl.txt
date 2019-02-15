@@ -1,0 +1,14 @@
+INSERT INTO fagl (ownerID, FK_mscBranches, FK_TRXNO, fk_psdatacenter, FK_faGLAcct, FK_faGLAcctGrp, glbook, trangroup, doctype, docno, glperiod, debit, credit,
+postdate, postflag, cancelflag, auditflag, FK_faGLAcctGrp2, sorter, FK_ASUAudit, fk_fagla, pattrantype)
+
+VALUES ('00000000','1000','55664','54663','1-2001','CT0001','SB','RM','RM','55664','2016-02-01 00:00:00','3500.00','0',
+'2016-02-01 09:09:00','1','0','0','AI0001','1','0','0','I');
+
+------------------------
+iudmc
+INSERT INTO fagl (ownerID, FK_mscBranches, FK_TRXNO, fk_psdatacenter, FK_faGLAcct, FK_faGLAcctGrp, glbook, trangroup, doctype, docno, glperiod, debit, credit,
+postdate, postflag, cancelflag, auditflag, FK_faGLAcctGrp2, sorter, FK_ASUAudit, fk_fagla, pattrantype)
+
+VALUES ('00000000','1000','1921086','44558','A-03-1000','CT0001','CB','CR','OR','59608','2016-01-21 11:03:00','0','3304.05',
+'2016-01-21 11:03:00','1','0','0','AI0001','2','0','0','I');
+

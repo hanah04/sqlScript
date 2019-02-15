@@ -1,0 +1,34 @@
+declare @Date1 datetime = '01/01/2016'
+declare @Date2 datetime = '08/11/2016'
+
+select
+a.doctype+'-'+cast(a.docno as varchar) as 'REFERENCE NO.',
+a.glperiod as 'REFERENCE DATE',
+a.glbook as 'BOOK',
+ltrim(rtrim(b.fullname)) as 'ENTITY NAME',
+case
+--JOURNAL BOOK
+when a.glbook = 'JB' then (select description from faJVMstr where a.FK_TRXNO = PK_TRXNO)
+--DISBURSEMENTS BOOK
+when a.glbook = 'DB' then (select remarks from faCVMstr where a.FK_TRXNO = PK_TRXNO)
+--
+when a.glbook = 'CB' then ''
+--PAYABLE BOOK
+when a.glbook = 'PB' then ''
+--SALES BOOK
+when a.glbook = 'SB' then ''
+end as 'PARTICULARS',
+a.debit as 'PERIOD DEBIT',
+a.credit as 'PERIOD CREDIT',
+a.*
+from
+faGL a
+left join psDatacenter b on a.FK_psDatacenter = b.PK_psDatacenter
+where
+(convert(date,a.glperiod) between @Date1 and @Date2)
+and a.cancelflag = '0'
+and a.FK_faGLAcct = '100141'
+and a.FK_faGLAcctGrp = '000000'
+and a.FK_faGLAcctGrp2 = '000000'
+order by
+a.doctype+'-'+cast(a.docno as varchar)

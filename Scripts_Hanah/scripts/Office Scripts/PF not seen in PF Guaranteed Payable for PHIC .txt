@@ -1,0 +1,8 @@
+
+--Script 1. to select items that do not appear in posting
+select * from faCRMstrPFCh as a inner join psPHICLedgersPF as b
+on a.FK_TRXNO_psDctrLedgers = b.PK_TRXNO
+
+--Script 2. to update trxno of PF
+update a set a.FK_TRXNO_psDctrLedgers = b.FK_TRXNO_psDctrLedgers  from faCRMstrPFCh as a inner join psPHICLedgersPF as b
+on a.FK_TRXNO_psDctrLedgers = b.PK_TRXNO

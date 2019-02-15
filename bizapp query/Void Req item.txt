@@ -1,0 +1,10 @@
+UPDATE psPatinv 
+                SET 
+	                status = ''C'',
+                    FK_ASUCancel    = @userdcno,
+                    canceldate      = getdate(),
+                    cancelflag      = 1,
+                    canremarks      = @canremarks,
+                    sorter          = 3
+                WHERE
+	                PK_TRXNO = @trxno ',N'@trxno bigint,@userdcno int,@canremarks nvarchar(1)',@trxno=36479,@userdcno=1001,@canremarks=N'0'

@@ -1,0 +1,46 @@
+ /** DMCM Amount **/
+   
+    declare @ARTrxno int,
+			@FaArinvAmt decimal(18,2),
+			@FaArledgerAmt decimal(18,2)
+
+	declare DMCMamount cursor for
+			select
+			PK_TRXNO,
+			round(cnamount,2) as FaArinvAmt, 
+			FaArledgerAmt = (select isnull(round(sum(a.credit),2),0)
+						from faArledgers as a
+						where a.FK_TRXNO = faArinv.PK_TRXNO and a.artype not in ('CM', 'OR') 
+						and a.doctype = 'CM'
+						and a.cancelflag = 0 and a.credit <> 0)
+			from faArinv where cancelflag <> 1
+			group by PK_TRXNO, cnamount
+			having 
+			round(cnamount,2) <> (select isnull(round(sum(a.credit),2),0)
+						from faArledgers as a
+						where a.FK_TRXNO = faArinv.PK_TRXNO and a.artype not in ('CM', 'OR') 
+						and a.doctype = 'CM'
+						and a.cancelflag = 0 and a.credit <> 0)
+
+	Open DMCMamount
+	fetch next from DMCMamount into @ARTrxno, @FaArinvAmt, @FaArledgerAmt
+
+	While @@FETCH_STATUS = 0
+	Begin
+
+			Update faArinv set cnamount = @FaArledgerAmt where PK_TRXNO = @ARTrxno
+
+    fetch next from DMCMamount into @ARTrxno, @FaArinvAmt, @FaArledgerAmt
+
+	End
+	Close DMCMamount
+	deallocate DMCMamount
+
+	
+
+
+
+
+
+
+	

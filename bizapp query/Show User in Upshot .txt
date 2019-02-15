@@ -1,0 +1,12 @@
+select b.PK_appsysUsers, a.fullname, d.description, a.customname
+                                from psdatacenter a
+	                            inner join appsysusers b
+		                            on a.PK_psDatacenter = b.PK_appsysusers
+	                            inner join appsysdeptaccess c
+		                            on b.PK_appsysusers = c.FK_appsysusers
+	                            inner join mscPositions d
+		                            on b.FK_mscPositions = d.PK_mscPositions
+
+		
+                                where c.FK_mscWarehouse = @FK_mscWarehouse
+                                and c.isallowed = 'True'

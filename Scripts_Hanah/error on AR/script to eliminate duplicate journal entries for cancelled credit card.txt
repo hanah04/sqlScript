@@ -1,0 +1,60 @@
+DECLARE @fktrxno int
+DECLARE @amount money
+DECLARE @cnt money
+DECLARE @FK_psDatacenter int
+DECLARE @docno int
+DECLARE @GLPeriod datetime
+
+DECLARE C CURSOR FOR 
+select 
+	PK_TRXNO, amount, cnt, FK_psDatacenter, docno, GLPeriod 
+from
+		(select a.PK_TRXNO, a.amount,  a.amount - sum(c.debit) as balance, count(PK_faGL) as cnt, a.FK_psDatacenter, a.jvno as docno, a.docdate as GLPeriod from faJVMstr a 
+			inner join faCRCards b on a.FK_TRXNO_CancelTran = b.FK_TRXNO_faArinv
+			inner join faGL c on a.PK_TRXNO = c.FK_TRXNO
+		where glremarks like '%Cancelled Accounts Receivable for% %Credit Card Payment%' 
+			and TranGroup_Cancel = 'AR' and c.auditflag = 0
+		group by a.amount, PK_TRXNO, a.FK_psDatacenter, a.jvno, a.docdate
+		having (a.amount - sum(c.debit)) <= 0) as pktrxnoid
+where cnt > 2
+
+OPEN C
+FETCH NEXT FROM C INTO @fktrxno, @amount, @cnt, @FK_psDatacenter, @docno, @GLPeriod
+WHILE @@FETCH_STATUS = 0
+BEGIN 
+    --Do something here
+		
+		--Identifier of old/erroneous records
+		update fagl set remarks = 'X' where FK_TRXNO = @fktrxno
+
+		--Insert new gl records
+		Insert into faGL (ownerID, FK_mscBranches, FK_TRXNO, FK_psDatacenter, FK_faGLAcct, FK_faGLAcctGrp, glbook, 
+				trangroup, doctype, docno, glperiod, debit, credit, postdate, postflag, cancelflag, 
+				canceldate, auditflag, auditdate, isMonthlyClosedFlag, isAdjustingEntries, FK_faGLAcctGrp2, sorter, FK_ASUAudit, FK_faGLA)
+
+		select distinct 
+							ownerID, FK_mscBranches, FK_TRXNO, @FK_psDatacenter as FK_psDatacenter, FK_faGLAcct, FK_faGLAcctGrp, glbook, 
+							trangroup, doctype, @docno as docno, @GLPeriod as glperiod, @amount as debit, 0 as credit, @GLPeriod as postdate, 1 as postflag, 0 as cancelflag, 
+							@GLPeriod as canceldate, 0 as auditflag, null as auditdate, 0 as isMonthlyClosedFlag, 0 as isAdjustingEntries, FK_faGLAcctGrp2, sorter, FK_ASUAudit, 0 as FK_faGLA 
+				from faGL 
+				where FK_TRXNO = @fktrxno and sorter = 1
+				group by ownerID, FK_mscBranches, FK_TRXNO, FK_faGLAcct, FK_faGLAcctGrp, glbook, trangroup, doctype, FK_faGLAcctGrp2, sorter, FK_ASUAudit
+
+				union
+
+		select distinct 
+							ownerID, FK_mscBranches, FK_TRXNO, @FK_psDatacenter as FK_psDatacenter, FK_faGLAcct, FK_faGLAcctGrp, glbook, 
+							trangroup, doctype, @docno as docno, @GLPeriod as glperiod, 0 as debit, @amount as credit, @GLPeriod as postdate, 1 as postflag, 0 as cancelflag, 
+							@GLPeriod as canceldate, 0 as auditflag, null as auditdate, 0 as isMonthlyClosedFlag, 0 as isAdjustingEntries, FK_faGLAcctGrp2, sorter, FK_ASUAudit, 0 as FK_faGLA
+				from faGL 
+				where FK_TRXNO = @fktrxno and sorter = 2
+				group by ownerID, FK_mscBranches, FK_TRXNO, FK_faGLAcct, FK_faGLAcctGrp, glbook, trangroup, doctype, FK_faGLAcctGrp2, sorter, FK_ASUAudit
+
+		--delete old records 
+		delete fagl where  FK_TRXNO = @fktrxno and remarks = 'X'
+
+    PRINT  @fktrxno 
+    FETCH NEXT FROM C INTO @fktrxno, @amount, @cnt, @FK_psDatacenter, @docno, @GLPeriod
+END
+CLOSE C
+DEALLOCATE C

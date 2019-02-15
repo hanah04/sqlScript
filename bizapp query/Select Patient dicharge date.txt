@@ -1,0 +1,22 @@
+select 
+--b.FK_psRooms RoomNo,
+dbo.udf_GetNurseStation(b.FK_mscNrstation)NurseStation
+,dbo.udf_GetFullName(a.FK_emdPatients)Fullname
+,convert(varchar,a.registrydate,100)RegistryDate
+,convert(varchar,a.mghdatetime,100)TagAsMGH
+,dbo.udf_GetFullName(a.FK_ASUmgh)UserWhoTagAsMGH
+,convert(varchar,a.untagmghdatetime,100)UnTagAsMGH
+,dbo.udf_GetFullName(a.FK_ASUuntagmgh)UserWhoUnTagAsMGH
+,convert( varchar,a.tagFinalBillDate,100)TagAsFinalBill
+,dbo.udf_GetFullName(a.FK_ASUTagFinalBill)UserWhoTagAsFinalBill
+,convert( varchar,a.untagFinalBillDate,100)UnTagAsFinalBill
+,dbo.udf_GetFullName(a.FK_ASUUntagFinalBill)UserWhoUnTagAsFinalBill
+,convert(varchar,a.dischdate,100)DischargeDate
+,dbo.udf_GetFullName(a.FK_ASUDischarge)UserWhoTagAsDischarge
+from psPatRegisters a Left Outer Join
+psAdmissions b on a.PK_psPatRegisters=b.FK_psPatRegisters
+
+where PK_psPatRegisters=4631
+HAVING COUNT(dischdate) is null
+       AND COUNT(*) > 0;
+

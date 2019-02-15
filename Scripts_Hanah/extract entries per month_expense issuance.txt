@@ -1,0 +1,24 @@
+select case 
+when month(b.glperiod) = 1 then 'JAN' 
+when month(b.glperiod) = 2 then 'FEB' 
+when month(b.glperiod) = 3 then 'MAR' 
+when month(b.glperiod) = 4 then 'APR' 
+when month(b.glperiod) = 5 then 'MAY' 
+when month(b.glperiod) = 6 then 'JUN' 
+when month(b.glperiod) = 7 then 'JUL' 
+when month(b.glperiod) = 8 then 'AUG' 
+when month(b.glperiod) = 9 then 'SEP' 
+when month(b.glperiod) = 10 then 'OCT' 
+when month(b.glperiod) = 11 then 'NOV' 
+when month(b.glperiod) = 12 then 'DEC' 
+end as Month,
+(b.FK_faGLAcct + ' - ' + b.fk_faglacctgrp + ' - ' + b.FK_faGLAcctGrp2) as AcctCode,
+((SELECT DESCRIPTION FROM FAGLACCT X WHERE X.PK_FAGLACCT = b.FK_faGLAcct) + ' - ' +
+(SELECT DESCRIPTION FROM faGLAcctGrp Y WHERE Y.PK_faGLAcctGrp = b.FK_faGLAcctGrp) + ' - ' +
+(SELECT DESCRIPTION FROM faGLAcctGrp Z WHERE Z.PK_faGLAcctGrp = b.FK_faGLAcctGrp2)) AS AcctDesc, 
+round(sum(b.debit),2) as debit, round(sum(b.credit),2) as credit from iwissinv a
+inner join fagl b on a.PK_TRXNO = b.FK_TRXNO
+where a.FK_mscWarehouseDST = 1017 and a.FK_mscWarehouseSRC = 1001 
+and a.postflag = 1  and a.cancelflag = 0 and year(b.glperiod) = '2017'
+group by month(b.glperiod), b.FK_faGLAcct, b.FK_faGLAcctGrp, b.fk_faglacctgrp2
+order by month(b.glperiod), b.FK_faGLAcct, b.FK_faGLAcctGrp, b.fk_faglacctgrp2, sum(b.debit) desc

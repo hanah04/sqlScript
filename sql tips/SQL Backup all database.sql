@@ -1,0 +1,27 @@
+﻿DECLARE @DBName VARCHAR(255)  
+DECLARE @PathForBackUp VARCHAR(255) 
+DECLARE @FileName VARCHAR(255)  
+DECLARE @DateFile VARCHAR(255)
+DECLARE @SQL NVARCHAR(2048) 
+SET @PathForBackUp = 'D:\Backup\User DB\'  
+SET @DateFile = REPLACE(REPLACE(CONVERT(VARCHAR(20),GETDATE(),120) ,' ','T'), ':','') 
+
+DECLARE BACKUPING CURSOR FOR   
+SELECT name  
+FROM master.dbo.sysdatabases WHERE dbid > 4 
+
+OPEN BACKUPING    
+FETCH NEXT FROM BACKUPING INTO @DBName    
+WHILE @@FETCH_STATUS = 0    
+
+BEGIN    
+        SET @FileName = @PathForBackUp + @DBName + '_' + @DateFile + '.BAK'  
+    SET @SQL = 'BACKUP DATABASE '+@DBName +' TO DISK = '''+@FileName+''' WITH COMPRESSION ' 
+    PRINT @SQL 
+    EXECUTE sp_executesql @sql   
+    FETCH NEXT FROM BACKUPING INTO @DBName  
+
+END    
+
+CLOSE BACKUPING    
+DEALLOCATE BACKUPING 

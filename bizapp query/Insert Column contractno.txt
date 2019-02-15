@@ -1,0 +1,4 @@
+If Not Exists (select * from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'psPatRegisters' and COLUMN_NAME = 'contractno')
+            Begin
+                Alter table psPatRegisters add contractno nvarchar(max) null
+            End

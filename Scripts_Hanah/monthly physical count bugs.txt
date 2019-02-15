@@ -1,0 +1,61 @@
+declare @physicalCountDate date = '11/28/2014'						
+						
+select * from (						
+select 						
+	c.PK_iwItemLedger,					
+	itemId = b.FK_iwItems,					
+	department = dbo.udf_GetDepartmentName(a.FK_mscWarehouse),					
+	itemDesc = dbo.udf_GetItemDescription(b.FK_iwItems),					
+	actualCount = b.qty * b.conversion,					
+	systemCount = isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where a.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0),					
+	varianceQty = (b.qty * b.conversion) - isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate  < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0),					
+	c.qtyin,					
+	c.qtyout,					
+	qtyinShouldBe = case when (b.qty * b.conversion) - isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0) > 0 then 					
+						(b.qty * b.conversion) - isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0)
+						else 0 end,
+	qtyoutShouldBe = abs(case when (b.qty * b.conversion) - isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0) < 0 then 					
+						(b.qty * b.conversion) - isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0)
+						else 0 end)
+from 						
+	iwPhentinv as a 					
+	inner join iwPhentitem as b on a.PK_TRXNO = b.FK_TRXNO					
+	inner join iwItemLedger as c on a.FK_mscWarehouse = c.FK_mscWarehouse and b.FK_iwItems = c.FK_iwItems and a.PK_TRXNO = c.FK_TRXNO					
+where 						
+	a.deleteflag = 0					
+	and Convert(date, a.docdate) = @physicalCountDate) as tmp					
+where  ((tmp.qtyin != qtyinShouldBe) or (tmp.qtyout != qtyoutShouldBe)) --and tmp.itemid = 'med00177'			
+order by tmp.itemId			
+
+
+						
+-------------------------------------------------------------------------------------------------						
+declare @physicalCountDate date = '01/30/2015'	
+
+update a set a.qtyin = tmp.qtyinShouldBe, a.qtyout = tmp.qtyoutShouldBe						
+from 						
+	iwItemledger as a inner join (					
+select 						
+	c.PK_iwItemLedger,					
+	itemId = b.FK_iwItems,					
+	department = dbo.udf_GetDepartmentName(a.FK_mscWarehouse),					
+	itemDesc = dbo.udf_GetItemDescription(b.FK_iwItems),					
+	actualCount = b.qty * b.conversion,					
+	systemCount = isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0),					
+	varianceQty = (b.qty * b.conversion) - isnull((select sum(qtyin - qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0),					
+	c.qtyin,					
+	c.qtyout,					
+	qtyinShouldBe = case when (b.qty * b.conversion) - isnull((select sum(aa.qtyin - aa.qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0) > 0 then 					
+						(b.qty * b.conversion) - isnull((select sum(aa.qtyin - aa.qtyout) from iwItemLedger as aa where aa.regdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0)
+						else 0 end,
+	qtyoutShouldBe = case when ((b.qty * b.conversion) - isnull((select sum(aa.qtyin - aa.qtyout) from iwItemLedger as aa where aa.docdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0)) < 0 then 					
+						abs((b.qty * b.conversion) - isnull((select sum(aa.qtyin - aa.qtyout) from iwItemLedger as aa where aa.regdate < a.docdate and aa.FK_mscWarehouse = a.FK_mscWarehouse and aa.FK_iwItems = b.FK_iwItems and aa.FK_TRXNO <> a.PK_TRXNO),0))
+						else 0 end
+from 						
+	iwPhentinv as a 					
+	inner join iwPhentitem as b on a.PK_TRXNO = b.FK_TRXNO					
+	inner join iwItemLedger as c on a.FK_mscWarehouse = c.FK_mscWarehouse and b.FK_iwItems = c.FK_iwItems and a.PK_TRXNO = c.FK_TRXNO					
+where 						
+	a.deleteflag = 0					
+	and Convert(date, a.docdate) = @physicalCountDate) as tmp on a.PK_iwItemLedger = tmp.PK_iwItemLedger					
+where ((tmp.qtyin != qtyinShouldBe) or (tmp.qtyout != qtyoutShouldBe)) --and tmp.itemid = 'med00177'			

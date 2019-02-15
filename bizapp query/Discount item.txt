@@ -1,0 +1,28 @@
+SELECT DISTINCT 
+	0 AS [selectitem], e.doctype, e.docno, d.itemdesc, 
+        b.renprice AS [price], (b.renqty - b.retqty) * b.renprice AS [amount],
+        c.discountrate, ISNULL((b.renprice * c.discountrate) / 100,0.00) AS [discountbase], 
+	0 AS [discountamount], d.unit, 
+        d.PK_iwItems, e.PK_TRXNO, b.PK_psPatItem, b.FK_mscWarehouse, b.registryclass,
+        b.cnamount, b.adjamount, b.phicamount, b.gntramount, b.oramount, 0 AS CreditAmount,
+        b.recalculateamt, 0 AS AllowedAmount, b.discount, b.rendate, d.isvatable,
+        d.itemgroup, 0 AS [SCBasePrice] , b.renqty - b.retqty AS [renqty],
+        (b.vatprice / b.renqty) * (b.renqty - b.retqty) AS [vatprice],
+        ISNULL((SELECT SUM(xx.amount) FROM psPatDiscountItems xx
+		INNER JOIN psPatDiscounts yy ON xx.FK_TRXNO = yy.PK_TRXNO
+		AND yy.FK_mscDiscounts = c.FK_mscDiscounts AND xx.FK_psPatitems = b.PK_psPatitem
+                AND yy.cancelflag = 0),0.00) AS [discountApplied],
+        (ISNULL((SELECT FK_psPatitem FROM faContractItems 
+                  WHERE FK_psPatitem = b.PK_psPatitem),0)) AS flag,
+        b.netRFdisc AS [netRFdisc], b.rfdiscount AS [rfdiscount],
+        b.rffee as [readersfee],isnull(e.pattrantype, 'O') as[trantype]
+FROM psPatRegisters a
+ 	INNER JOIN psPatItem b ON a.PK_psPatRegisters = b.FK_psPatRegisters
+ 	INNER JOIN iwItemPriceDiscounts c ON b.FK_iwItemsREN = c.FK_iwItems AND b.FK_mscWarehouse = c.FK_mscWarehouse
+ 	INNER JOIN iwItems d ON d.PK_iwItems = c.FK_iwItems
+ 	INNER JOIN psPatInv e ON b.FK_TRXNO = e.PK_TRXNO
+WHERE e.status in ('R', 'P') AND (b.renqty - b.retqty) > 0 AND b.isallowdiscount = 'true'
+        AND e.doctype <> 'CN' AND c.discountrate > 0
+        AND c.FK_mscDiscounts = '1012' AND a.PK_psPatRegisters = '45446'
+
+

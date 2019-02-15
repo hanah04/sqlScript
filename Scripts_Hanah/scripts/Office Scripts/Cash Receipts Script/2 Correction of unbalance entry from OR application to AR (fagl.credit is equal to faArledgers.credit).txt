@@ -1,0 +1,63 @@
+
+/******	3. Correction of unbalance entry from OR application to AR (fagl.credit is equal to faArledgers.credit)  ******/
+declare @JVTrxno nvarchar(10),
+		@CRTxno nvarchar(10),
+		@glbook nvarchar(10),
+		@trangroup nvarchar(10),
+		@doctype nvarchar(10),
+		@debit decimal(18,4),
+		@credit decimal(18,4),
+		@postdateFrom smalldatetime,
+		@postdateTo smalldatetime,
+		@ARTotalCredit decimal(18,4),
+		@ORTotalApplied decimal(18,4),
+		@JVGLDebitRowCount int
+
+
+declare c cursor for select 
+									FK_TRXNO, 
+									glbook,
+									trangroup,
+									doctype, 
+									debit = sum(debit), 
+									credit = sum(credit) 
+						from 
+									faGL 
+						where 
+									glbook = 'JB' and trangroup = 'CR' and doctype = 'OR'
+						group by 
+									FK_TRXNO, 
+									glbook,
+									trangroup,
+									doctype, Convert(date, glperiod)
+						having 
+									sum(debit) <> sum(credit)
+									order by FK_TRXNO desc
+open c
+Fetch next from c into @JVTrxno, @glbook,@trangroup, @doctype, @debit, @credit
+While @@FETCH_STATUS = 0
+Begin
+	--Select @JVTrxno, @glbook,@trangroup, @doctype, @debit, @credit
+	IF NOT EXISTS(select * from fagl where FK_TRXNO = @JVTrxno and auditflag = 1)
+	Begin
+		--JV
+		--Check total fagl.credit is equal to faArledgers.credit
+		select @CRTxno = FK_TRXNO_faCRMstr, @postdateFrom = Dateadd(MINUTE, -1, glpostdate), @postdateTo = Dateadd(MInute, 1, glpostdate) from faJVMstr where PK_TRXNO = @JVTrxno
+		set @JVGLDebitRowCount = (select Count(*) from faGL where FK_TRXNO = @JVTrxno and debit > 0)
+		set @ARTotalCredit = isnull((select sum(credit) from faArledgers where doctype = 'OR' and FK_TRXNO_CR = @CRTxno and regdate between @postdateFrom and @postdateTo and credit <> 0),0)
+		set @ORTotalApplied = isnull((select sum(credit) from faArledgers where doctype = 'OR' and FK_TRXNO_CR = @CRTxno and credit <> 0),0)
+
+		update faCRMstr set appliedamount = @ORTotalApplied where PK_TRXNO = @CRTxno
+
+	If (@JVGLDebitRowCount = 1 and Round(@ARTotalCredit,2) = Round(@credit,2))
+		Begin
+			update faGL set debit = @credit where FK_TRXNO = @JVTrxno and debit > 0
+			update faJVMstr set amount = Round(@credit,2) where PK_TRXNO = @JVTrxno
+		End
+	End
+	Fetch next from c into @JVTrxno, @glbook,@trangroup, @doctype, @debit, @credit
+END
+close c
+deallocate c
+
+/******	3. Audit Journal Entries > Unabalanced Journal entries (General Journal) > Recalculate  ******/

@@ -1,0 +1,57 @@
+select 
+Guarantor,
+ARType, 
+DocType,
+ARDocno, 
+ARDocdate, 
+ARAmount, 
+ORAmount,
+CMAmount,
+BillNo,
+ORno
+
+from 
+
+(select 
+dbo.udf_getfullname(a.FK_faCustomers) as Guarantor,
+a.artype as ARType, 
+a.doctype as DocType,
+a.docno as ARDocno, 
+convert(date,a.docdate) as ARDocdate, 
+a.amount as ARAmount, 
+a.oramount as ORAmount,
+a.cnamount as CMAmount,
+isnull((select billno from faBillTranMstr x where x.PK_faBillTranMstr = a.FK_faBillTranMstr),'') as BillNo,
+stuff((select ', ' + convert(varchar,orno) from faCRMstr y where y.PK_TRXNO = b.fk_trxno_cr for XML PATH ('')),1,2,'') as ORno,
+stuff((select ', ' + convert(varchar,dmcmno) from faDMCMPayer z where z.PK_TRXNO = b.fk_trxno_cm for XML PATH ('')),1,2,'') as CMno
+from faArinv a  
+inner join faarledgers b on a.PK_TRXNO = b.FK_TRXNO
+where a.glpostflag = 1 and a.cancelflag = 0 and a.deleteflag = 0 and b.cancelflag = 0 and a.artype = 'PF' and (a.oramount>0 or a.cnamount >0) 
+and (b.FK_TRXNO_CR = 0 and b.FK_TRXNO_CM = 0)
+--order by dbo.udf_getfullname(a.FK_faCustomers)
+
+union
+
+select 
+dbo.udf_getfullname(a.FK_faCustomers) as Guarantor,
+a.artype as ARType, 
+a.doctype as DocType,
+a.docno as ARDocno, 
+convert(date,a.docdate) as ARDocdate, 
+a.amount as ARAmount, 
+a.oramount as ORAmount,
+a.cnamount as CMAmount,
+isnull((select billno from faBillTranMstr x where x.PK_faBillTranMstr = a.FK_faBillTranMstr),'') as BillNo,
+stuff((select ', ' + convert(varchar,orno) from faCRMstr y where y.PK_TRXNO = b.fk_trxno_cr for XML PATH ('')),1,2,'') as ORno,
+stuff((select ', ' + convert(varchar,dmcmno) from faDMCMPayer z where z.PK_TRXNO = b.fk_trxno_cm for XML PATH ('')),1,2,'') as CMno
+from faArinv a  
+inner join faarledgers b on a.PK_TRXNO = b.FK_TRXNO
+where a.glpostflag = 1 and a.cancelflag = 0 and a.deleteflag = 0 and b.cancelflag = 0 and a.artype = 'PF' and (a.oramount>0 or a.cnamount >0)) as AA
+--and (b.FK_TRXNO_CR = 0 and b.FK_TRXNO_CM = 0)
+--order by dbo.udf_getfullname(a.FK_faCustomers))
+where ORno is not NULL
+
+
+
+
+

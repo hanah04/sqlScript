@@ -1,0 +1,64 @@
+GO
+/****** Object:  UserDefinedFunction [dbo].[fnMoneyToEnglishNL_fulltext]    Script Date: 2/18/2016 1:34:19 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE FUNCTION [dbo].[fnMoneyToEnglishNL_fulltext](@Money AS money, @nl int)
+    RETURNS VARCHAR(1024)
+AS
+BEGIN
+      DECLARE @Number as BIGINT
+      SET @Number = FLOOR(@Money)
+      DECLARE @Below20 TABLE (ID int identity(0,1), Word varchar(32))
+      DECLARE @Below100 TABLE (ID int identity(2,1), Word varchar(32))
+ 
+      INSERT @Below20 (Word) VALUES
+                        ( 'Zero'), ('One'),( 'Two' ), ( 'Three'),
+                        ( 'Four' ), ( 'Five' ), ( 'Six' ), ( 'Seven' ),
+                        ( 'Eight'), ( 'Nine'), ( 'Ten'), ( 'Eleven' ),
+                        ( 'Twelve' ), ( 'Thirteen' ), ( 'Fourteen'),
+                        ( 'Fifteen' ), ('Sixteen' ), ( 'Seventeen'),
+                        ('Eighteen' ), ( 'Nineteen' )
+       INSERT @Below100 VALUES ('Twenty'), ('Thirty'),('Forty'), ('Fifty'),
+                               ('Sixty'), ('Seventy'), ('Eighty'), ('Ninety')
+ 
+DECLARE @English varchar(1024) =
+(
+  SELECT Case
+    WHEN @Number = 0 THEN  ''
+    WHEN @Number BETWEEN 1 AND 19
+      THEN (SELECT Word FROM @Below20 WHERE ID=@Number)
+   WHEN @Number BETWEEN 20 AND 99
+     THEN  (SELECT Word FROM @Below100 WHERE ID=@Number/10)+ ' ' +
+           dbo.fnMoneyToEnglishNL_fulltext( @Number % 10, @nl)
+   WHEN @Number BETWEEN 100 AND 999  
+     THEN  (dbo.fnMoneyToEnglishNL_fulltext( @Number / 100, @nl))+' Hundred '+
+         dbo.fnMoneyToEnglishNL_fulltext( @Number % 100, @nl)
+   WHEN @Number BETWEEN 1000 AND 999999  
+     THEN  (dbo.fnMoneyToEnglishNL_fulltext( @Number / 1000, @nl))+' Thousand '+
+         dbo.fnMoneyToEnglishNL_fulltext( @Number % 1000, @nl) 
+   WHEN @Number BETWEEN 1000000 AND 999999999  
+     THEN  (dbo.fnMoneyToEnglishNL_fulltext( @Number / 1000000, @nl))+' Million '+
+         dbo.fnMoneyToEnglishNL_fulltext( @Number % 1000000, @nl)
+   ELSE ' INVALID INPUT' END
+)
+SELECT @English = RTRIM(@English)
+SELECT @English = RTRIM(LEFT(@English,len(@English)-1))
+                 WHERE RIGHT(@English,1)='-'
+IF (@@NestLevel - @nl) = 1
+BEGIN
+	IF (@Money >= 1)
+	BEGIN
+      SELECT @English = @English+
+	  case when convert(int,100*(@Money - @Number)) = 0 then '' else ' and ' end
+    END
+    
+    SELECT @English = @English+
+    case when convert(int,100*(@Money - @Number)) = 0 then ''
+		 when convert(int,100*(@Money - @Number)) = 1 then convert(varchar, dbo.fnMoneyToEnglishNL_fulltext(convert(int,100*(@Money - @Number)),@nl))+' Centavo'
+		 when convert(int,100*(@Money - @Number)) > 1 then convert(varchar, dbo.fnMoneyToEnglishNL_fulltext(convert(int,100*(@Money - @Number)),@nl))+' Centavos' end +' Only'
+END
+RETURN (@English)
+END

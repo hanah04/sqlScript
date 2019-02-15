@@ -1,0 +1,5 @@
+Cancelled = "C"
+CreditNote = "D"
+Unrenderend = "N"
+FullyRendered = "R"
+PartiallyRendered = "P"

@@ -1,0 +1,7 @@
+if((Select count(dbupdate) from appsysDBUpdates where dbupdate = '8.26.7.18') = 0)
+update faVPMstr set dmamount = round(dmamount,2),balance = round(balance,2) where FK_TRXNO_faCRMstrPF
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 group by FK_TRXNO_faCRMstrPF)
+
+if((Select count(dbupdate) from appsysDBUpdates where dbupdate = '8.26.7.18') = 1)
+update faVPMstr set netamount = round(netamount,2),dmamount = round(dmamount,2),balance = round(balance,2) where FK_TRXNO_faCRMstrPF
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 group by FK_TRXNO_faCRMstrPF)

@@ -1,0 +1,13 @@
+ 
+ select b.PK_TRXNO, b.FK_mscBranches, a.FK_mscWarehouse, a.FK_iwItemsRA, b.FK_emdPatients, b.doctype, b.docno, b.rendate,
+        0.00, a.qty, round(a.purcprice,2),0.00, b.rendate, 0 
+        From pspatitemcomp a
+         inner join psPatinv b on a.FK_TRXNO = b.PK_TRXNO 
+         inner join mscWarehouse c on b.FK_mscWarehouse = c.PK_mscWarehouse
+         inner join iwItems d on a.FK_iwItemsRA = d.PK_iwItems
+         inner join mscItemCategory e on d.FK_mscItemCategory = e.PK_mscItemCategory
+        Where --a.fk_trxno = @TrxNo and 
+		(d.isInventory = 1 or ( d.isInventory = 0 and (a.qty * a.purcprice) > 0)) and c.reagentpostsetup = 'c'
+		--and b.pk_trxno not in (select fk_trxno from fagl)
+		and b.pk_trxno not in (select  fk_trxno from iwItemLedger)
+		and fk_iwitemsRA = 'SUP00768' and b.doctype<> 'CN' 

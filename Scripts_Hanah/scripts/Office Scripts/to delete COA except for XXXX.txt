@@ -1,0 +1,2 @@
+delete faGLAcct where PK_faGlAcct <> 'XXXX-XXXX'
+select *from faGLAcct where PK_faGlAcct <> 'XXXX-XXXX'

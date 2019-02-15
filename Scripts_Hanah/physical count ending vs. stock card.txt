@@ -1,0 +1,9 @@
+select dbo.udf_GetDepartmentName(fk_mscwarehouse),* from iwItemLedger where fk_trxno = '2919977' 
+--update iwItemLedger set qtyin = '52' from iwItemLedger where fk_trxno = '2919977' 
+
+select dbo.udf_GetDepartmentName(fk_mscwarehouse),* from iwItemLedger where FK_mscWarehouse = '1001' and FK_iwItems = 'PHA3009' and fk_trxno = '2919977'
+
+
+Heart of Jesus
+select dbo.udf_GetDepartmentName(fk_mscwarehouse),* from iwItemLedger where PK_iwItemLedger = 979193
+--update iwitemledger set qtyin = 3 from iwItemLedger where PK_iwItemLedger = 979193

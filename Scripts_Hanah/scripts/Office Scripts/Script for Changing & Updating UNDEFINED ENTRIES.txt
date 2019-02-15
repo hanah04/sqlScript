@@ -1,0 +1,13 @@
+select *from fagl where trangroup = 'SA'
+and glbook = 'SB' and FK_faGLAcctGrp2 = 'IC0007' and FK_faGLAcct = 'XXXX-XXXX' 
+
+update fagl set FK_faGLAcct = '000-45000' 
+where trangroup = 'SA'
+and glbook = 'SB' and FK_faGLAcctGrp2 = 'IC0007'
+
+LEGEND:
+SA- SALES ACCOUNT
+SB- SALES BOOK
+
+000-45000- SALES GL CODE
+IC0007- IC GL CODE

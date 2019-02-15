@@ -1,0 +1,24 @@
+select a.*,b.pattrantype 
+--update fagl set pattrantype = b.pattrantype
+from fagl a
+left join pspatinv b on a.FK_TRXNO = b.PK_TRXNO
+where auditflag = 1 and convert(date,glperiod) between '04/01/2013' and '12/31/2013' and
+(fk_faglacct in (select FK_faGLAcct from faGLISClassAcctsOpt2 where FK_faGLISClass = '3719') and
+FK_faGLAcctGrp in (select FK_faGLAcctgrp from faGLISClassAcctsOpt2 where FK_faGLISClass = '3719')
+and FK_faGLAcctGrp2 in (select FK_faGLAcctgrp2 from faGLISClassAcctsOpt2 where FK_faGLISClass = '3719'))
+and a.cancelflag = 0 and FK_TRXNO not in (select PK_TRXNO from fajvmstr where glremarks like '%monthly closing entries%')
+and a.pattrantype <> b.pattrantype
+
+select * 
+update fagla set pattrantype = b.pattrantype
+from fagla a
+inner join fagl b on a.PK_faGLA = b.FK_faGLA where a.pattrantype <> b.pattrantype
+
+
+
+select * from faglisclass where FK_faGLFSReports = 1010
+select * from faGLFSReports
+select * from faGLISClassAcctsOpt2 where fk_faglisclass = 3719
+
+select * from fagla where PK_faGLA = 31772 and FK_
+select * from fajvmstr where glremarks like '%closing%'

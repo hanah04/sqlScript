@@ -1,0 +1,115 @@
+
+Declare @FK_TRXNO_psPHICLedgers as bigint
+Declare @FK_emdDoctors int
+Declare @FK_TRXNO_psDctrLedgers as bigint
+Declare @PFAmount as decimal(10, 2)
+Declare @dateFrom as nvarchar(20)
+Declare @dateTo as nvarchar(20)
+Declare @seriesno as bigint
+
+set @dateFrom = '08/13/2014'
+set @dateTo = '08/13/2014'
+
+DECLARE MY_CURSOR CURSOR 
+  LOCAL STATIC READ_ONLY FORWARD_ONLY 
+
+FOR
+
+(select 
+
+	a.PK_TRXNO as FK_TRXNO_psPHICLedgers,
+	b.FK_emdDoctors as FK_emdDoctors,
+	b.phicamount as PFAmount,
+	b.PK_TRXNO as FK_TRXNO_psDctrLedgers
+
+	from psPHICLedgers a
+	inner join psDctrLedgers b on a.PK_TRXNO = b.FK_TRXNO_PHIC
+	where a.cancelflag = 0 and
+			a.IsDelete = 0 and 
+			b.phicamount > 0
+			and (select COUNT(*) from psPHICLedgersPF c 
+			where c.FK_TRXNO_psPHICLedgers = a.PK_TRXNO and 
+			c.FK_TRXNO_psDctrLedgers = b.PK_TRXNO and 
+			c.FK_emdDoctors = b.FK_emdDoctors) = 0
+			and convert(date,a.processdate) between @dateFrom and @dateTo)
+
+OPEN MY_CURSOR
+FETCH NEXT FROM MY_CURSOR INTO @FK_TRXNO_psPHICLedgers, @FK_emdDoctors, @PFAmount, @FK_TRXNO_psDctrLedgers
+
+WHILE (@@FETCH_STATUS = 0)
+BEGIN
+Set Nocount On;
+Begin Transaction
+    Begin
+		set @seriesno = (select seriesno + 1 from mscSeriesNo where doccode = 'TRK')
+
+		INSERT INTO [dbo].[psPHICLedgersPF]
+					([PK_TRXNO]
+					,[ownerID]
+					,[FK_TRXNO_psPHICLedgers]
+					,[FK_emdDoctors]
+					,[PFAmount]
+					,[FK_TRXNO_psDctrLedgers])
+
+		SELECT @seriesno as PK_TRXNO, '00000000' as ownerID, @FK_TRXNO_psPHICLedgers, @FK_emdDoctors, @PFAmount, @FK_TRXNO_psDctrLedgers
+
+		update mscSeriesNo set seriesno = seriesno + 1 where doccode = 'TRK'
+
+		if exists (select * from psPHICLedgersPF where PK_TRXNO = @seriesno)
+			begin
+			INSERT INTO [dbo].[faArinv]
+
+			([PK_TRXNO],[ownerID],[FK_mscBranches],[FK_faCustomers],[FK_emdPatients],[FK_TRXNO_Source],[FK_emdDoctors],[FK_mscCurrency]
+			,[FK_mscArea],[FK_faBillTranMstr],[FK_mscTranTypesAR],[FK_mscCustomerTypes],[FK_mscTerms],[terms],[artype],[doctype],[docno]
+			,[docdate],[billaddress],[delvaddress],[curramt],[currrate],[attention],[discrate],[discamt],[vatincl],[vat],[vatamt]
+			,[glremarks],[vatable],[amount],[oramount],[cnamount],[dmamount],[pfpaidamount],[remarks],[FK_ASUGLPost],[glpostflag]
+			,[glpostdate],[FK_ASUPost],[postflag],[postdate],[FK_ASUCancel],[cancelflag],[canceldate],[cancelrem],[FK_ASUDelete]
+			,[deleteflag],[deletedate],[deleterem],[FK_psPatRegisters],[FK_faContractTrans],[arsumm],[billno],[discount],[docid]
+			,[locamt],[paidamt],[trantype],[isaccrual],[FK_TRXNO_JVMstrUnpostOR],[FK_TRXNO_JVMstrUnpostCM],[isMultiTranTypes],[instrfeeamt]
+			,[FK_faJVTMstr],[duedate],[isPhicExcess],[FK_ASUReg])
+     
+			 select
+			 (select seriesno + 1 from mscSeriesNo where doccode = 'TRK') as PK_TRXNO,
+			 '00000000' as ownerID, 1000 as FK_mscBranches, 1003 as FK_faCustomers, c.FK_emdPatients as FK_emdPatients, a.PK_TRXNO as FK_TRXNO_Source,
+			 c.FK_emdDoctors as FK_emdDoctors, NULL as FK_mscCurrency, NULL as FK_mscArea, NULL as FK_faBillTranMstr,
+			 (select FK_mscTranTypesAR from mscPHICEntities where PK_mscPHICEntities = b.FK_mscPHICEntities) as FK_mscTranTypesAR,
+			 (select FK_mscCustomerTypes from faCustomers where PK_faCustomers = 1003) as FK_mscCustomerTypes, 'J' as FK_mscTerms, 30 as terms,
+			 'PF' as artype, 'CH' as doctype, (select seriesno + 1 from mscSeriesNo where doccode = 'CH') as docno, b.processdate as docdate,
+			 NULL as billaddress, NULL as delvaddress, c.phicamount as curramt, 0 as currrate, NULL as attention, 0 as discrate, 0 as discamt,
+			 0 as vatincl, 0 as vat, 0 as vatamt, NULL as glremarks, 0 as vatable, c.phicamount as amount, 0 as oramount, 0 as cnamount,
+			 0 as dmamount, NULL as pfpaidamount, 'This row was inserted as data fixed for missing faArinv created upon outright deduction with PF amount' as remarks, NULL as FK_ASUGLPost, 0 as glpostflag, NULL as glpostdate, 1001 as FK_ASUPost,
+			 1 as postflag, GETDATE() as postdate, NULL as FK_ASUCancel, 0 as cancelflag, NULL as canceldate, NULL as cancelrem, NULL as FK_ASUDelete,
+			 0 as deleteflag, NULL as deletedate, NULL as deleterem, b.FK_psPatRegisters as FK_psPatRegisters, 0 as FK_faContractTrans, NULL as arsumm,
+			 NULL as billno, NULL as discount, NULL as docid, NULL as locamt, NULL as paidamt, NULL as trantype, 0 as isaccrual, 0 as FK_TRXNO_JVMstrUnpostOR,
+			 0 as FK_TRXNO_JVMstrUnpostCM, 0 as isMultiTranTypes, 0 as instrfeeamt, NULL as FK_faJVTMstr, NULL as duedate, 0 as isPhicExcess,
+			 1001 as FK_ASUReg
+			 from psPHICLedgersPF a
+			 inner join psPHICLedgers b on a.FK_TRXNO_psPHICLedgers = b.PK_TRXNO
+			 inner join psDctrLedgers c on b.PK_TRXNO = c.FK_TRXNO_PHIC
+			 where b.cancelflag = 0 and
+				   b.IsDelete = 0 and 
+				   c.phicamount > 0 and
+				   c.FK_emdDoctors = @FK_emdDoctors and
+				   a.PK_TRXNO = @seriesno							
+
+			 update mscSeriesNo set seriesno = seriesno + 1 where doccode = 'TRK'
+			 update mscSeriesNo set seriesno = seriesno + 1 where doccode = 'CH'
+		 end								
+
+		if @@Error > 0 
+			Begin
+				Rollback Transaction
+				select 'Failed to insert psPHICLedgersPF and faArinv!'
+			End
+		else
+			Begin
+				Commit Transaction
+				select 'Insertion of psPHICLedgersPF and faArinv is successful!'
+			End
+	End
+		
+	FETCH NEXT FROM MY_CURSOR INTO @FK_TRXNO_psPHICLedgers, @FK_emdDoctors, @PFAmount, @FK_TRXNO_psDctrLedgers
+END
+	
+CLOSE MY_CURSOR
+DEALLOCATE MY_CURSOR

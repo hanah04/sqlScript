@@ -1,0 +1,437 @@
+001 Cholera                                                                                                        A00
+002 Typhoid and paratyphoid fevers                                                                                 A01
+003 Shigellosis                                                                                                    A03
+004 Amoebiasis                                                                                                     A06
+005 Diarrhoea and gastro-enteritis of presumed infectious origin                                                   A09
+006 Other intestinal infectious diseases                                                                         / A02
+                                                                                                                 | A04-A05
+                                                                                                                 \ A07-A08
+007 Respiratory tuberculosis                                                                                       A15-A16
+008 Other tuberculosis                                                                                             A17-A19
+009 Plague                                                                                                         A20
+010 Brucellosis                                                                                                    A23
+011 Leprosy                                                                                                        A30
+012 Tetanus neonatorum                                                                                             A33
+013 Other tetanus                                                                                                  A34-A35
+014 Diphtheria                                                                                                     A36
+015 Whooping cough                                                                                                 A37
+016 Meningococcal infection                                                                                        A39
+017 Septicaemia                                                                                                    A40-A41
+018 Other bacterial diseases                                                                                     / A21-A22
+                                                                                                                 | A24-A28
+                                                                                                                 | A31-A32
+                                                                                                                 | A38
+                                                                                                                 \ A42-A49
+019 Congenital syphilis                                                                                            A50
+020 Early syphilis                                                                                                 A51
+021 Other syphilis                                                                                                 A52-A53
+022 Gonococcal infection                                                                                           A54
+023 Sexually transmitted chlamydial diseases                                                                       A55-A56
+024 Other infections with a predominantly sexual mode of transmission                                              A57-A64
+025 Relapsing fevers                                                                                               A68
+026 Trachoma                                                                                                       A71
+027 Typhus fever                                                                                                   A75
+028 Acute poliomyelitis                                                                                            A80
+029 Rabies                                                                                                         A82
+030 Viral encephalitis                                                                                             A83-A86
+031 Yellow fever                                                                                                   A95
+032 Other arthropod-borne viral fevers and viral haemorrhagic fevers                                             / A90-A94
+                                                                                                                 \ A96-A99
+033 Herpesviral infections                                                                                         B00
+034 Varicella and zoster                                                                                           B01-B02
+035 Measles                                                                                                        B05
+036 Rubella                                                                                                        B06
+037 Acute hepatitis B                                                                                              B16
+038 Other viral hepatitis                                                                                        / B15
+                                                                                                                 \ B17-B19
+039 Human immunodeficiency virus [HIV] disease                                                                     B20-B24
+040 Mumps                                                                                                          B26
+041 Other viral diseases                                                                                         / A81
+                                                                                                                 | A87-A89
+                                                                                                                 | B03-B04
+                                                                                                                 | B07-B09
+                                                                                                                 | B25
+                                                                                                                 \ B27-B34
+042 Mycoses                                                                                                        B35-B49
+043 Malaria                                                                                                        B50-B54
+044 Leishmaniasis                                                                                                  B55
+045 Trypanosomiasis                                                                                                B56-B57
+046 Schistosomiasis                                                                                                B65
+047 Other fluke infections                                                                                         B66
+048 Echinococcosis                                                                                                 B67
+049 Dracunculiasis                                                                                                 B72
+050 Onchocerciasis                                                                                                 B73
+051 Filariasis                                                                                                     B74
+052 Hookworm diseases                                                                                              B76
+053 Other helminthiases                                                                                          / B68-B71
+                                                                                                                 | B75
+                                                                                                                 \ B77-B83
+054 Sequelae of tuberculosis                                                                                       B90
+055 Sequelae of poliomyelitis                                                                                      B91
+056 Sequelae of leprosy                                                                                            B92
+057 Other infectious and parasitic diseases                                                                      / A65-A67
+                                                                                                                 | A69-A70
+                                                                                                                 | A74
+                                                                                                                 | A77-A79
+                                                                                                                 | B58-B64
+                                                                                                                 | B85-B89
+                                                                                                                 \ B94,B99
+058 Malignant neoplasm of lip, oral cavity and pharynx                                                             C00-C14
+059 Malignant neoplasm of oesophagus                                                                               C15
+060 Malignant neoplasm of stomach                                                                                  C16
+061 Malignant neoplasm of colon                                                                                    C18
+062 Malignant neoplasm of rectosigmoid junction, rectum, anus and anal canal                                       C19-C21
+063 Malignant neoplasm of liver and intrahepatic bile ducts                                                        C22
+064 Malignant neoplasm of pancreas                                                                                 C25
+065 Other malignant neoplasms of digestive organs                                                                / C17
+                                                                                                                 | C23-C24
+                                                                                                                 \ C26
+066 Malignant neoplasm of larynx                                                                                   C32
+067 Malignant neoplasm of trachea, bronchus and lung                                                               C33-C34
+068 Other malignant neoplasms of respiratory and intrathoracic organs                                            / C30-C31
+                                                                                                                 \ C37-C39
+069 Malignant neoplasm of bone and articular cartilage                                                             C40-C41
+070 Malignant melanoma of skin                                                                                     C43
+071 Other malignant neoplasms of skin                                                                              C44
+072 Malignant neoplasms of mesothelial and soft tissue                                                             C45-C49
+073 Malignant neoplasm of breast                                                                                   C50
+074 Malignant neoplasm of cervix uteri                                                                             C53
+075 Malignant neoplasm of other and unspecified parts of uterus                                                    C54-C55
+076 Other malignant neoplasms of female genital organs                                                           / C51-C52
+                                                                                                                 \ C56-C58
+077 Malignant neoplasm of prostate                                                                                 C61
+078 Other malignant neoplasms of male genital organs                                                             / C60
+                                                                                                                 \ C62-C63
+079 Malignant neoplasm of bladder                                                                                  C67
+080 Other malignant neoplasms of urinary tract                                                                   / C64-C66
+                                                                                                                 \ C68
+081 Malignant neoplasm of eye and adnexa                                                                           C69
+082 Malignant neoplasm of brain                                                                                    C71
+083 Malignant neoplasm of other parts of central nervous system                                                    C70,C72
+084 Malignant neoplasm of other, ill-defined, secondary, unspecified and multiple sites                          / C73-C80
+                                                                                                                 \ C97
+085 Hodgkin's disease                                                                                              C81
+086 Non-Hodgkin's lymphoma                                                                                         C82-C85
+087 Leukaemia                                                                                                      C91-C95
+088 Other malignant neoplasms of lymphoid, haematopoietic and related tissue                                     / C88-C90
+                                                                                                                 \ C96
+089 Carcinoma in situ of cervix uteri                                                                              D06
+090 Benign neoplasm of skin                                                                                        D22-D23
+091 Benign neoplasm of breast                                                                                      D24
+092 Leiomyoma of uterus                                                                                            D25
+093 Benign neoplasm of ovary                                                                                       D27
+094 Benign neoplasm of urinary organs                                                                              D30
+095 Benign neoplasm of brain and other parts of central nervous system                                             D33
+096 Other in situ and benign neoplasms and neoplasms of uncertain and unknown behaviour                          / D00-D05
+                                                                                                                 | D07-D21
+                                                                                                                 | D26
+                                                                                                                 | D28-D29
+                                                                                                                 | D31-D32
+                                                                                                                 \ D34-D48
+097 Iron deficiency anaemia                                                                                        D50
+098 Other anaemias                                                                                                 D51-D64
+099 Haemorrhagic conditions and other diseases of blood and blood-forming organs                                   D65-D77
+100 Certain disorders involving the immune mechanism                                                               D80-D89
+101 Iodine-deficiency-related thyroid disorders                                                                    E00-E02
+102 Thyrotoxicosis                                                                                                 E05
+103 Other disorders of thyroid                                                                                   / E03-E04
+                                                                                                                 \ E06-E07
+104 Diabetes mellitus                                                                                              E10-E14
+105 Malnutrition                                                                                                   E40-E46
+106 Vitamin A deficiency                                                                                           E50
+107 Other vitamin deficiencies                                                                                     E51-E56
+108 Sequelae of malnutrition and other nutritional deficiencies                                                    E64
+109 Obesity                                                                                                        E66
+110 Volume depletion                                                                                               E86
+111 Other endocrine, nutritional and metabolic disorders                                                         / E15-E35
+                                                                                                                 | E58-E63
+                                                                                                                 | E65
+                                                                                                                 | E67-E85
+                                                                                                                 \ E87-E90
+112 Dementia                                                                                                       F00-F03
+113 Mental and behavioural disorders due to use of alcohol                                                         F10
+114 Mental and behavioural disorders due to other psychoactive substance use                                       F11-F19
+115 Schizophrenia, schizotypal and delusional disorders                                                            F20-F29
+116 Mood [affective] disorders                                                                                     F30-F39
+117 Neurotic, stress-related and somatoform disorders                                                              F40-F48
+118 Mental retardation                                                                                             F70-F79
+119 Other mental and behavioural disorders                                                                       / F04-F09
+                                                                                                                 | F50-F69
+                                                                                                                 \ F80-F99
+120 Inflammatory diseases of the central nervous system                                                            G00-G09
+121 Parkinson's disease                                                                                            G20
+122 Alzheimer's disease                                                                                            G30
+123 Multiple sclerosis                                                                                             G35
+124 Epilepsy                                                                                                       G40-G41
+125 Migraine and other headache syndromes                                                                          G43-G44
+126 Transient cerebral ischaemic attacks and related syndromes                                                     G45
+127 Nerve, nerve root and plexus disorders                                                                         G50-G59
+128 Cerebral palsy and other paralytic syndromes                                                                   G80-G83
+129 Other diseases of the nervous system                                                                         / G10-G13
+                                                                                                                 | G21-G26
+                                                                                                                 | G31-G32
+                                                                                                                 | G36-G37
+                                                                                                                 | G46-G47
+                                                                                                                 | G60-G73
+                                                                                                                 \ G90-G99
+130 Inflammation of eyelid                                                                                         H00-H01
+131 Conjunctivitis and other disorders of conjunctiva                                                              H10-H13
+132 Keratitis and other disorders of sclera and cornea                                                             H15-H19
+133 Cataract and other disorders of lens                                                                           H25-H28
+134 Retinal detachments and breaks                                                                                 H33
+135 Glaucoma                                                                                                       H40-H42
+136 Strabismus                                                                                                     H49-H50
+137 Disorders of refraction and accommodation                                                                      H52
+138 Blindness and low vision                                                                                       H54
+139 Other diseases of the eye and adnexa                                                                         / H02-H06
+                                                                                                                 | H20-H22
+                                                                                                                 | H30-H32
+                                                                                                                 | H34-H36
+                                                                                                                 | H43-H48
+                                                                                                                 | H51,H53
+                                                                                                                 \ H55-H59
+140 Otitis media and other disorders of middle ear and mastoid                                                     H65-H75
+141 Hearing loss                                                                                                   H90-H91
+142 Other diseases of the ear and mastoid process                                                                / H60-H62
+                                                                                                                 | H80-H83
+                                                                                                                 \ H92-H95
+143 Acute rheumatic fever                                                                                          I00-I02
+144 Chronic rheumatic heart disease                                                                                I05-I09
+145 Essential (primary) hypertension                                                                               I10
+146 Other hypertensive diseases                                                                                    I11-I15
+147 Acute myocardial infarction                                                       A0                             I21-I22
+148 Other ischaemic heart diseases                                                                               / I20
+                                                                                                                 \ I23-I25
+149 Pulmonary embolism                                                                                             I26
+150 Conduction disorders and cardiac arrhythmias                                                                   I44-I49
+151 Heart failure                                                                                                  I50
+152 Other heart diseases                                                                                         / I27-I43
+                                                                                                                 \ I51-I52
+153 Intracranial haemorrhage                                                                                       I60-I62
+154 Cerebral infarction                                                                                            I63
+155 Stroke, not specified as haemorrhage or infarction                                                             I64
+156 Other cerebrovascular diseases                                                                                 I65-I69
+157 Atherosclerosis                                                                                                I70
+158 Other peripheral vascular diseases                                                                             I73
+159 Arterial embolism and thrombosis                                                                               I74
+160 Other diseases of arteries, arterioles and capillaries                                                       / I71-I72
+                                                                                                                 \ I77-I79
+161 Phlebitis, thrombophlebitis, venous embolism and thrombosis                                                    I80-I82
+162 Varicose veins of lower extremities                                                                            I83
+163 Haemorrhoids                                                                                                   I84
+164 Other diseases of the circulatory system                                                                       I85-I99
+165 Acute pharyngitis and acute tonsillitis                                                                        J02-J03
+166 Acute laryngitis and tracheitis                                                                                J04
+167 Other acute upper respiratory infections                                                                     / J00-J01
+                                                                                                                 \ J05-J06
+168 Influenza                                                                                                      J10-J11
+169 Pneumonia                                                                                                      J12-J18
+170 Acute bronchitis and acute bronchiolitis                                                                       J20-J21
+171 Chronic sinusitis                                                                                              J32
+172 Other diseases of nose and nasal sinuses                                                                     / J30-J31
+                                                                                                                 \ J33-J34
+173 Chronic disease of tonsils and adenoids                                                                        J35
+174 Other diseases of upper respiratory tract                                                                      J36-J39
+175 Bronchitis, emphysema and other chronic obstructive pulmonary diseases                                         J40-J44
+176 Asthma                                                                                                         J45-J46
+177 Bronchiectasis                                                                                                 J47
+178 Pneumoconiosis                                                                                                 J60-J65
+179 Other diseases of the respiratory system                                                                     / J22
+                                                                                                                 \ J66-J99
+180 Dental caries                                                                                                  K02
+181 Other disorders of teeth and supporting structures                                                           / K00-K01
+                                                                                                                 \ K03-K08
+182 Other diseases of the oral cavity, salivary glands and jaws                                                    K09-K14
+183 Gastric and duodenal ulcer                                                                                     K25-K27
+184 Gastritis and duodenitis                                                                                       K29
+185 Other diseases of oesophagus, stomach and duodenum                                                           / K20-K23
+                                                                                                                 | K28
+                                                                                                                 \ K30-K31
+186 Diseases of appendix                                                                                           K35-K38
+187 Inguinal hernia                                                                                                K40
+188 Other hernia                                                                                                   K41-K46
+189 Crohn's disease and ulcerative colitis                                                                         K50-K51
+190 Paralytic ileus and intestinal obstruction without hernia                                                      K56
+191 Diverticular disease of intestine                                                                              K57
+192 Other diseases of intestines and peritoneum                                                                  / K52-K55
+                                                                                                                 \ K58-K67
+193 Alcoholic liver disease                                                                                        K70
+194 Other diseases of liver                                                                                        K71-K77
+195 Cholelithiasis and cholecystitis                                                                               K80-K81
+196 Acute pancreatitis and other diseases of the pancreas                                                          K85-K86
+197 Other diseases of the digestive system                                                                       / K82-K83
+                                                                                                                 \ K87-K93
+198 Infections of the skin and subcutaneous tissue                                                                 L00-L08
+199 Other diseases of the skin and subcutaneous tissue                                                             L10-L99
+200 Rheumatoid arthritis and other inflammatory polyarthropathies                                                  M05-M14
+201 Arthrosis                                                                                                      M15-M19
+202 Acquired deformities of limbs                                                                                  M20-M21
+203 Other disorders of joints                                                                                    / M00-M03
+                                                                                                                 \ M22-M25
+204 Systemic connective tissue disorders                                                                           M30-M36
+205 Cervical and other intervertebral disk disorders                                                               M50-M51
+206 Other dorsopathies                                                                                           / M40-M49
+                                                                                                                 \ M53-M54
+207 Soft tissue disorders                                                                                          M60-M79
+208 Disorders of bone density and structure                                                                        M80-M85
+209 Osteomyelitis                                                                                                  M86
+210 Other diseases of the musculoskeletal system and connective tissue                                             M87-M99
+211 Acute and rapidly progressive nephritic syndromes                                                              N00-N01
+212 Other glomerular diseases                                                                                      N02-N08
+213 Renal tubulo-interstitial diseases                                                                             N10-N16
+214 Renal failure                                                                                                  N17-N19
+215 Urolithiasis                                                                                                   N20-N23
+216 Cystitis                                                                                                       N30
+217 Other diseases of the urinary system                                                                         / N25-N29
+                                                                                                                 \ N31-N39
+218 Hyperplasia of prostate                                                                                        N40
+219 Other disorders of prostate                                                                                    N41-N42
+220 Hydrocele and spermatocele                                                                                     N43
+221 Redundant prepuce, phimosis and paraphimosis                                                                   N47
+222 Other diseases of male genital organs                                                                        / N44-N46
+                                                                                                                 \ N48-N51
+223 Disorders of breast                                                                                            N60-N64
+224 Salpingitis and oöphoritis                                                                                     N70
+225 Inflammatory disease of cervix uteri                                                                           N72
+226 Other inflammatory diseases of female pelvic organs                                                          / N71
+                                                                                                                 \ N73-N77
+227 Endometriosis                                                                                                  N80
+228 Female genital prolapse                                                                                        N81
+229 Noninflammatory disorders of ovary, Fallopian tube and broad ligament                                          N83
+230 Disorders of menstruation                                                                                      N91-N92
+231 Menopausal and other perimenopausal disorders                                                                  N95
+232 Female infertility                                                                                             N97
+233 Other disorders of genito-urinary tract                                                                      / N82
+                                                                                                                 | N84-N90
+                                                                                                                 | N93-N94
+                                                                                                                 | N96
+                                                                                                                 \ N98-N99
+234 Spontaneous abortion                                                                                           O03
+235 Medical abortion                                                                                               O04
+236 Other pregnancies with abortive outcome                                                                      / O00-O02
+                                                                                                                 \ O05-O08
+237 Oedema, proteinuria and hypertensive disorders in pregnancy, childbirth and the puerperium                     O10-O16
+238 Placenta praevia, premature separation of placenta and antepartum haemorrhage                                  O44-O46
+239 Other maternal care related to foetus and amniotic cavity and possible delivery problems                     / O30-O43
+                                                                                                                 \ O47-O48
+240 Obstructed labour                                                                                              O64-O66
+241 Postpartum haemorrhage                                                                                         O72
+242 Other complications of pregnancy and delivery                                                                / O20-O29
+                                                                                                                 | O60-O63
+                                                                                                                 | O67-O71
+                                                                                                                 | O73-O75
+                                                                                                                 \ O81-O84
+243 Single spontaneous delivery                                                                                    O80
+244 Complications predominantly related to the puerperium and other obstetric conditions, not elsewhere classified O85-O99
+245 Foetus and newborn affected by maternal factors and by complications of pregnancy, labour and delivery         P00-P04
+246 Slow foetal growth, foetal malnutrition and disorders related to short gestation and low birth weight          P05-P07
+247 Birth trauma                                                                                                   P10-P15
+248 Intrauterine hypoxia and birth asphyxia                                                                        P20-P21
+249 Other respiratory disorders originating in the perinatal period                                                P22-P28
+250 Congenital infectious and parasitic diseases                                                                   P35-P37
+251 Other infections specific to the perinatal period                                                              P38-P39
+252 Haemolytic disease of foetus and newborn                                                                       P55
+253 Other conditions originating in the perinatal period                                                         / P08,P29
+                                                                                                                 | P50-P54
+                                                                                                                 \ P56-P96
+254 Spina bifida                                                                                                   Q05
+255 Other congenital malformations of the nervous system                                                         / Q00-Q04
+                                                                                                                 \ Q06-Q07
+256 Congenital malformations of the circulatory system                                                             Q20-Q28
+257 Cleft lip and cleft palate                                                                                     Q35-Q37
+258 Absence, atresia and stenosis of small intestine                                                               Q41
+259 Other congenital malformations of the digestive system                                                       / Q38-Q40
+                                                                                                                 \ Q42-Q45
+260 Undescended testicle                                                                                           Q53
+261 Other malformations of the genito-urinary system                                                             / Q50-Q52
+                                                                                                                 \ Q54-Q64
+262 Congenital deformities of hip                                                                                  Q65
+263 Congenital deformities of feet                                                                                 Q66
+264 Other congenital malformations and deformations of the musculoskeletal system                                  Q67-Q79
+265 Other congenital malformations                                                                               / Q10-Q18
+                                                                                                                 | Q30-Q34
+                                                                                                                 \ Q80-Q89
+266 Chromosomal abnormalities, not elsewhere classified                                                            Q90-Q99
+267 Abdominal and pelvic pain                                                                                      R10
+268 Fever of unknown origin                                                                                        R50
+269 Senility                                                                                                       R54
+270 Other symptoms, signs and abnormal clinical and laboratory findings, not elsewhere classified                / R00-R09
+                                                                                                                 | R11-R49
+                                                                                                                 | R51-R53
+                                                                                                                 \ R55-R99
+271 Fracture of skull and facial bones                                                                             S02
+272 Fracture of neck, thorax or pelvis                                                                           / S12,S22
+                                                                                                                 \ S32,T08
+273 Fracture of femur                                                                                              S72
+274 Fractures of other limb bones                                                                                / S42,S52
+                                                                                                                 | S62,S82
+                                                                                                                 | S92,T10
+                                                                                                                 \ T12
+275 Fractures involving multiple body regions                                                                      T02
+276 Dislocations, sprains and strains of specified and multiple body regions                                     / S03,S13
+                                                                                                                 | S23,S33
+                                                                                                                 | S43,S53
+                                                                                                                 | S63,S73
+                                                                                                                 | S83,S93
+                                                                                                                 \ T03
+277 Injury of eye and orbit                                                                                        S05
+278 Intracranial injury                                                                                            S06
+279 Injury of other internal organs                                                                              / S26-S27
+                                                                                                                 \ S36-S37
+280 Crushing injuries and traumatic amputations of specified and multiple body regions                           / S07-S08
+                                                                                                                 | S17-S18
+                                                                                                                 | S28,S38
+                                                                                                                 | S47-S48
+                                                                                                                 | S57-S58
+                                                                                                                 | S67-S68
+                                                                                                                 | S77-S78
+                                                                                                                 | S87-S88
+                                                                                                                 | S97-S98
+                                                                                                                 \ T04-T05
+281 Other injuries of specified, unspecified and multiple body regions                                           / S00-S01
+                                                                                                                 | S04
+                                                                                                                 | S09-S11
+                                                                                                                 | S14-S16
+                                                                                                                 | S19-S21
+                                                                                                                 | S24-S25
+                                                                                                                 | S29-S31
+                                                                                                                 | S34-S35
+                                                                                                                 | S39-S41
+                                                                                                                 | S44-S46
+                                                                                                                 | S49-S51
+                                                                                                                 | S54-S56
+                                                                                                                 | S59-S61
+                                                                                                                 | S64-S66
+                                                                                                                 | S69-S71
+                                                                                                                 | S74-S76
+                                                                                                                 | S79-S81
+                                                                                                                 | S84-S86
+                                                                                                                 | S89-S91
+                                                                                                                 | S94-S96
+                                                                                                                 | S99
+                                                                                                                 | T00-T01
+                                                                                                                 | T06-T07
+                                                                                                                 | T09,T11
+                                                                                                                 \ T13-T14
+282 Effects of foreign body entering through natural orifice                                                       T15-T19
+283 Burns and corrosions                                                                                           T20-T32
+284 Poisoning by drugs and biological substances                                                                   T36-T50
+285 Toxic effects of substances chiefly nonmedicinal as to source                                                  T51-T65
+286 Maltreatment syndromes                                                                                         T74
+287 Other and unspecified effects of external causes                                                             / T33-T35
+                                                                                                                 | T66-T73
+                                                                                                                 \ T75-T78
+288 Certain early complications of trauma and complications of surgical and medical care, not elsewhere classified T79-T88
+289 Sequelae of injuries, of poisoning and of other consequences of external causes                                T90-T98
+290 Persons encountering health services for examination and investigation                                         Z00-Z13
+291 Aymptomatic human immunodeficiency virus [HIV] infection status                                                Z21
+292 Other persons with potential health hazards related to communicable disease                                  / Z20
+                                                                                                                 \ Z22-Z29
+293 Contraceptive management                                                                                       Z30
+294 Antenatal screening and other supervision of pregnancy                                                         Z34-Z36
+295 Liveborn infants according to place of birth                                                                   Z38
+296 Postpartum care and examination                                                                                Z39
+297 Persons encountering health services for specific procedures and health care                                   Z40-Z54
+298 Persons encountering health services for other reasons                                                       / Z31-Z33
+                                                                                                                 | Z37
+                                                                                                                 \ Z55-Z99

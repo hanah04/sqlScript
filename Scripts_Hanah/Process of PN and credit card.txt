@@ -1,0 +1,10 @@
+4233971
+1.Apply PN
+ 2. Batch AR posting
+*to unpost PN, unpost AR transfer (magzero ung balance sa AR)
+
+Credit Card Payment
+>Cash Receipt
+>Batch Post to Ar (Others tab)
+>Go to CM
+

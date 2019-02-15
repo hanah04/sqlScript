@@ -1,0 +1,57 @@
+declare @glBook nvarchar(10), 
+		@FK_psDatacenter int, 
+		@FK_faGLAcctGrp nvarchar(30), 
+		@docType nvarchar(10), 
+		@docNo int,
+		@debit decimal(14,2),
+		@glperiod smalldatetime,
+		@wareId smallint,
+		@patinvTrxno bigint,
+		@patinv_Trxno_Jvmstr bigint, 
+		@newTrxno bigint,
+		@newJvno bigint,
+		@lastClosingdate datetime = (select isnull((select max(periodend) from mscGLPeriodDtls where isclosed = 1), '01/01/1900')),
+		@trangroup nvarchar(30)
+
+declare c cursor for
+	select 
+		glbook,
+		FK_psDatacenter, 
+		FK_faGLAcctGrp, 
+		doctype, 
+		docno, 
+		glperiod = max(glperiod),
+		SUM(debit) as debit, 
+		trangroup
+	from
+			faGL 
+	where 
+			glperiod > @lastClosingdate and glbook = 'JB' and FK_TRXNO = '0' and trangroup in ('AR','SA')
+	group by 
+			FK_psDatacenter, FK_faGLAcctGrp, doctype, docno, glbook, trangroup
+		
+Open c	
+Fetch next From c into @glBook, @FK_psDatacenter, @FK_faGLAcctGrp, @docType, @docNo, @glperiod, @debit, @trangroup
+
+While @@Fetch_Status = 0 
+Begin
+	if (@trangroup in ('AR','SA'))
+	Begin
+	delete fagl 
+	--update fagl set remarks = 'True' 
+			where FK_TRXNO = 0 and 
+			glbook = 'JB' and trangroup in ('AR','SA') and doctype = @docType and
+			docno = @docNo and FK_faGLAcctGrp = @FK_faGLAcctGrp and FK_psDatacenter = @FK_psDatacenter
+	End 
+
+	Fetch next From c into @glBook, @FK_psDatacenter, @FK_faGLAcctGrp, @docType, @docNo, @glperiod, @debit, @trangroup
+End
+
+Close c
+Deallocate c
+
+
+
+
+
+

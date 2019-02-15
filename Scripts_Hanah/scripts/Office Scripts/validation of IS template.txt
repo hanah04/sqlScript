@@ -1,0 +1,51 @@
+/*Income Statement Template*/
+/*Validation of General Ledger entries not assigned on IS template departmental*/
+
+----Unassigned GL entries
+SELECT DISTINCT  
+Glcode = (a.FK_faGLAcct+ '-' +a.FK_faGLAcctGrp+ '-' +a.FK_faGLAcctGrp2),
+Gldesc = (b.description 
++ case when a.fk_faglacctgrp <> '000000' then '-' else '' end
++ case when a.fk_faglacctgrp <> '000000' then c.description else '' end
++ case when a.FK_faGLAcctGrp2 <> '000000' then '-' else '' end
++ case when a.fk_faglacctgrp2 <> '000000' then d.description else '' end)
+from faGL as a join 
+faGLAcct as b on a.FK_faGLAcct = b.PK_faGlAcct 
+left outer join faGLAcctGrp as c on a.FK_faGLAcctGrp = c.PK_faGLAcctGrp
+left outer join faGLAcctGrp as d on a.FK_faGLAcctGrp2 = d.PK_faGLAcctGrp
+WHERE b.accttype in ('D','E') and convert(nvarchar,a.glperiod,101) between
+'07/01/2014' and '08/31/2014' and
+(a.FK_faGLAcct + a.FK_faGLAcctGrp + a.FK_faGLAcctGrp2) NOT IN
+(select FK_faGLAcct + FK_faGLAcctGrp + FK_faGLAcctGrp2 from faGLISClassAcctsOpt2
+where FK_faGLISClass in 
+(select PK_faGLISClass from faGLISClass where FK_faGLFSReports = '1004')) 
+order by GLcode
+
+
+----Duplicate GL entries assigned
+select * from 
+(select Glcode = (FK_faGLAcct+ '-' +FK_faGLAcctGrp+ '-' +FK_faGLAcctGrp2),FK_faGLISClass,a.acctclass,acctdesc from faGLISClassAcctsOpt2 as a
+ join faGLISClass as b on a.FK_faGLISClass = b.PK_faGLISClass where b.FK_faGLFSReports = '1004') as x
+where x.Glcode in
+(select 
+Glcode
+from
+(select Glcode = (FK_faGLAcct+ '-' +FK_faGLAcctGrp+ '-' +FK_faGLAcctGrp2) from faGLISClassAcctsOpt2 where FK_faGLISClass in
+(select PK_faglisclass from faGLISClass where FK_faGLFSReports = '1004')) as a
+group by glcode
+having COUNT(Glcode) > '1')
+
+select distinct a.acctclass
+from faGLISClassAcctsOpt2 a join faGLISClass as b on a.FK_faGLISClass = b.PK_faGLISClass where b.FK_faGLFSReports = '1004'
+and FK_faGLAcct = '000-51607'
+
+
+
+
+
+
+
+
+
+
+

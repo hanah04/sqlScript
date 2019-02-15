@@ -1,0 +1,32 @@
+Select
+f.docdate,
+f.docno,
+dbo.udf_GetFullName(f.FK_psDatacenter) as Doctor,
+f.amount,
+f.netamount,
+SUM(e.Amount) as tagAmount,
+SUM(b.Amount) as PFamount,
+SUM(e.Amount-b.amount) as shouldbe
+
+From psDctrLedgers a
+inner join faCRMstrPF b on a.PK_TRXNO = b.FK_TRXNO_psDctrLedgers
+inner join faCRMstrPFCh c on a.PK_TRXNO = c.FK_TRXNO_psDctrLedgers
+inner join faCRMstr d on b.FK_TRXNO_faCRMstr = d.PK_TRXNO and c.FK_TRXNO_faCRMstr = d.PK_TRXNO
+inner join faCRMstrPFRemitCH e on c.PK_faCRMstrPFCh = e.FK_faCRMstrPFCH
+inner join faVPMstr f on e.FK_TRXNO_faVPMstr = f.PK_TRXNO and f.cancelflag = 0
+where d.cancelflag = 0 and d.PK_TRXNO in 
+------------------------------------------------------------------
+(Select CRPK from (Select d.PK_TRXNO as CRPK,sum(a.amount) as amount,
+sum(a.netamount) as netamount,sum(b.Amount) as remitPF,
+(Select SUM(x.amount) from faCRMstrPF x inner join faCRMstr y on x.FK_TRXNO_faCRMstr = y.PK_TRXNO
+where y.PK_TRXNO = d.PK_TRXNO and y.cardamount <> 0 and y.pfamount <> 0 ) as PF
+from faVPMstr a
+inner join faCRMstrPFRemitCH b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr
+inner join faCRMstrPFCh c on b.FK_faCRMstrPFCH = c.PK_faCRMstrPFCh
+inner join faCRMstr d on c.FK_TRXNO_faCRMstr = d.PK_TRXNO
+where d.cardamount <> 0 and d.pfamount <> 0 and d.paysource = 'P'
+Group by d.PK_TRXNO) as a where remitPF <> PF)
+-------------------------------------------------------------------
+group by f.FK_psDatacenter,f.amount,f.netamount,f.docdate,f.docno
+
+having SUM(e.Amount-b.amount) <> 0

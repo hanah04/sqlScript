@@ -1,0 +1,4 @@
+multiple list of supplier category in suppliers master file
+
+
+delete faVendorsCateg where FK_faVendors = 1228

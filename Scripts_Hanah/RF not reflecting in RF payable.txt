@@ -1,0 +1,38 @@
+/**Below script is applicable only to a specific scenario : 
+RF settings = per item 
+RF Computation Type = Rated **/
+
+select 
+a.FK_emdDoctors,
+a.fk_pspatregisters, 
+a.rfcomptype, 
+a.rfbase, 
+a.rfamount, 
+a.rfshareamount, 
+a.rfshare,
+a.renprice,a.fk_pspatitem,
+RFFEE = cast(round(a.renprice * (b.rfbase / 100),2)  * (a.rfshare/100) as numeric(12,2)) 
+from psExamResultReaders a 
+			inner join emdDoctorRFTemplate b on a.FK_iwItems = b.FK_iwItems 
+					and a.FK_emdDoctors = b.FK_emdDoctors		
+where a.rfcomptype = 'R'
+and a.rfcomptype = b.rfcomptype
+and a.isRemitted = 0
+and cast(round(a.renprice * (b.rfbase / 100),2)  * (a.rfshare/100) as numeric(12,2))  != a.rfamount
+--and a.FK_psPatRegisters = 35002 and  a.FK_psPatitem = 427369
+
+IF(select value from appsysGlobalSettings where settingcode = 'ExaminationReadersFeeApplicationSetting') = 'A'
+Begin 
+
+
+	update a set a.rfamount = cast(round(a.renprice * (b.rfbase / 100),2)  * (a.rfshare/100) as numeric(12,2)),
+	a.rfshareamount = cast(round(a.renprice * (b.rfbase / 100),2)  * (a.rfshare/100) as numeric(12,2))  
+	  from psExamResultReaders a 
+				inner join emdDoctorRFTemplate b on a.FK_iwItems = b.FK_iwItems 
+						and a.FK_emdDoctors = b.FK_emdDoctors
+				where a.rfcomptype = 'R'
+				and a.rfcomptype = b.rfcomptype
+				and a.isRemitted = 0
+				and cast(round(a.renprice * (b.rfbase / 100),2)  * (a.rfshare/100) as numeric(12,2))  != a.rfamount
+				--and a.FK_psPatRegisters = 6740 and  a.FK_psPatitem = 58191
+End

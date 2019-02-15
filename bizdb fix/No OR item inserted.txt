@@ -1,0 +1,18 @@
+--INSERT INTO [dbo].[faCRMstrItems]
+--		   ([FK_psPatRegisters],[FK_TRXNO_psPatinv],[FK_psPatitem]
+--           ,[registryclass],[FK_TRXNO_faCRMstr],[amount],[vatrate]
+--           ,[vatprice],[FK_TRXNO_faCRMstrRef],[netRFdisc],[rfdiscount],[FK_TRXNO_Reference])
+
+select a.FK_psPatRegisters ,a.FK_TRXNO ,PK_psPatitem ,'A' 
+	,'5797744' ,oramount ,0.00 ,0.00 ,0, 0.00 ,0.00,'5797744'
+From  psPatitem a left join faCRMstrItems  b 
+on a.FK_psPatRegisters=b.FK_psPatRegisters and b.FK_psPatitem=a.PK_psPatitem
+ 
+where a.FK_psPatRegisters=438498 and oramount<>0
+and FK_psPatitem is null
+
+
+select*
+--update faCRMstr set hbamount=hbamount+91,appliedamount=appliedamount+91
+From faCRMstr where FK_psPatRegisters=438498 and cancelflag<>1
+

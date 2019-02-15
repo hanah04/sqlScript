@@ -1,0 +1,13 @@
+select * from fagl where docno = 825808 and doctype = 'AC'
+--update faGL set auditflag = 0, auditdate = NULL where  docno = 825808 and doctype = 'AC' 
+--update faGL set FK_faGLA = 0, fk_asuaudit = 0, ispreclosing = 0 where  docno = 825808 and doctype = 'AC'
+
+where auditflag = 0 and glperiod between '09/01/2015' and '09/30/2015' 
+
+2015-11-03 16:44:00
+319691
+327426
+319691
+327426
+
+select * from fagla where pk_fagla in (319691,327426,339557)

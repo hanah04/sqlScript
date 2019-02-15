@@ -1,0 +1,29 @@
+
+select
+PK_psPatitem id, patinv.PK_TRXNO transacno, FK_iwItemsREN itemid,dbo.udf_GetItemDescription(FK_iwItemsREN)itemdesc
+ ,patitem.rendate
+ ,renprice,renqty,(select cast(sum(patb.renprice*patb.renqty) as decimal(35,2)) from psPatitem patb where patitem.PK_psPatitem=patb.PK_psPatitem) totalprice  
+ ,(select cast(sum(renprice*renqty)as decimal(35,2)) From psPatitem a where a.FK_TRXNO=patinv.PK_TRXNO) patitemprice
+ ,patinv.amount patinvprice , 
+ case when patinv.doctype<>'CN' then  patledg.debit else patledg.credit end as patledgerprice,
+  patinv.reqamount,patinv.renamount,patinv.netamount,
+  cast((abs(patinv.netamount) - (select abs(cast(sum(renprice*renqty)as decimal(35,2))) From psPatitem a where a.FK_TRXNO=patinv.PK_TRXNO)) /(select abs(cast(sum(renqty)as decimal(35,2))) From psPatitem a where a.FK_TRXNO=patinv.PK_TRXNO)as decimal(35,2))
+  
+--update patitem set renprice=renprice+ cast((abs(patinv.netamount) - (select abs(cast(sum(renprice*renqty)as decimal(35,2))) From psPatitem a where a.FK_TRXNO=patinv.PK_TRXNO)) /(select abs(cast(sum(renqty)as decimal(35,2))) From psPatitem a where a.FK_TRXNO=patinv.PK_TRXNO)as decimal(35,2))
+--update patitem set renprice=46.336
+From pspatitem patitem
+JOIN psPatinv patinv on patitem.FK_TRXNO=patinv.PK_TRXNO
+JOIN  psPatLedgers patledg on patitem.FK_TRXNO=patledg.FK_TRXNO
+ where
+  (select cast(sum(renprice*renqty)as decimal(35,2)) From psPatitem a where a.FK_TRXNO=patinv.PK_TRXNO)<> 
+ patinv.renamount
+ and 
+ 
+ patitem.FK_psPatRegisters=801857--patient registry tracking no.
+ --and PK_psPatitem=4322895
+ 
+ --select SUM(renprice*renqty),SUM(cnamount) from psPatitem where FK_psPatRegisters=374003
+ --select amount,netamount,* from psPatinv where FK_psPatRegisters=374003 and docno=464536
+ --update psPatinv set amount='-283',netamount='-283' where FK_psPatRegisters=374003 and docno=464536  --dati 428
+ --select credit,* from psPatLedgers where FK_psPatRegisters=374003 and docno=464536
+ --update psPatLedgers set credit='283' where FK_psPatRegisters=374003 and docno=464536  --dati 428

@@ -1,0 +1,144 @@
+
+declare @FK_TRXNO bigint,
+		@glbook varchar(20),
+		@trangroup varchar(20),
+		@doctype varchar(20),
+		@debit decimal(20,2),
+		@credit decimal(20, 2),
+		@dif decimal(20, 2)
+
+declare @TranAmount decimal(20, 2),
+		@glCount int,
+		@sql nvarchar(max),
+		@sumMemoAmt  decimal(20, 2),
+		@PFClearingAcct nvarchar(10) = isnull((select value from appsysGlobalSettings where settingcode = 'AccountsPayablePFClearing'), 'XXXX-XXXX')
+
+declare @FK_FaGLAcct varchar(10),
+		@FK_FaGLAcctGrp varchar(10),
+		@FK_FaGLAcctGrp2 varchar(10),
+		@memoamount decimal(20, 2)
+
+declare a cursor for
+					select	
+							FK_TRXNO,
+							glbook,
+							trangroup,
+							doctype,
+							debit = sum(debit),
+							credit = sum(credit),
+							dif = abs(sum(debit - credit))
+					from 
+							fagl 
+					group by
+							FK_TRXNO,
+							glbook,
+							trangroup,
+							doctype
+					having 
+							abs(round(sum(debit) - sum(credit),2)) between 0.01 and 1.00
+		
+open a
+
+	Fetch Next from a into @FK_TRXNO, @glbook, @trangroup, @doctype, @debit, @credit, @dif
+
+	While (@@FETCH_STATUS = 0)
+	Begin
+
+		set @glCount = (select Count(*) from fagl where FK_TRXNO = @FK_TRXNO)
+
+		If (@glbook = 'JB' and @trangroup = 'CM' and @doctype = 'CM')
+		Begin
+			set @TranAmount = isnull((select amount from faDMCMPayer where PK_TRXNO = @FK_TRXNO),0)
+
+			if (@glCount = 2)
+			Begin
+				set @sql =  '
+								Update fagl set 
+									debit = case when debit > 0 then ' + Convert(varchar(24), @TranAmount) + ' else 0 end,
+									credit = case when credit > 0 then ' + Convert(varchar(24), @TranAmount) + ' else 0 end
+								where
+									FK_TRXNO = ' + Convert(varchar(24), @FK_TRXNO)
+
+				Exec (@sql)
+			End
+			Else
+			Begin
+				declare b cursor for 
+									select
+										FK_faGLAcct = case when b.artype = 'PF' then @PFClearingAcct else d.FK_faGLAcct end,
+										FK_faGLAcctGrp = case when b.artype = 'PF' then '000000' else d.FK_faGLAcctGrp end,
+										FK_faGLAcctGrp2 = case when b.artype in ('PF', 'OT') then '000000' else 
+															case when e.isbeginningbalance = 1 then '000000' else e.FK_faGLAcctGrp end
+														 end,
+										memoamount = round(sum(a.memoamount),2)
+									from faDMCMPayerTrans as a
+									inner join faarinv as b on a.FK_TRXNO_faArinv = b.PK_TRXNO
+									inner join faCustomers as c on b.FK_faCustomers = c.PK_faCustomers
+									left outer join mscCustomerTypes as d on c.FK_mscCustomerTypes = d.PK_mscCustomerTypes
+									left outer join mscTranTypesAR as e on b.FK_mscTranTypesAR = e.PK_mscTranTypesAR
+
+
+									where a.FK_TRXNO = @FK_TRXNO
+									group by case when b.artype = 'PF' then @PFClearingAcct else d.FK_faGLAcct end,
+											case when b.artype = 'PF' then '000000' else d.FK_faGLAcctGrp end,
+											case when b.artype in ('PF', 'OT') then '000000' else 
+														case when e.isbeginningbalance = 1 then '000000' else e.FK_faGLAcctGrp end
+														end
+				open b
+					Fetch Next from b into @FK_FaGLAcct, @FK_FaGLAcctGrp, @FK_FaGLAcctGrp2, @memoamount
+					while (@@FETCH_STATUS = 0)
+					Begin
+						set @sql =  'update fagl set credit = ' +  Convert(varchar(24), @memoamount) + ' where FK_TRXNO = ' +  Convert(varchar(24), @FK_TRXNO) + '
+							and FK_faGLAcct = ''' +  Convert(varchar(24), @FK_FaGLAcct) + '''
+							and FK_faGLAcctGrp = ''' +  Convert(varchar(24), @FK_FaGLAcctGrp) + '''
+							and FK_faGLAcctGrp2 = ''' +  Convert(varchar(24), @FK_FaGLAcctGrp2) + ''''
+
+
+						exec (@sql)
+
+						Fetch Next from b into @FK_FaGLAcct, @FK_FaGLAcctGrp, @FK_FaGLAcctGrp2, @memoamount	
+					End
+				close b
+				deallocate b
+
+				if (select Count(*) from faGL where FK_TRXNO = @FK_TRXNO and debit > 0) = 1
+				Begin
+					set @sumMemoAmt = isnull((select
+													round(sum(a.memoamount),2)
+												from 
+													faDMCMPayerTrans as a
+													inner join faarinv as b on a.FK_TRXNO_faArinv = b.PK_TRXNO
+											where 
+													a.FK_TRXNO = @FK_TRXNO),0)
+					set @sql = 'update faGL set debit = ''' +  Convert(varchar(24), @sumMemoAmt) + ''' where FK_TRXNO = ''' +  Convert(varchar(24), @FK_TRXNO) + ''' and debit > 0'
+					exec (@sql)
+				End
+			End
+		End
+
+		If (@glbook = 'JB' and @trangroup = 'CM' and @doctype = 'JV')
+		Begin
+			set @TranAmount = isnull((select amount from faJVMstr where PK_TRXNO = @FK_TRXNO),0)
+
+			if (@glCount = 2)
+			Begin
+				set @sql =  '
+								Update fagl set 
+									debit = case when debit > 0 then ' + Convert(varchar(24), @TranAmount) + ' else 0 end,
+									credit = case when credit > 0 then ' + Convert(varchar(24), @TranAmount) + ' else 0 end
+								where
+									FK_TRXNO = ' + Convert(varchar(24), @FK_TRXNO)
+
+				exec (@sql)
+			End
+		End
+
+
+
+
+
+		Fetch Next from a into @FK_TRXNO, @glbook, @trangroup, @doctype, @debit, @credit, @dif
+	End
+
+close a
+deallocate a

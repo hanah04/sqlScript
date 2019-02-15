@@ -1,0 +1,7 @@
+update aa set amount = bb.memoamount from 
+faDMCMPayer as aa inner join
+(select a.PK_TRXNO, a.amount, memoamount = sum(b.memoamount) from faDMCMPayer as a
+inner join faDMCMPayerTrans as b on a.PK_TRXNO = b.FK_TRXNO
+where a.iscreditadvice = 1
+group by a.PK_TRXNO, a.amount 
+having a.amount != sum(b.memoamount)) as bb on aa.PK_TRXNO = bb.PK_TRXNO

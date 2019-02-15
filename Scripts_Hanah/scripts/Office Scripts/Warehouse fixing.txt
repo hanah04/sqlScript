@@ -1,0 +1,6 @@
+select * 
+--update a set isTrade = 0, isViewable = 0
+from iwWareitem a
+where a.FK_iwItems in (select PK_iwItems from iwItems where itemgroup = 'EXM')
+and a.FK_mscWarehouse not in (select PK_mscWarehouse from mscWarehouse where isExams = 1)
+and a.isTrade = 1 and a.isViewable = 1

@@ -1,0 +1,90 @@
+declare @PK_TRXNO bigint,
+		@Difference decimal(20,2),
+		@RemainingDif decimal(20,2),
+		@PK_faDMCMPayerTrans int, 
+		@FK_TRXNO_faArinv bigint, 
+		@memoamount decimal(20,2),
+		@cancelflag bit,
+		@credit decimal(20,2)
+
+declare @sql nvarchar(max)
+
+declare a cursor for
+					select 
+							a.PK_TRXNO,
+							sum(memoamount) - a.amount
+
+					from 
+							faDMCMPayer as a
+							inner join faDMCMPayerTrans as b on a.PK_TRXNO = b.FK_TRXNO
+					where
+							a.cancelflag = 0 --and a.ewtamount > 0
+					group by
+							a.PK_TRXNO, a.amount
+					having 
+							round(a.amount,2) != round(sum(memoamount),2)
+
+Open a
+
+Fetch Next From a into @PK_TRXNO, @Difference
+
+While (@@FETCH_STATUS = 0)
+Begin
+	if (@Difference > 0)
+	Begin
+		declare b cursor for
+								select PK_faDMCMPayerTrans, FK_TRXNO_faArinv, memoamount 
+								from faDMCMPayerTrans 
+								where FK_TRXNO = @PK_TRXNO
+		Open b
+		Fetch Next From b into @PK_faDMCMPayerTrans, @FK_TRXNO_faArinv, @memoamount 
+
+		While (@@FETCH_STATUS = 0)
+		Begin
+			set @sql = ''
+
+			If Exists (select * from faArledgers where FK_TRXNO = @FK_TRXNO_faArinv and FK_TRXNO_CM = @PK_TRXNO)
+			Begin
+				select @cancelflag = cancelflag, @credit = credit from faArledgers where FK_TRXNO = @FK_TRXNO_faArinv and FK_TRXNO_CM = @PK_TRXNO
+
+				if (@cancelflag = 1)
+				Begin
+					if (@memoamount > 0)
+					Begin
+						set @sql = 'Update faDMCMPayerTrans set memoamount = 0.00 where PK_faDMCMPayerTrans = ' + Convert(varchar(20), @PK_faDMCMPayerTrans)
+					End
+				End
+				Else
+				Begin
+					if (@credit != @memoamount)
+					Begin
+						set @sql =  Convert(varchar(20), @PK_faDMCMPayerTrans) + ' - ' +  Convert(varchar(20), @Difference)
+
+						set @sql = 'Update faDMCMPayerTrans set memoamount = ' + Convert(varchar(20), @credit) + ' where PK_faDMCMPayerTrans = ' + Convert(varchar(20), @PK_faDMCMPayerTrans)
+					End
+				End
+			End
+			Else
+			Begin
+				set @sql = '--Please check this row manually and then corresponding faArledgers for realistic action - select * from faDMCMPayerTrans where PK_faDMCMPayerTrans = ' + Convert(varchar(20), @PK_faDMCMPayerTrans)
+			End
+
+			if (@sql != '')
+			Begin
+				print @sql
+			End
+			Fetch Next From b into @PK_faDMCMPayerTrans, @FK_TRXNO_faArinv, @memoamount 
+		End
+		Close b
+		Deallocate b
+	End
+	Else
+	Begin
+			set @sql = '--Please check this row manually and then corresponding faArledgers and faDMCMPayerTrans for realistic action - select * from faDMCMPayer where PK_TRXNO= ' + Convert(varchar(20), @PK_TRXNO)
+			print @sql
+	End
+
+	Fetch Next From a into @PK_TRXNO, @Difference
+End
+Close a
+Deallocate a

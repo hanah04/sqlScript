@@ -1,0 +1,75 @@
+
+declare @RefTrxno bigint,
+		@CMAmount decimal (20,2),
+		@CMbalance decimal (20,2),
+		@RemainingCMbalance decimal (20,2),
+		@PK_faArledgers int,
+		@credit decimal (20,2),
+		@Count int
+
+declare @sql nvarchar(max)
+
+Declare a cursor for
+					select 
+							RefTrxno, 
+							CMAmount = Round(sum(cmamount),2),
+							CMbalance = Round(sum(cmamount - credit),2) 
+					from (
+							select 
+								RefTrxno = case when artype = 'CM' then FK_TRXNO else FK_TRXNO_CM end,
+								a.FK_TRXNO,
+								a.FK_TRXNO_CR,
+								a.FK_TRXNO_CM,
+								a.FK_faCustomers,
+								a.artype,
+								a.crtype,
+								a.doctype,
+								debit =  case when a.doctype not in ('OR', 'CM') then a.debit else 0 end,
+								credit = case when a.doctype in ('OR', 'CM') then a.credit else 0 end,
+								cramount = case when artype = 'OR' then cramount else 0 end,
+								cmamount = case when artype = 'CM' then cmamount else 0 end
+			
+							from 
+								faArledgers as a
+							where
+								a.cancelflag = 0 and a.deleteflag = 0 and doctype = 'CM' --and  FK_faCustomers = '2180'
+								) as tmp
+					group by RefTRXNO
+					having  Round(sum(cmamount - credit),2) != 0
+					order by RefTRXNO
+
+
+Open a
+
+	Fetch Next From a into @RefTrxno, @CMAmount, @CMbalance
+	While (@@FETCH_STATUS = 0)
+	Begin
+		if (@CMbalance > 0)
+		Begin
+			set @sql = ''
+			set @RemainingCMbalance = @CMbalance
+			select @Count = Count(*) from faArledgers where FK_TRXNO_CM = @RefTrxno and cancelflag = 0 and credit > 0
+
+
+			if (@Count = 0 or @CMbalance = @CMAmount)
+			Begin
+				set @sql = '
+							update faArledgers set cancelflag = 1 where FK_TRXNO = ' + Convert(varchar(30), @RefTrxno) + '
+							update faDMCMPayer set cancelflag = 1 where PK_TRXNO = ' + Convert(varchar(30), @RefTrxno) 
+						
+			End
+			Else
+			Begin
+
+			
+				set @sql = '
+							update faArledgers set cmamount = cmamount - ' + Convert(varchar(30), @CMbalance)+ ' where FK_TRXNO = ' + Convert(varchar(30), @RefTrxno) + '
+							update faDMCMPayer set amount = amount - ' + Convert(varchar(30), @CMbalance)+ ' where PK_TRXNO = ' + Convert(varchar(30), @RefTrxno) 
+			End
+
+			print @sql
+		End
+		Fetch Next From a into @RefTrxno, @CMAmount, @CMbalance
+	End
+Close a
+Deallocate a

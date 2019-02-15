@@ -1,0 +1,37 @@
+IF EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[vwItemCompDtls]'))
+EXEC dbo.sp_executesql @statement = N'
+                            ALTER view [dbo].[vwItemCompDtls]
+                            as
+                            select  a.*, 
+		                            dbo.udf_GetItemDescription(a.FK_iwItemsRA) as [itemdesc], 
+		                            b.barcodeid,
+									b.isInventory,
+		                            c.UpdtComp	from psPatItemComp a
+
+                            inner join iwItems b
+                            on a.FK_iwItemsRA = b.PK_iwItems
+
+                            inner join psPatItem c
+                            on a.FK_psPatItem = c.PK_psPatitem
+
+                            group by	a.PK_psPatItemComp,
+			                            a.FK_psPatItem, 
+			                            a.FK_iwItems,
+			                            a.FK_TRXNO, 
+			                            b.itemdesc, 
+			                            a.qty, 
+			                            a.unit,
+			                            a.FK_mscWarehouse,
+			                            a.FK_ASUPost,
+			                            a.purcprice,
+			                            a.postdate,
+			                            a.FK_iwItemsRA,
+			                            a.tstamp,
+			                            a.FK_psPatRegisters,
+			                            a.FK_mscItemCategory,
+			                            a.FK_iwItemsComp,
+			                            b.barcodeid,
+										b.isInventory,
+			                            c.UpdtComp
+			                            ' 
+

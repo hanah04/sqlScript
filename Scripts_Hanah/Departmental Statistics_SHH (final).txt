@@ -1,0 +1,70 @@
+declare @startdate date = '01/01/2016',
+		@enddate date = '01/05/2016',
+		@mscWarehouse nvarchar(max) = '1014'
+
+
+select 
+--month(z.rendate),
+datename(month, z.rendate) as Month,
+dbo.udf_GetItemDescription(y.PK_iwItems) as Item, z.doctype+convert(varchar,z.docno) as DocNo, z.rendate,
+                (SELECT isnull(sum(pspatitem.renqty - pspatitem.retqty),0)
+                FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+                --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+                where psPatitem.FK_iwItemsREN=y.PK_iwItems and psPatinv.PK_TRXNO=z.PK_TRXNO
+                --month(psPatinv.rendate)=month(z.rendate) 
+                and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @startdate and @enddate
+                and pspatitem.fk_mscWarehouse=@mscwarehouse and psPatinv.pattrantype='E'
+                                                                                                            ) as ITEMCOUNT_ERD,
+                (SELECT isnull( cast(sum( (pspatitem.renqty - pspatitem.retqty)*pspatitem.renprice) as decimal(10,2))  ,0)
+                FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+                --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+                WHERE psPatitem.FK_iwItemsREN=y.PK_iwItems and psPatinv.PK_TRXNO=z.PK_TRXNO
+                --month(psPatinv.rendate)=month(z.rendate)
+                and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @startdate and @enddate
+                and pspatitem.fk_mscWarehouse=@mscwarehouse and psPatinv.pattrantype='E'
+               -- group by y.PK_iwItems 
+                                                                                                            ) as ITEMAMOUNT_ERD,
+                        (SELECT isnull(sum(pspatitem.renqty - pspatitem.retqty),0)
+                        FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+                        --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+                        where psPatitem.FK_iwItemsREN=y.PK_iwItems   and psPatinv.PK_TRXNO=z.PK_TRXNO
+                        --month(psPatinv.rendate)=month(z.rendate) 
+                        and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @startdate and @enddate
+                        and pspatitem.fk_mscWarehouse=@mscwarehouse and psPatinv.pattrantype='O'
+                        --group by y.PK_iwItems 
+                                                                                                                 ) as ITEMCOUNT_OPD,
+                        (SELECT isnull( cast(sum( (pspatitem.renqty - pspatitem.retqty)*pspatitem.renprice) as decimal(10,2))  ,0)
+                        FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+                        --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+                        WHERE psPatitem.FK_iwItemsREN=y.PK_iwItems  and psPatinv.PK_TRXNO=z.PK_TRXNO
+                        --month(psPatinv.rendate)=month(z.rendate)
+                        and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @startdate and @enddate
+                        and pspatitem.fk_mscWarehouse=@mscwarehouse and psPatinv.pattrantype='O'
+                                -- group by y.PK_iwItems 
+                                                                                                                 ) as ITEMAMOUNT_OPD,
+                            (SELECT isnull(sum(pspatitem.renqty - pspatitem.retqty),0)
+                            FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+                            --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+                            where psPatitem.FK_iwItemsREN=y.PK_iwItems  and psPatinv.PK_TRXNO=z.PK_TRXNO
+                            --month(psPatinv.rendate)=month(z.rendate) 
+                            and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @startdate and @enddate
+                            and pspatitem.fk_mscWarehouse=@mscwarehouse and psPatinv.pattrantype='I'
+                            --group by y.PK_iwItems 
+                                                                                                                     ) as ITEMCOUNT_IPD,
+                            (SELECT isnull( cast(sum( (pspatitem.renqty - pspatitem.retqty)*pspatitem.renprice) as decimal(10,2))  ,0)
+                            FROM pspatitem LEFT OUTER JOIN pspatinv on pspatitem.fk_trxno = pspatinv.pk_trxno 
+                            --JOIN iwitems a on a.pk_iwitems=x.FK_iwItemsREN
+                            WHERE psPatitem.FK_iwItemsREN=y.PK_iwItems  and psPatinv.PK_TRXNO=z.PK_TRXNO
+                            --month(psPatinv.rendate)=month(z.rendate)
+                            and pspatinv.doctype <> 'CN' and convert(date,pspatinv.rendate) between @startdate and @enddate
+                            and pspatitem.fk_mscWarehouse=@mscwarehouse and psPatinv.pattrantype='I'
+                                    -- group by y.PK_iwItems 
+                                                                                                                        ) as ITEMAMOUNT_IPD
+
+     FROM  pspatitem x JOIN iwitems y on y.PK_iwItems=x.FK_iwItemsREN
+     LEFT OUTER JOIN pspatinv z on x.fk_trxno = z.pk_trxno 
+     where 
+     convert(date,z.rendate) between @startdate and @enddate
+     and z.doctype <> 'CN' and x.fk_mscWarehouse=@mscwarehouse 
+     group by y.PK_iwItems,z.PK_TRXNO, z.docno, z.rendate,z.doctype
+     order by z.rendate

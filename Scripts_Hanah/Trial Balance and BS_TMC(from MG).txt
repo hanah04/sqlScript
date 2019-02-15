@@ -1,0 +1,74 @@
+--1 check fagl entries
+select fk_fagla from fagl where FK_TRXNO = '2539078' --post closing entries
+select fk_fagla from fagl where FK_TRXNO = '2534752' --adj closing entries
+SELECT fk_fagla from fagl where year(postdate) = '2016' and year(glperiod) = '2014' and month(postdate) = '3' and doctype = 'JV' and FK_TRXNO not in ('2539078','2534752') and auditflag = '1' and cancelflag = '0'-- adj entries
+
+
+--2 re-compute adjusting entries fagl - fagla
+select a.PK_faGLA,a.debit,a.credit,a.isMonthlyClosedFlag,a.glperiod 
+,(select sum(x.debit) from fagl x where year(x.postdate) = '2016' and year(x.glperiod) = '2014' and month(x.postdate) = '3' and x.trangroup = 'JV' and x.FK_TRXNO not in ('2539078','2534752') and x.auditflag = '1' and x.cancelflag = '0' and x.FK_faGLA = a.PK_faGLa) as [shouldbe debit]
+,(select sum(x.credit) from fagl x where year(x.postdate) = '2016' and year(x.glperiod) = '2014' and month(x.postdate) = '3' and x.trangroup = 'JV' and x.FK_TRXNO not in ('2539078','2534752') and x.auditflag = '1' and x.cancelflag = '0' and x.FK_faGLA = a.PK_faGLa) as [shouldbe credit]
+--update a set debit = (select sum(x.debit) from fagl x where year(x.postdate) = '2016' and year(x.glperiod) = '2014' and month(x.postdate) = '3' and x.trangroup = 'JV' and x.FK_TRXNO not in ('2539078','2534752') and x.auditflag = '1' and x.cancelflag = '0' and x.FK_faGLA = a.PK_faGLa)
+   --,credit = (select sum(x.credit) from fagl x where year(x.postdate) = '2016' and year(x.glperiod) = '2014' and month(x.postdate) = '3' and x.trangroup = 'JV' and x.FK_TRXNO not in ('2539078','2534752') and x.auditflag = '1' and x.cancelflag = '0' and x.FK_faGLA = a.PK_faGLa)
+from fagla a where a.PK_faGLA 
+in
+(
+ --select debit,credit,ismonthlyclosedflag,glperiod 
+ SELECT fk_fagla from fagl where year(postdate) = '2016' and year(glperiod) = '2014' and month(postdate) = '3' and trangroup = 'JV' and FK_TRXNO not in ('2539078','2534752') and auditflag = '1' and cancelflag = '0'-- adj entries
+)
+
+--3 remove ismonthlyclosedflag from adj entries
+select a.PK_faGLA,a.debit,a.credit,a.isMonthlyClosedFlag,a.glperiod 
+--update a set ismonthlyclosedflag = 0
+from fagla a where a.PK_faGLA 
+in
+(
+ --select debit,credit,ismonthlyclosedflag,glperiod 
+ SELECT fk_fagla from fagl where year(postdate) = '2016' and year(glperiod) = '2014' and month(postdate) = '3' and trangroup = 'JV' and FK_TRXNO not in ('2539078','2534752') and auditflag = '1' and cancelflag = '0'-- adj entries
+) and isMonthlyClosedFlag = '1'
+
+--4 backup to excel then delete records from fagla of closing entries for adjustments
+select PK_faGLA 
+--delete 
+from fagla where PK_faGLA in
+(
+select fk_fagla from fagl where FK_TRXNO = '2534752' --adj closing entries
+)
+and PK_faGLA not in
+(
+SELECT fk_fagla from fagl where year(postdate) = '2016' and year(glperiod) = '2014' and month(postdate) = '3' and  trangroup = 'JV' and FK_TRXNO not in ('2539078','2534752') and auditflag = '1' and cancelflag = '0'-- adj entries
+)
+
+--5 update cancel flag of closing entries for adjustments
+SELECT fk_fagla,cancelflag 
+--update a set a.cancelflag = '1'
+from fagl a where a.FK_TRXNO = '2534752' --adj closing entries
+
+
+--6 delete jv, trxno 2534752
+select a.PK_TRXNO
+--update a set a.deleteflag = '1', a.postflag = '0'
+ from faJVMstr a where a.jvno = '405803'
+
+
+
+ --7 Create Manual JV for Closing entries of Adjustments
+ -- thru Bizbox
+
+ --8 Mark as closingentries
+ select a.isclosing,a.PK_TRXNO
+ --update a set isclosing = '1'
+ from fajvmstr a where a.jvno = '425163'
+  
+ select a.isMonthlyClosedFlag ,a.PK_faGL 
+ --update a set ismonthlyclosedflag = '1', glperiod = '2014-12-31 23:59:00'
+ from fagl a where a.FK_TRXNO = '2666357'
+
+ select *
+ --update a set ismonthlyclosedflag = '1', glperiod = '2014-12-31 23:59:00'
+ from fagla a where a.PK_faGLA in
+ (
+ select FK_faGLA from fagl a where a.FK_TRXNO = '2666357'
+ )
+
+ ---CHECK TB, BS and IS

@@ -1,0 +1,16 @@
+	/*
+	insert into fadmcmpayeetrans 
+	(a.FK_TRXNO,a.FK_TRXNO_faVPMstr
+	,a.FK_mscTranTypesAP,a.cvamount,a.cramount
+	,a.dmamount,a.memoamount,a.ewtamount
+	,a.ewtrate,a.discamount)
+	*/
+
+	select 
+	b.FK_TRXNO_DM,a.PK_TRXNO,d.FK_mscTranTypesAP,
+	0,0,0,b.debit,0,0,0
+	from faVPMstr a
+	inner join faApledgers b on a.PK_TRXNO = b.FK_TRXNO and b.FK_TRXNO_DM <> 0
+	left join faDMCMPayeeTrans c on a.PK_TRXNO = c.FK_TRXNO_faVPMstr
+	left join faDMCMPayee d on b.FK_TRXNO_DM = d.PK_TRXNO
+	where a.dmamount <> 0 and c.PK_faDMCMPayeeTrans is null

@@ -1,0 +1,86 @@
+declare @datefrom date = '01/01/2016'
+		,@dateto date = '12/31/2016'
+		,@CustomerType nvarchar(max) = '' ---- just leave it blank if all customer type will appear
+
+
+--Select [Customer Name],[Customer Type],sum(BegBal) as BegBal,sum(debit) as Debit,sum(credit) as Credit from (
+SELECT distinct
+	0 as FK_TRXNO,
+	DBO.udf_GetFullName(a.FK_faCustomers) as [Customer Name],
+	(select description from mscCustomerTypes x where x.PK_mscCustomerTypes = a.FK_mscCustomerTypes) as [Customer Type],
+	'Beg.Balance' as [Doc Type],
+	'' as [Doc Number],
+	@datefrom as [Doc Date],
+	(Select sum(isnull(x.debit,0))-sum(isnull(x.cramount,0))+sum(isnull(x.cmamount,0)) from faArledgers x 
+	where x.FK_faCustomers = a.FK_faCustomers and x.docdate < @datefrom and x.cancelflag <> 1)
+	as BegBal, 0 as debit, 0 as credit,
+	0 as Outstanding,'' as Remarks
+
+FROM faArledgers a
+
+where 
+a.FK_mscCustomerTypes = (case when @CustomerType = '' then a.FK_mscCustomerTypes 
+else (select PK_mscCustomerTypes from mscCustomerTypes where description = @CustomerType) end)
+and a.cancelflag = 0 and (Select isnull(sum(x.debit),0)-(isnull(sum(x.cramount),0)+isnull(sum(x.cmamount),0)) from faArledgers x 
+where x.FK_faCustomers = a.FK_faCustomers and x.docdate < @datefrom and x.cancelflag <> 1) > 0
+
+group by a.FK_faCustomers,a.FK_mscCustomerTypes
+
+UNION ALL
+
+Select 
+	FK_TRXNO,
+	CustomerName as [Customer Name],
+	CustomerType as [Customer Type],
+	artype as [Doc Type],
+	docno as [Doc Number],
+	docdate as [Doc Date], 0 as BegBal,
+	debit,Credit,
+	Outstanding,Remarks
+--* 
+from
+(Select 
+	a.FK_TRXNO,a.FK_TRXNO_CM,a.FK_TRXNO_CR,
+	dbo.udf_GetFullName(a.FK_faCustomers) as CustomerName,
+	(select description from mscCustomerTypes x where x.PK_mscCustomerTypes = a.FK_mscCustomerTypes) as CustomerType,
+	a.artype,a.docno,a.docdate,
+	(a.debit + a.orcancelamount + a.cmcancelamount) as debit,
+                                    case	when a.artype in ('IS','MC','RB','OT','PF','PH','RB') then  0
+                                            when a.artype = 'OR' and a.cancelflag <> 1 then (a.cramount + a.orcancelamount)
+                                            when a.artype = 'OR' and a.cancelflag = 1 then (a.faCRMstrAmt)
+                                            when a.artype = 'CM' then  (a.cmamount + a.cmcancelamount)
+                                    end as credit,
+	(Select isnull(sum(x.debit),0)-(isnull(sum(x.cramount),0)+isnull(sum(x.cmamount),0)) from faArledgers x 
+	where x.FK_faCustomers = a.FK_faCustomers and x.docdate < @datefrom and x.cancelflag <> 1)
+	as BegBal,
+	/*(Select isnull(sum(x.debit),0)-(isnull(sum(x.cramount),0)+isnull(sum(x.cmamount),0)) from faArledgers x 
+	where x.FK_faCustomers = a.FK_faCustomers and x.PK_faArledgers <= a.PK_faArledgers
+	and x.docdate between @datefrom and @dateto and x.cancelflag = 0) as RunBal,*/
+	case 	when a.artype = 'OR' and a.cancelflag <> 1 then SUM(isnull(a.cramount + a.orcancelamount,0)) - (select isnull(sum(x.credit),0) from faArledgers x where x.FK_TRXNO_CR = a.FK_TRXNO and x.credit > 0 and x.cancelflag <> 1)
+				                            when a.artype = 'OR' and a.cancelflag = 1 then SUM(a.faCRMstrAmt)
+                                            when a.artype = 'CM' and a.cancelflag <> 1 then 0
+                                            when a.artype = 'CM' and a.cancelflag = 1 then (a.cmamount + a.cmcancelamount)
+                                            when a.artype in ('IS','MC','RB','OT','PF','PH','RB') then SUM(ISNULL(a.debit,0)) - (select isnull(sum(x.credit),0) from faArledgers x where x.FK_TRXNO = a.FK_TRXNO and x.credit > 0 and x.cancelflag <> 1)
+                                    end as Outstanding,
+									(case when a.artype in ('IS','MC','RB','OT','PF','PH','RB') then 
+									(select (case when x.remarks is null or convert(varchar(max),x.remarks) = '' then dbo.udf_GetFullName(x.FK_emdPatients) else x.remarks end) from faArinv x where x.PK_TRXNO = a.FK_TRXNO)
+									when a.artype = 'OR' then isnull((select x.remarks from faCRMstr x where x.PK_TRXNO = a.FK_TRXNO_CR),'')
+									when a.artype = 'CM' then isnull((select x.remarks from faDMCMPayer x where x.PK_TRXNO = a.FK_TRXNO_CM),'')
+									else ' ' end) as Remarks
+
+From faArledgers a
+
+where a.docdate between @datefrom and @dateto
+and a.FK_mscCustomerTypes = (case when @CustomerType = '' then a.FK_mscCustomerTypes 
+else (select PK_mscCustomerTypes from mscCustomerTypes where description = @CustomerType) end)
+and a.cancelflag = 0
+
+group by a.FK_TRXNO,FK_TRXNO_CM,a.FK_TRXNO_CR,a.FK_faCustomers,a.FK_mscCustomerTypes,a.artype,a.docno,a.docdate,a.debit,a.cramount,a.cmamount,a.cancelflag,a.cmcancelamount,
+a.orcancelamount,a.faCRMstrAmt
+) as Group1
+where debit <> 0 or Credit <> 0 
+--) as group2
+--group by [Customer Name],[Customer Type]
+order by [Customer Name],[Doc Date]
+
+

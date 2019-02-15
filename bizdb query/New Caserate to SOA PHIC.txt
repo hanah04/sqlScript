@@ -1,0 +1,85 @@
+--declare @pk_pspatregisters int = '8581'
+--declare @grossamt bit = '0'
+SELECT
+	ISNULL(b.caseRateHBAmount1, 0) AS caseRateHBAmount1,
+	ISNULL(b.caseRateHBAmount2, 0) AS caseRateHBAmount2,
+	ISNULL(b.caseRatePFAmount1, 0) AS caseRatePFAmount1,
+	ISNULL(b.caseRatePFAmount2, 0) AS caseRatePFAmount2
+FROM (SELECT
+	CASE
+		WHEN @grossamt='False' THEN 
+			SUM(caseRateHBAmount1) -  CASE WHEN SUM(caseRateHBAmount1) > 0 THEN ISNULL((SELECT
+																			SUM(debit) FROM psPatLedgers
+																		WHERE FK_psPatRegisters = @pk_pspatregisters AND cancelflag = 0
+																		AND CAST(ISNULL(remarks, '') AS VARCHAR) = 'Unused PHIC Benefits Portion'), 0) ELSE 0 END
+		ELSE SUM(caseRateHBAmount1)
+		
+	END AS [caseRateHBAmount1],
+	SUM(caseRatePFAmount1) [caseRatePFAmount1],
+	SUM(caseRateHBAmount2) [caseRateHBAmount2],
+	SUM(caseRatePFAmount2) [caseRatePFAmount2]
+FROM (SELECT
+	CASE
+		WHEN a.isFirstCaseRate = '1' THEN b.HBamount
+		ELSE '0.00'
+	END AS caseRateHBAmount1,
+	CASE
+		WHEN a.isFirstCaseRate = '1' THEN b.PFamount
+		ELSE '0.00'
+	END AS caseRatePFAmount1,
+	CASE
+		WHEN a.isSecondCaseRate = '1' THEN b.HBamount2
+		ELSE '0.00'
+	END AS caseRateHBAmount2,
+	CASE
+		WHEN a.isSecondCaseRate = '1' THEN b.PFamount2
+		ELSE '0.00'
+	END AS caseRatePFAmount2
+FROM psPatFinalDXDtls a
+INNER JOIN mscEClaimsCaseRatePackages b
+	ON a.CaseRateGroupCode = b.ePackageCode
+INNER JOIN psPHICLedgers c
+	ON a.FK_psPatRegisters = c.FK_psPatRegisters
+WHERE a.FK_psPatRegisters = @pk_pspatregisters
+AND c.cancelflag <> 1 and c.IsDelete <>1) a
+
+UNION ALL
+
+SELECT
+
+	CASE
+		WHEN @grossamt='False' THEN 
+			SUM(caseRateHBAmount1)-CASE WHEN SUM(caseRateHBAmount1) > 0 THEN ISNULL((SELECT
+																			SUM(debit) FROM psPatLedgers
+																		WHERE FK_psPatRegisters = @pk_pspatregisters AND cancelflag = 0
+																		AND CAST(ISNULL(remarks, '') AS VARCHAR) = 'Unused PHIC Benefits Portion'), 0) ELSE 0 END
+		ELSE SUM(caseRateHBAmount1)
+	END AS [caseRateHBAmount1],
+	--SUM(caseRateHBAmount1) [caseRateHBAmount1],
+	SUM(caseRatePFAmount1) [caseRatePFAmount1],
+	SUM(caseRateHBAmount2) [caseRateHBAmount2],
+	SUM(caseRatePFAmount2) [caseRatePFAmount2]
+FROM (SELECT
+	CASE
+		WHEN a.isFirstCaseRate = '1' THEN b.HBamount
+		ELSE '0.00'
+	END AS caseRateHBAmount1,
+	CASE
+		WHEN a.isFirstCaseRate = '1' THEN b.PFamount
+		ELSE '0.00'
+	END AS caseRatePFAmount1,
+	CASE
+		WHEN a.isSecondCaseRate = '1' THEN b.HBamount2
+		ELSE '0.00'
+	END AS caseRateHBAmount2,
+	CASE
+		WHEN a.isSecondCaseRate = '1' THEN b.PFamount2
+		ELSE '0.00'
+	END AS caseRatePFAmount2
+FROM psPHICSurgProc a
+INNER JOIN mscSurgProc b
+	ON a.FK_mscSurgProc = b.PK_mscSurgProc
+INNER JOIN psPHICLedgers c
+	ON a.FK_psPatRegisters = c.FK_psPatRegisters
+WHERE a.FK_psPatRegisters = @pk_pspatregisters
+AND c.cancelflag <> 1 and c.IsDelete <>1) a) b

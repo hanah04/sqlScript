@@ -1,0 +1,25 @@
+select * from iwPhentinv where postingtype is null and deleteflag = '0'
+--update iwPhentinv set deleteflag = '1' where postingtype is null and deleteflag = '0'
+
+
+
+select deleteflag,docno,amount,totitm,fk_mscwarehouse,dbo.udf_GetDepartmentName(fk_mscwarehouse),postingtype,
+* from iwPhentinv 
+where PK_TRXNO not in
+(select fk_trxno from iwPhentitem) and deleteflag = '0'
+
+
+select fk_trxno,count(fk_trxno) from iwPhentitem where FK_TRXNO in
+(select pk_trxno from iwPhentinv where FK_mscWarehouse = '1032' and deleteflag = '1')
+group by FK_TRXNO
+order by fk_trxno
+
+
+--update iwPhentitem set fk_trxno = '197958' where FK_TRXNO = '197955'
+select top 10 * from iwPhentinv
+
+
+
+
+
+

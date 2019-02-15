@@ -1,0 +1,1 @@
+update appsysReports set fullyqualifiedname = 'BizBox.Reports.FMS.TrialBalanceParentAcct' where PK_appsysReports = '2T84' and description = 'Trial Balance - Based on Parent Account'

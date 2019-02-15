@@ -1,0 +1,44 @@
+---- SQL > maintanenace > Maintenance Plans > New maintenance Plan > Execute T-SQL Statement Task > edit > type: USE<space>database name <double enter> paste script (Change the date after inventory count) > schedule > onetime > change date and time (11/10/2014) (11:59:59PM) > save
+
+
+--SCRIPT 1. (note that the date to be used is the day after the cut off date; ex: clean up inventory as of 7/25, then date to be used is 7/26)
+update iwitemledger set qtyin = '0.00', qtyout = '0.00'
+where regdate < '6/8/2015' and fk_mscwarehouse = 'insert pk_mscwarehouse'
+
+--SCRIPT 2. (date same as script 1)
+update iwitemledgerdaily set
+purcqty='0.00',
+purcretqty='0.00',
+salesqty='0.00',
+salesretqty='0.00',
+adjinqty='0.00',
+adjoutqty='0.00',
+reqinqty='0.00',
+reqoutqty='0.00',
+prodqty='0.00',
+prodoutqty='0.00',
+issoutqty='0.00',
+issinqty='0.00',
+purcoutqty='0.00',
+purcretinqty='0.00',
+actualqty = '0.00' where refdate < '6/8/2015' and fk_mscwarehouse = 'insert pk_mscwarehouse'
+
+--SCRIPT 3.
+update iwWareitem set
+purcqty='0.00',
+purcretqty='0.00',
+salesqty='0.00',
+salesretqty='0.00',
+adjinqty='0.00',
+adjoutqty='0.00',
+reqinqty='0.00',
+reqoutqty='0.00',
+prodqty='0.00',
+prodoutqty='0.00',
+issoutqty='0.00',
+issinqty='0.00',
+purcoutqty='0.00',
+purcretinqty='0.00',
+actualqty = '0.00'
+where fk_mscwarehouse = 'insert warehouse no.'
+

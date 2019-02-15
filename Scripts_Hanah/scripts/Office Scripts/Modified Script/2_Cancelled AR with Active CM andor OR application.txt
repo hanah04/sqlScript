@@ -1,0 +1,33 @@
+
+/*************** Retrieve Cancelled AR with Active CM and/or OR application  ***************/
+
+select 
+		origAR_PK = a.PK_faArledgers, 
+		applied_PK = b.PK_faArledgers, 
+		a.FK_TRXNO, 
+		a.docno, 
+		custName = dbo.udf_getfullname(a.FK_faCustomers), 
+		a.debit, 
+		b.credit 
+from 
+		faArledgers as a
+		inner join faArledgers as b on a.FK_TRXNO = b.FK_TRXNO 
+									and b.credit > 0 and b.cancelflag = 0 
+									and b.deleteflag = 0 
+									and b.FK_TRXNO not in (select FK_TRXNO from faArledgers where cancelflag = 0 and deleteflag = 0 and debit > 0)
+where 
+		a.debit > 0 
+		and a.credit = 0 
+		and (a.cancelflag = 1 or a.deleteflag = 1)
+
+/*************** Update to cancel Active CM and/or OR application of Cancelled AR ***************/
+update b set cancelflag = 1 from 
+		faArledgers as a
+		inner join faArledgers as b on a.FK_TRXNO = b.FK_TRXNO 
+									and b.credit > 0 and b.cancelflag = 0 
+									and b.deleteflag = 0 
+									and b.FK_TRXNO not in (select FK_TRXNO from faArledgers where cancelflag = 0 and deleteflag = 0 and debit > 0)
+where 
+		a.debit > 0 
+		and a.credit = 0 
+		and (a.cancelflag = 1 or a.deleteflag = 1)

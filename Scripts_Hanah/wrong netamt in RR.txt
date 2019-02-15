@@ -1,0 +1,18 @@
+/*for vatable, vat exclusive deliveries*/
+select ((qty*landcost)+vatamount), netamt, * from iwApitem where vatincl = 0 and isVatable = 1 and ((qty*landcost)+vatamount-discamt) <> netamt
+--update iwApitem set netamt = ((qty*landcost)+vatamount) where vatincl = 0 and isVatable = 1 and ((qty*landcost)+vatamount-discamt) <> netamt
+
+/*for vatable, vat inclusive deliveries*/
+select ((qty*landcost)-discamt), netamt, * from iwApitem where isVatable = 1 and vatincl =1 and ((qty*landcost)-discamt) <>netamt 
+--update iwapitem set netamt = ((qty*landcost)-discamt) where isVatable = 1 and vatincl =1 and ((qty*landcost)-discamt) <>netamt 
+
+/*for non vatable deliveries*/
+select ((qty*landcost)-discamt), netamt, * from iwApitem where isVatable = 0 and ((qty*landcost)-discamt) <> netamt
+--update iwApitem set netamt = ((qty*landcost)-discamt) where isVatable = 0 and ((qty*landcost)-discamt) <> netamt
+
+
+
+
+
+
+

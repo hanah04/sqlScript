@@ -1,0 +1,4 @@
+select a.phicamount, b.phicamount
+--update b set phicamount = a.phicamount
+from psPatLedgers a inner join psPatRooms b on a.FK_TRXNO = b.PK_TRXNO
+where b.phicamount <> a.phicamount

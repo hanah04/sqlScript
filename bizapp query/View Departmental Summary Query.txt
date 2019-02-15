@@ -1,0 +1,173 @@
+declare @FK_psPatRegisters int = 209266
+
+SELECT
+	description,
+	debit,
+	balance = (debit - (CASE
+		WHEN isGntr = 1 OR
+			isPHIC = 1 OR
+			isOR = 1 THEN newcredit
+		ELSE credit
+	END)),
+	FK_mscWarehouse,
+	(CASE
+		WHEN isGntr = 1 OR
+			isPHIC = 1 OR
+			isOR = 1 THEN newcredit
+		ELSE credit
+	END) AS credit
+FROM (SELECT
+	description,
+	debit = SUM(debit),
+	credit = SUM(credit),
+
+	balance = SUM(debit - credit),
+	FK_mscWarehouse,
+	newcredit,
+	isOR,
+	isGntr,
+	isPHIC
+FROM (SELECT
+	name,
+	a.FK_psPatRegisters,
+	description,
+	debit =
+			CASE
+				WHEN doctype IN ('CA', 'CH') THEN CASE
+						WHEN SC_FrontEnd = 1 THEN netamount
+						ELSE Amount
+					END
+				ELSE 0
+			END,
+	credit = ABS(CASE
+		WHEN doctype IN ('CN') THEN CASE
+				WHEN SC_FrontEnd = 0 AND
+					SC_BackEnd = 0 AND
+					isCNthenSC = 0 THEN Amount
+				WHEN SC_FrontEnd = 0 AND
+					SC_BackEnd = 0 AND
+					isCNthenSC = 1 THEN Amount - vatamount
+				ELSE Netamount - discount
+			END
+
+		ELSE CASE
+				WHEN SC_FrontEnd = 0 AND
+					SC_BackEnd = 1 THEN vatamount
+				ELSE 0
+			END + discount --+ newcredit
+	END
+
+
+	),
+	FK_mscWarehouse,
+	newcredit,
+	isOR,
+	isGntr,
+	isPHIC
+FROM (SELECT
+	name = dbo.udf_getfullname(FK_emdPatients),
+	a.FK_psPatRegisters,
+	dbo.udf_GetDepartmentName(a.FK_mscWarehouse) AS [description],
+	a.FK_mscWarehouse,
+	ROUND(a.Amount, 2) AS [Amount],
+	Netamount = a.Netamount + ISNULL((SELECT
+		ISNULL(SUM(amount), 0.00)
+	FROM pspatdiscounts x
+	WHERE x.FK_TRXNO = a.PK_TRXNO
+	AND processtype = 'O'), 0),
+	a.Vatamount,
+	(SELECT
+		ISNULL(SUM(amount), 0.00)
+	FROM pspatdiscounts x
+	WHERE x.FK_TRXNO = a.PK_TRXNO
+	AND processtype = 'O')
+	AS [DiscountAmount],
+	a.discount,
+	--(select top 1 sum(cnamount + oramount + gntramount + discount + phicamount) from psPatitem where FK_psPatRegisters = @FK_psPatRegisters) as newcredit,
+	(SELECT TOP 1
+		SUM(cnamount + oramount + gntramount + discount + phicamount)
+	FROM psPatitem
+	WHERE FK_psPatRegisters = @FK_psPatRegisters
+	AND FK_mscWarehouse = a.FK_mscWarehouse)
+	AS newcredit,
+	FK_mscDiscounts = ISNULL(a.FK_mscDiscounts, 1000),
+	SC_FrontEnd =
+					CASE
+						WHEN ISNULL(a.FK_mscDiscounts, 1000) = 1001 THEN 1
+						ELSE 0
+					END,
+	SC_BackEnd =
+				CASE
+					WHEN (SELECT
+							COUNT(*)
+						FROM psPatitem AS aa
+						INNER JOIN psPatDiscountItems AS bb
+							ON aa.PK_psPatitem = bb.FK_psPatitems
+						INNER JOIN psPatDiscounts AS cc
+							ON bb.FK_TRXNO = cc.PK_TRXNO
+							AND cc.cancelflag = 0
+						WHERE cc.FK_mscDiscounts = 1001
+						AND aa.FK_TRXNO = a.PK_TRXNO)
+						> 0 THEN 1
+					ELSE 0
+				END,
+	isCNthenSC =
+				CASE
+					WHEN (SELECT
+							COUNT(*)
+						FROM psPatitem AS aa
+						INNER JOIN psPatDiscountItems AS bb
+							ON aa.PK_psPatitem = bb.FK_psPatitems
+						INNER JOIN psPatDiscounts AS cc
+							ON bb.FK_TRXNO = cc.PK_TRXNO
+							AND cc.cancelflag = 0
+						INNER JOIN psPatinv AS dd
+							ON aa.FK_TRXNO = dd.PK_TRXNO
+						WHERE cc.FK_mscDiscounts = 1001
+						AND ISNULL(dd.FK_mscDiscounts, '') != 1001
+						AND aa.FK_TRXNO = a.FK_TRXNO_CN)
+						> 0 THEN 1
+					ELSE 0
+				END,
+	isOR =
+			CASE
+				WHEN (SELECT
+						COUNT(*)
+					FROM psPatitem
+					WHERE FK_psPatRegisters = @FK_psPatRegisters
+					AND oramount > 0)
+					> 0 THEN 1
+				ELSE 0
+			END,
+
+	isGntr =
+			CASE
+				WHEN (SELECT
+						COUNT(*)
+					FROM psPatitem
+					WHERE FK_psPatRegisters = @FK_psPatRegisters
+					AND phicamount > 0)
+					> 0 THEN 1
+				ELSE 0
+			END,
+
+	isPHIC =
+			CASE
+				WHEN (SELECT
+						COUNT(*)
+					FROM psPatitem
+					WHERE FK_psPatRegisters = @FK_psPatRegisters
+					AND gntramount > 0)
+					> 0 THEN 1
+				ELSE 0
+			END,
+	a.doctype
+FROM pspatinv a
+WHERE a.FK_psPatRegisters = @FK_psPatRegisters
+AND a.status NOT IN ('N', 'C')) AS a) AS b
+GROUP BY	description,
+			FK_mscWarehouse,
+			isGntr,
+			isPHIC,
+			isOR,
+			newcredit) AS c

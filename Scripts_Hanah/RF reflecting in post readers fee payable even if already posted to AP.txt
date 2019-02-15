@@ -1,0 +1,16 @@
+
+select * from psExamResultReaders where fk_trxno = 1386671 or FK_TRXNO_faVPMstr = 1520346
+--update psExamResultReaders  set isremitted = 1, remitdate = '2016-01-31 00:00:00', FK_TRXNO = 1521270 
+--where  PK_psExamResultReaders = 100863
+
+select * from psExamResultReaders where FK_TRXNO_faVPMstr in (select pk_trxno from favpmstr where docno in (85399,85451,85466,85520,86533,86534,86535,86537,85088,85089,84973))
+
+
+select * from psPatinv where docno = 9496 and FK_psPatRegisters in (select pk_pspatregisters from pspatregisters where fk_emdpatients = 38695)
+select * from psdatacenter where PK_psDatacenter = 38695
+
+select dbo.udf_getfullname(pk_emdpatients),* from emdpatients where dbo.udf_getfullname(pk_emdpatients) like '%singkee%'
+
+select * from pspatregisters where fk_emdpatients = 38695
+
+select * from favpmstr where docno in (85399,85451,85466,85520,86533,86534,86535,86537,85088,85089,84973)

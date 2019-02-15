@@ -1,0 +1,69 @@
+
+
+declare @FK_TRXNO_CR bigint,
+		@difference decimal(20, 2),
+		@remainingDif decimal(20, 2),
+		@PK_faArledgers int,
+		@credit decimal(20, 2)
+declare @sql nvarchar(max)
+
+declare  a cursor for
+select FK_TRXNO_CR, abs(round(sum(cramount - credit),2)) from (
+select 
+			a.FK_TRXNO,
+			a.FK_TRXNO_CR,
+			a.FK_TRXNO_CM,
+			a.FK_faCustomers,
+			a.artype,
+			a.crtype,
+			a.doctype,
+			debit =  case when a.doctype not in ('OR', 'CM') then a.debit else 0 end,
+			credit = case when a.doctype in ('OR', 'CM') then a.credit else 0 end,
+			cramount = case when artype = 'OR' then cramount else 0 end
+	from 
+			faArledgers as a
+	where
+			a.cancelflag = 0 and a.deleteflag = 0 and doctype = 'OR') as tmp
+group by FK_TRXNO_CR, FK_faCustomers
+having round(sum(cramount - credit),2) < -0.10
+
+open a
+
+fetch next from a into @FK_TRXNO_CR ,@difference
+
+while (@@FETCH_STATUS = 0)
+Begin
+		set @remainingDif = @difference
+		declare b cursor for
+		select PK_faArledgers, credit from faarledgers where doctype = 'OR' and artype != 'OR' and credit > 0 and FK_TRXNO_CR = @FK_TRXNO_CR order by PK_faArledgers desc
+		open b
+
+		fetch next from b into @PK_faArledgers, @credit
+
+		while (@@FETCH_STATUS = 0 and @remainingDif != 0)
+		Begin
+			if (@remainingDif > @credit)
+			Begin
+				set @sql = 'update faArledgers set credit = credit - ' + Convert(varchar(30), @credit) + ' where FK_TRXNO_CR = ' + Convert(varchar(30), @FK_TRXNO_CR ) + ' and PK_faArledgers = ' + Convert(varchar(30),@PK_faArledgers)
+				set @remainingDif = @remainingDif - @credit
+			End
+			Else
+			Begin
+				set @sql = 'update faArledgers set credit = credit - ' + Convert(varchar(30), @remainingDif) + ' where FK_TRXNO_CR = ' + Convert(varchar(30), @FK_TRXNO_CR ) + ' and PK_faArledgers = ' + Convert(varchar(30), @PK_faArledgers)
+
+				set @remainingDif = 0
+			End
+
+			print @sql
+			fetch next from b into @PK_faArledgers, @credit
+		End
+		close b
+		deallocate b
+
+
+
+
+		fetch next from a into @FK_TRXNO_CR ,@difference
+End
+close a
+deallocate a

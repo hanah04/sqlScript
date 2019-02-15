@@ -1,0 +1,58 @@
+SELECT	[Patient Name],
+		[pattrantype],
+		[registrystatus],
+		[Room No.],
+		[Admission No.],
+		[Admission Date],
+		dischdate,
+		[cancelflag],
+		[Admitting Doctor],
+		[Classification],
+		[Admitted By],
+		gntrname,
+							isnull([HB],0) [HospitalBill],
+	                        isnull([PF],0) [ProfessionalFee],
+	                        isnull([HB],0)+isnull([PF],0)[Statement],
+	                        (isnull([HB],0)+isnull([PF],0))-(isnull([Disc],0)+iSNULL([gntr],0)+ISNULL([phic],0)+ISNULL([pay],0))[Balance],
+	                        isnull([Disc],0)[Discount],
+	                        ISNULL([gntr],0)[Guaranteed],
+	                        ISNULL([phic],0)[PHIC],
+	                        ISNULL([pay],0)[Payment]
+
+from 
+ (select
+							dbo.udf_GetFullName(a.FK_emdPatients) [Patient Name],
+							b.pattrantype,
+							b.registrystatus,
+							a.bedno [Room No.],
+							b.registryno [Admission No.],
+							b.registrydate [Admission Date],
+							b.dischdate,
+							b.cancelflag,
+							dbo.udf_GetPrimaryAdmitDoctor(a.FK_psPatRegisters) [Admitting Doctor],
+		                    CASE b.registryclass 
+							WHEN 'a' THEN 'Pay' 
+							WHEN 'b' THEN 'Subsidized' 
+							ELSE '' END [Classification],
+							dbo.udf_GetFullName(b.FK_ASURegistry) [Admitted By],
+							((select sum(isnull(debit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode in ('HC','RC','DADJ','CADJ','RT'))
+							- (select sum(isnull(credit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode in ('HC','RC')))[HB],		
+	                        (select sum(isnull(debit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode = 'PF')[PF],
+	                        (select sum(isnull(credit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode like 'DC%' and cancelflag = 0)[Disc],
+	                        (select sum(isnull(credit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode in ('GAHB','GAADJ','GAPF','GAPR','PNADJ','PNHB','PNPF','PNPR') and cancelflag = 0)[gntr],
+	                        (select sum(isnull(credit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode = 'PHIC' and cancelflag = 0)[phic],
+	                        (select sum(isnull(credit,0)) from psPatLedgers where FK_pspatregisters = a.fk_psPatregisters and billtrancode = 'PAYMENT' and cancelflag = 0)[pay],
+	                        (select dbo.udf_ConcatAllAttendingDr (b.PK_psPatRegisters)) [dctrname],
+	                        (select dbo.udf_ConcatAllGuarantorsPerRegistry (b.PK_psPatRegisters)) [gntrname],
+	                        b.billremarks [billremarks]
+
+							from psAdmissions a
+		inner join psPatRegisters b on a.FK_psPatRegisters = b.PK_psPatRegisters
+		
+		where  b.pattrantype = 'I' and convert(varchar,b.dischdate,101) between '09/01/2015' and '10/31/2015' 
+		order by patient name
+		) as GoodSamGapan
+
+		order by [Patient Name]
+
+	

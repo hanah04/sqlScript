@@ -1,0 +1,22 @@
+/*
+	To insert records in facrmstrpfch wherein OR is with card payment and applied to PF.
+*/
+
+INSERT INTO faCRMstrPFCh (FK_TRXNO_psDctrLedgers, fk_trxno_facrmstr, FK_psPatRegisters, fk_trxno_arinv, amount, paidamount, ispaid, instrfeeamtpaid)
+select 
+d.FK_TRXNO_psDctrLedgers,
+a.PK_TRXNO,
+a.FK_psPatRegisters,
+b.FK_TRXNO_faArinv, 
+d.pfamtpaid,
+0 as paidamount,
+1 as ispaid,
+d.instrfeeamtpaid
+from facrmstr a
+inner join faCRCards b on a.PK_TRXNO = b.FK_TRXNO
+inner join faarinv c on b.FK_TRXNO_faArinv = c.PK_TRXNO
+inner join faCRMstrPF d on a.PK_TRXNO = d.FK_TRXNO_faCRMstr
+left join faCRMstrPFCh e on a.PK_TRXNO = e.FK_TRXNO_faCRMstr
+where a.pfamount <> 0 and a.cardamount <> 0 and a.cancelflag <> 1
+and e.PK_faCRMstrPFCh is null
+

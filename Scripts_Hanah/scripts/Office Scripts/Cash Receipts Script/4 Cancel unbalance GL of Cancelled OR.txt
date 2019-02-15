@@ -1,0 +1,40 @@
+declare @ORDate date,
+		@Trxno varchar(20),
+		@debit decimal(18,4),
+		@credit decimal(18,4)
+
+declare c cursor for
+select 
+	convert(date, ordate),
+	CrTrxno = a.PK_TRXNO, 
+	glDebit = sum(b.debit), 
+	glCredit = sum(b.credit) from faCRMstr as a
+
+inner join faGL as b on a.PK_TRXNO = b.FK_TRXNO
+where a.cancelflag = 1 and b.cancelflag = 0
+		and convert(date, ordate) between '05/14/2013' and '05/14/2013'
+group by a.PK_TRXNO, convert(date, ordate)
+having sum(b.debit) != sum(b.credit)
+
+open c
+
+Fetch next from c into @ORDate, @Trxno, @debit, @credit
+While (@@FETCH_STATUS = 0)
+Begin
+	If Not Exists (select * from fagl where FK_TRXNO = @Trxno and auditflag = 1)
+	Begin
+	update fagl set cancelflag = 1 where FK_TRXNO = @Trxno
+	End
+
+	If Not Exists (select sum(b.debit), sum(b.credit) from faJVMstr as a inner join faGL as b on a.PK_TRXNO = b.FK_TRXNO where a.FK_TRXNO_CancelTran = @Trxno and b.auditflag = 1)
+	Begin
+	update b set cancelflag = 1 from faJVMstr as a inner join faGL as b on a.PK_TRXNO = b.FK_TRXNO where a.FK_TRXNO_CancelTran = @Trxno
+	End
+
+	Fetch next from c into @ORDate, @Trxno, @debit, @credit 
+End
+
+
+
+close c
+deallocate c

@@ -1,0 +1,100 @@
+--insert new records
+if 'A06.4+ K77.0*' not in (select PK_mscICD10Mstr from mscICD10Mstr)
+	insert into mscICD10Mstr(PK_mscICD10Mstr, FK_mscICD10PrimeClass, FK_mscICD10SubClass1, FK_mscICD10SubClass2,description,
+				communicable,isSystemDefault,casetype,FK_mscICD10Morbidity,FK_mscICD10Mortality,isCaseRate,
+				FK_mscEClaimsCaseRatePackages,FK_mscICD10Groups)
+		values ('A06.4+ K77.0*',
+			   (select X.FK_mscICD10PrimeClass from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.FK_mscICD10SubClass1 from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.FK_mscICD10SubClass2 from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   'AMOEBIC LIVER ABSCESS; HEPATIC AMOEBIASIS',
+			   (select X.communicable from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.isSystemDefault from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.casetype from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.FK_mscICD10Morbidity from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.FK_mscICD10Mortality from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.isCaseRate from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.FK_mscEClaimsCaseRatePackages from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'),
+			   (select X.FK_mscICD10Groups from mscICD10Mstr X where PK_mscICD10Mstr = 'A06.4'))
+	else update mscICD10Mstr set description = 'AMOEBIC LIVER ABSCESS; HEPATIC AMOEBIASIS' where PK_mscICD10Mstr = 'A06.4+ K77.0*'
+
+if 'A97.0' not in (select PK_mscICD10Mstr from mscICD10Mstr)
+	insert into mscICD10Mstr(PK_mscICD10Mstr, FK_mscICD10PrimeClass, FK_mscICD10SubClass1, FK_mscICD10SubClass2,description,
+				communicable,isSystemDefault,casetype,FK_mscICD10Morbidity,FK_mscICD10Mortality,isCaseRate,
+				FK_mscEClaimsCaseRatePackages,FK_mscICD10Groups)
+		values ('A97.0',
+			   (select X.FK_mscICD10PrimeClass from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.FK_mscICD10SubClass1 from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.FK_mscICD10SubClass2 from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   'DENGUE WITHOUT WARNING SIGNS; DENGUE FEVER (DF) DENGUE HAEMORRHAGIC FEVER GRADES 1 AND 2; DENGUE HAEMORRHAGIC FEVER WITHOUT WARNING',
+			   (select X.communicable from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.isSystemDefault from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.casetype from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.FK_mscICD10Morbidity from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.FK_mscICD10Mortality from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.isCaseRate from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.FK_mscEClaimsCaseRatePackages from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'),
+			   (select X.FK_mscICD10Groups from mscICD10Mstr X where PK_mscICD10Mstr = 'A90'))
+	else update mscICD10Mstr set description = 'DENGUE WITHOUT WARNING SIGNS; DENGUE FEVER (DF) DENGUE HAEMORRHAGIC FEVER GRADES 1 AND 2; DENGUE HAEMORRHAGIC FEVER WITHOUT WARNING' where PK_mscICD10Mstr = 'A97.0'
+
+if 'A97.1' not in (select PK_mscICD10Mstr from mscICD10Mstr)
+	insert into mscICD10Mstr(PK_mscICD10Mstr, FK_mscICD10PrimeClass, FK_mscICD10SubClass1, FK_mscICD10SubClass2,description,
+				communicable,isSystemDefault,casetype,FK_mscICD10Morbidity,FK_mscICD10Mortality,isCaseRate,
+				FK_mscEClaimsCaseRatePackages,FK_mscICD10Groups)
+		values ('A97.1',
+			   (select X.FK_mscICD10PrimeClass from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.FK_mscICD10SubClass1 from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.FK_mscICD10SubClass2 from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   'DENGUE WITH WARNING SIGNS;  DENGUE HAEMORRHAGIC FEVER WITH WARNING SIGNS',
+			   (select X.communicable from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.isSystemDefault from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.casetype from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.FK_mscICD10Morbidity from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.FK_mscICD10Mortality from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.isCaseRate from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.FK_mscEClaimsCaseRatePackages from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'),
+			   (select X.FK_mscICD10Groups from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.1'))
+	else update mscICD10Mstr set description = 'DENGUE WITH WARNING SIGNS;  DENGUE HAEMORRHAGIC FEVER WITH WARNING SIGNS' where PK_mscICD10Mstr = 'A97.1'
+
+if 'A97.2' not in (select PK_mscICD10Mstr from mscICD10Mstr)
+	insert into mscICD10Mstr(PK_mscICD10Mstr, FK_mscICD10PrimeClass, FK_mscICD10SubClass1, FK_mscICD10SubClass2,description,
+				communicable,isSystemDefault,casetype,FK_mscICD10Morbidity,FK_mscICD10Mortality,isCaseRate,
+				FK_mscEClaimsCaseRatePackages,FK_mscICD10Groups)
+		values ('A97.2',
+			   (select X.FK_mscICD10PrimeClass from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.FK_mscICD10SubClass1 from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.FK_mscICD10SubClass2 from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   'SEVERE DENGUE; SEVERE DENGUE FEVER; SEVERE DENGUE HAEMORRHAGIC FEVER',
+			   (select X.communicable from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.isSystemDefault from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.casetype from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.FK_mscICD10Morbidity from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.FK_mscICD10Mortality from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.isCaseRate from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.FK_mscEClaimsCaseRatePackages from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'),
+			   (select X.FK_mscICD10Groups from mscICD10Mstr X where PK_mscICD10Mstr = 'A91.3'))
+	else update mscICD10Mstr set description = 'SEVERE DENGUE; SEVERE DENGUE FEVER; SEVERE DENGUE HAEMORRHAGIC FEVER' where PK_mscICD10Mstr = 'A97.2'
+
+--update description
+update mscICD10Mstr set description = 'ACUTE GASTROENTEROPATHY DUE TO NOROVIRUS;NOROVIRAL ENTERITIS; SMALL ROUND STRUCTURED VIRUS ENTERITIS' where PK_mscICD10Mstr = 'A08.1'
+update mscICD10Mstr set description = 'GASTROENTERITIS AND COLITIS OF UNSCPECIFIED ORIGIN; NEONATAL DIARRHEA NOS' where PK_mscICD10Mstr = 'A09.9'
+update mscICD10Mstr set description = 'OTHER SPECIFIED ARTHROPOD-BORNE VIRAL FEVERS; SEVERE FEVER WITH THROMBOCYTOPENIA SYNDROME [SFTS]; VESICULAR STOMATITIS VIRUS DISEASE' where PK_mscICD10Mstr = 'A93.8'
+update mscICD10Mstr set description = 'OTITIS MEDIA IN MEASLES' where PK_mscICD10Mstr = 'B05.3+ H67.1*'
+update mscICD10Mstr set description = 'ACUTE HEPATITIS B WITHOUT DELTA-AGENT AND WITHOUT HEPATIC COMA; HEPATITIS B (VIRAL) NOS' where PK_mscICD10Mstr = 'B16.9'
+update mscICD10Mstr set description = 'CHRONIC VIRAL HEPATITIS B WITHOUT DELTA-AGENT; CHRONIC (VIRAL) NOS' where PK_mscICD10Mstr = 'B18.1'
+update mscICD10Mstr set description = 'EXTREME OBESITY WITH ALVEOLAR HYPOVENTILATION; OBESITY HYPOVENTILATION SYNDROME (OHS0; PICKWICKIAN SYNDROME' where PK_mscICD10Mstr = 'E66.2'
+update mscICD10Mstr set description = 'OTHER SPECIFIED EXTRAPYRAMIDAL AND MOVEMENT DISORDERS; AKATHISIA (DRUG-INDUCED) (TREATMENT-INDUCED) RESTLESS LEGS SYNDROME; STIFF-MAN SYNDROME' where PK_mscICD10Mstr = 'G25.8'
+update mscICD10Mstr set description = 'OTHER SPECIFIED CONDUCTION DISORDER; ATRIOVENTRICULAR [AV] DISSOCIATION; INTERFERENCE DISSOCIATION' where PK_mscICD10Mstr = 'I45.8'
+update mscICD10Mstr set description = 'INFLUENZA DUE TO IDENTIFIED ZOONOTIC OR PANDEMIC INFLUENZA VIRUS; INFLUENZA CAUSED BY INFLUENZA VIRUS STRAINS OF SPECIAL EPIDEMIOLOGICAL IMPORTANCE WITH AN ANIMAL-HUMAN OR INTER-HUMAN TRANSMISSION' where PK_mscICD10Mstr = 'J09'
+update mscICD10Mstr set description = 'INFLUENZA WITH PNEUMONIA, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZAL (BRONCHO) PNEUMONIA, OTHER INFLUENZA VIRUS IDENTIFIED' where PK_mscICD10Mstr = 'J10.0'
+update mscICD10Mstr set description = 'INFLUENZA WITH OTHER RESPIRATORY MANIFESTATIONS, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZA; INFLUENZAL ACUTE UPPER RESPIRATORY INFECTION, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZAL LARINGITIS, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZAL PHARYNGITIS, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZAL PLEURAL EFFUSION, SEASON INFLUENZA VIRUS IDENTIFIED' where PK_mscICD10Mstr = 'J10.1'
+update mscICD10Mstr set description = 'INFLUENZA WITH OTHER MANIFESTATIONS, INFLUENZA VIRUS IDENTIFIED; ENCEPHALOPATHY DUE TO INFLUENZA, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZAL GASTROENTERITIS, SEASONAL INFLUENZA VIRUS IDENTIFIED; INFLUENZAL MYOCARDITIS (ACUTE), SEASONAL INFLUENZA VIRUS IDENTIFIED' where PK_mscICD10Mstr = 'J10.8'
+update mscICD10Mstr set description = 'INFLUENZAL MYOCARDITIS (ACUTE), VIRUS NOT IDENTIFIED' where PK_mscICD10Mstr = 'J11.8+ I41.1*'
+update mscICD10Mstr set description = 'MENDELSON SYNDROME; CHEMICAL PNEUMONITIS DUE TO ASPIRATION DURING ANAESTHESIA' where PK_mscICD10Mstr = 'J95.4'
+update mscICD10Mstr set description = 'OESOPHAGEAL OBSTRUCTION; OESOPHAGEAL WEB (ACQUIRED); COMPRESSION OF OESOPHAGUS; CONSTRICTION OF OESOPHAGUS; STENOSIS OF OESOPHAGUS;STRICTURE OF OESOPHAGUS' where PK_mscICD10Mstr = 'K22.2'
+update mscICD10Mstr set description = 'ANGIODYSPLASIA OF COLON; ANGIODYSPLASIA OF INTESTINE NOS' where PK_mscICD10Mstr = 'K55.2'
+update mscICD10Mstr set description = 'OSTEOMYELITIS, UNSPECIFIED; INFECTION OF BONE NOS; PERIOSTITIS NOS' where PK_mscICD10Mstr = 'M86.9'
+update mscICD10Mstr set description = 'OTHER ENDOMETRIOSIS; ENDOMETRIOSIS OF THORAX' where PK_mscICD10Mstr = 'N80.8'
+update mscICD10Mstr set description = 'PULMONARY COMPLICATIONS OF ANAESTHESIA DURING THE PUERPERIUM; ASPIRATION PNEUMONITIS DUE TO ANAESTHESIA DURING THE PUERPERIUM; ASPIRATION PENUMONITIS DUE TO ANAESTHESIA DURING THE PUERPERIUM; CHEMICAL PENUMONITIS DUE ASPIRTION, DUE TO ANAESTHESIA DURING THE PUERPERIUM; INHALATION OF STOMACH CONTENTS OR SECRETIONS NOS DUE TO ANAESTHESIA DUEING THE PUERPERIUM; MENDELSON SYNDROME DUE TO ANAESTHESIA DURING THE PUERPERIUM; PRESSURE COLLAPSE OF LUNG DUE TO ANAESTHESIA DURING THE PUERPERIUM' where PK_mscICD10Mstr = 'O89.0'
+update mscICD10Mstr set description = 'NONINFECTIVE NEONATAL DIARRHOEA' where PK_mscICD10Mstr = 'P78.3'
+update mscICD10Mstr set description = 'OTHER AND UNSPECIFIED INSECTICIDES' where PK_mscICD10Mstr = 'T60.2'

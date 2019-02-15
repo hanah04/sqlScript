@@ -1,0 +1,23 @@
+select
+dbo.udf_GetFullName(FK_appsysusers)SysUser,
+(select FK_appsysUserGroups From appsysusers where PK_appsysUsers=a.FK_appsysusers),
+a.description,value
+--update a set value='No'
+From appsysUserAccessExt a where 
+description in (
+'Allow Registration For Blacklisted / Absconded / With Balance Patient',
+'Allow Rendering for Control Drugs','Allow Viewing of All Cashiering Transactions',
+'Allow posting of unposted Reagents',
+'Allow Untagging of Patients that were Already locked on the Clinic System',
+'Allow to Edit Discharge Registries','Allow Billing Recalculation',
+'Allow Accessing of Confidential Patient Records',
+'Allow Tagging and Untagging of Patient Records tagged as Confidential',
+'Allow Printing of Exam Upshots in Patients Module',
+'Allow Editing Of Manual OR Number In Cash Receipts',
+'Allow Printing of Reports to Various Formats i.e. MS Word,MS Excel,etc',
+'Allow user to change discount scheme in registration module',
+'Allow editing of Official Receipt Date','Allow User to Register Similar Patient Record','
+Allow Editing of Readers Fee on Examination Upshot '
+)
+and FK_appsysusers in (select PK_appsysUsers From appsysusers where FK_appsysUserGroups='Bill' --user group code
+) order by  dbo.udf_GetFullName(FK_appsysusers), description 

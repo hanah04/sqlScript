@@ -1,0 +1,11 @@
+select istrade, isviewable, * from iwwareitem as a
+inner join iwitems as b on a.FK_iwItems = b.PK_iwItems
+where a.FK_mscWarehouse = 1034
+and b.itemgroup in ('MED','SUP','EQP')
+and isViewable = 0
+
+update a set a.isviewable = 1 from iwwareitem as a
+inner join iwitems as b on a.FK_iwItems = b.PK_iwItems
+where a.FK_mscWarehouse = 1034
+and b.itemgroup in ('MED','SUP','EQP')
+and isViewable = 0

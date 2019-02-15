@@ -1,0 +1,11 @@
+
+-- To insert default value of 1000 in psDatacenter --
+
+SET IDENTITY_INSERT [dbo].[psDatacenter] ON
+
+INSERT [dbo].[psDatacenter] 
+	([PK_psDatacenter], [hs7dcno], [rectype], [category], [id], [fullname], [fullname2], [customname], [mobilephone], [telefax], [email], [prcontactperson], [prtelno], [prfaxno], [premail], [prstreetbldg1], [prstreetbldg2], [prstreetbldg3], [prbarangay], [prtowncity], [prprovince], [prcountry], [prregion], [prarea], [przipcode], [praddress], [sdcontactperson], [sdtelno], [sdfaxno], [sdemail], [sdstreetbldg1], [sdstreetbldg2], [sdstreetbldg3], [sdbarangay], [sdtowncity], [sdprovince], [sdcountry], [sdregion], [sdarea], [sdzipcode], [sdaddress], [billflag], [delvflag], [lcustomer], [lvendor], [lemployee], [lpatient], [ldoctor], [lsysuser], [lapplicant], [tin], [sssgsisno], [phicno], [pagibig], [passportno], [driverlicenseno], [postdate], [postdcno], [proflicenseno], [localization], [prcountrycode], [othercontact], [pagerno]) 
+VALUES 
+	(1000, 0, 'C', NULL, '00000000', 'Default Hospital Name', 'Default Hospital Name', 'Default Hospital Name', NULL, NULL, NULL, NULL, '', '', '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL)
+
+SET IDENTITY_INSERT [dbo].[psDatacenter] OFF

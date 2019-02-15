@@ -1,0 +1,9 @@
+﻿
+USE [master]
+GO
+
+BACKUP DATABASE  [TrainingDB_HIS26.4]
+TO DISK = 'D:\3.BAK'
+WITH STATS,COMPRESSION
+
+GO

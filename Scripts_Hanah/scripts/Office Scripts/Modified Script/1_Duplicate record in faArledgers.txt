@@ -1,0 +1,69 @@
+
+/****************** Retrieve Duplicate record in faArledgers ******************/
+select 
+		Guarantor = dbo.udf_getfullname(a.fk_faCustomers) , 
+		a.docno, 
+		a.docdate, 
+		Ledgerdebit = sum(a.debit),
+		[Actual AR Amount] = (select amount from faArinv as aa where aa.PK_TRXNO = a.FK_TRXNO),
+		a.FK_TRXNO
+		
+from 
+		faArledgers as a
+where 
+		a.artype not in ('CM', 'OR') and 
+		(a.FK_TRXNO_CM = 0 or a.FK_TRXNO_CM is null) and (a.FK_TRXNO_CR = 0 or a.FK_TRXNO_CR is null) and 
+		a.cancelflag = 0
+group by 
+		a.docno, a.FK_TRXNO, a.docdate, a.FK_faCustomers
+having 
+		Count(*) > 1
+
+
+
+/****************** Update to cancel Duplicate record in faArledgers ******************/
+
+declare @FK_TRXNO bigint,
+		@PK_faArledgers int,
+		@sql nvarchar(max)
+
+declare ledgerList cursor for
+select 
+		a.FK_TRXNO
+		
+from 
+		faArledgers as a
+where 
+		a.artype not in ('CM', 'OR') and 
+		(a.FK_TRXNO_CM = 0 or a.FK_TRXNO_CM is null) and (a.FK_TRXNO_CR = 0 or a.FK_TRXNO_CR is null) and 
+		a.cancelflag = 0
+group by 
+		a.FK_TRXNO
+having 
+		Count(*) > 1
+
+open ledgerList
+
+fetch next from ledgerList into @FK_TRXNO
+while(@@FETCH_STATUS = 0)
+	begin
+		set @PK_faArledgers = (select top 1 PK_faArledgers from faArledgers where artype not in ('CM', 'OR') 
+													and (FK_TRXNO_CM = 0 or FK_TRXNO_CM is null) 
+													and (FK_TRXNO_CR = 0 or FK_TRXNO_CR is null) 
+													and cancelflag = 0
+													and deleteflag = 0
+													and FK_TRXNO = @FK_TRXNO and debit > 0)
+		set @sql = 'update faArledgers set cancelflag = 1 where 
+													artype not in (''CM'', ''OR'') 
+													and (FK_TRXNO_CM = 0 or FK_TRXNO_CM is null) 
+													and (FK_TRXNO_CR = 0 or FK_TRXNO_CR is null) 
+													and cancelflag = 0
+													and deleteflag = 0
+													and FK_TRXNO = ' + Convert(varchar(20), @FK_TRXNO) + ' and PK_faArledgers != ' + Convert(varchar(20), @PK_faArledgers)
+
+	print @sql
+	fetch next from ledgerList into @FK_TRXNO
+end
+
+close ledgerList
+deallocate ledgerList

@@ -1,0 +1,10 @@
+insert into faarinv (ownerID, FK_mscBranches, FK_faCustomers, FK_emdPatients, FK_TRXNO_Source, FK_emdDoctors, FK_mscCurrency, FK_mscArea, FK_faBillTranMstr,
+FK_mscTranTypesAR, FK_mscCustomerTypes, FK_mscTerms, terms, artype, doctype, docno, docdate, billaddress, delvaddress, curramt, currrate, attention, discrate,
+discamt, vatincl, vat, vatamt, glremarks, vatable, amount, oramount, cnamount, dmamount, pfpaidamount, remarks, FK_ASUGLPost, glpostflag, glpostdate, 
+FK_ASUPost, postflag, postdate, FK_ASUCancel, cancelflag, canceldate, cancelrem, FK_ASUDelete, deleteflag, deletedate, deleterem, FK_psPatRegisters,
+FK_faContractTrans, arsumm, billno, discount, docid, locamt, paidamt, trantype, isaccrual, FK_TRXNO_JVMstrUnpostOR, FK_TRXNO_JVMstrUnpostCM, isMultiTranTypes, instrfeeamt,
+FK_faJVTMstr, duedate, isPhicExcess, FK_ASUReg, FK_faBillTranMstrVoided, FK_psHMOeClaimsNo, termsofpayment)
+
+values ('00000000','1007','1828','252685','0',NULL,NULL,'1000','0','1000','1023','A','0','OT','CH','499241','2017-03-22 19:41:00',NULL,NULL,'7000','0.00000000',NULL,
+'0','0','0','0','0',NULL,'0','7000','0','0','0',NULL,NULL,NULL,'0',NULL,'169049','1','2017-03-22 19:41:00',NULL,'0',NULL,NULL,NULL,'0',NULL,NULL,'485563',
+'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,'0','169049',NULL,NULL,NULL);

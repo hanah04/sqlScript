@@ -1,0 +1,7 @@
+when 'A' then 'Active'
+						when 'D' then 'Discharge'
+						when 'M' then 'MGH'
+						WHEN 'U' then 'Untag MGH'
+						when 'C' then 'Cleared'
+						when 'F' then 'For MGH Clearance'
+					else 'Not Applicable'

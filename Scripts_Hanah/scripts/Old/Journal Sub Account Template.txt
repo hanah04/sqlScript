@@ -1,0 +1,13 @@
+INSERT INTO faGLAcctSubs(FK_faGLAcct,FK_faGLAcctGrp,FK_faGlAcctGrp2) 
+select 
+	A.FK_faGLAcct,
+	A.FK_faGLAcctGrp,
+	A.FK_faGLAcctGrp2
+from
+(select 
+	distinct(FK_faGLAcct + '-' +FK_faGLAcctGrp + '-' +FK_faGLAcctGrp2) AS FULLVALUE,
+	FK_faGLAcct,
+	FK_faGLAcctGrp,
+	FK_faGLAcctGrp2 
+from faGL where FK_faGLAcct not in ('','00000','XXXX-XXXX')) as A  
+where FULLVALUE not in (select FK_faGLAcct + '-' +FK_faGLAcctGrp + '-' +FK_faGLAcctGrp2 from faGLAcctSubs)

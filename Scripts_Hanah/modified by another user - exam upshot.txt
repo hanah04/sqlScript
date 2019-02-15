@@ -1,0 +1,1 @@
+update psexamresultmstr set isCheckedOut = 0 where fk_trxno = 'Transaction No. Here'

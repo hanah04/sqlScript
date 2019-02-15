@@ -1,0 +1,56 @@
+declare @JVTrxno nvarchar(20),
+		@CMTrxno nvarchar(20)
+
+declare c cursor for 
+select
+		a.PK_TRXNO, b.PK_TRXNO--, debit = sum(debit), credit = sum(credit) 
+from 
+		faDMCMPayer as a
+		inner join faJVMstr as b on a.FK_faJVMstr = b.PK_TRXNO
+		inner join faGL as c on b.PK_TRXNO = c.FK_TRXNO
+where
+	a.iscreditadvice = 1
+group by 
+		b.PK_TRXNO, a.PK_TRXNO
+having 
+		sum(debit) <> sum(credit)
+
+open c
+
+fetch next from c into @CMTrxno, @JVTrxno
+
+while @@FETCH_STATUS = 0
+Begin
+	
+	if not exists (select * from fagl where FK_TRXNO = @JVTrxno and auditflag = 1)
+	Begin
+		delete fagl where FK_TRXNO = @JVTrxno and credit = 0
+
+		insert into fagl (ownerID, FK_mscBranches, FK_psDatacenter, FK_TRXNO, FK_faGLAcct, FK_faGLAcctGrp, glbook, trangroup, doctype, docno, glperiod,
+		debit, credit, postdate, postflag, cancelflag, canceldate, auditflag, auditdate, FK_faGLAcctGrp2, sorter, FK_ASUAudit, FK_faGLA, IsPostClosing, IsPreclosing, isMonthlyClosedFlag,
+		isAdjustingEntries, remarks, pattrantype)
+
+		select 
+			a.ownerID, a.FK_mscBranches, a.FK_faCustomers, JVTrxno = c.PK_TRXNO, z.FK_faGLAcct, FK_faGLAcctGrp = 'CT0001',
+			'JB', 'JV', 'JV', c.jvno, c.docdate, debit = sum(b.pfapplied), credit = 0, c.docdate, 1, 0, null, 0, null,
+			FK_faGLAcctGrp2 = case isnull(e.pattrantype,'I') when 'I' then 'AI0001'
+			when 'O' then 'AI0002' else 'AI0003' end,
+			1, 0, 0, 0, 0, 0, 0, null, 'I'
+		from 
+			faDMCMPayer as a
+			inner join faDMCMPayerTrans as b on a.PK_TRXNO = FK_TRXNO
+			inner join faJVMstr as c on a.FK_faJVMstr = c.PK_TRXNO
+			inner join mscCustomerTypes as z on a.FK_mscCustomerTypes = z.PK_mscCustomerTypes
+			left outer join faArinv as d on b.FK_TRXNO_faArinv = d.PK_TRXNO
+			left outer join psPatRegisters as e on d.FK_psPatRegisters = e.PK_psPatRegisters
+
+		where 
+			a.PK_TRXNO = @CMTrxno 
+			and b.pfapplied > 0
+		group by a.ownerID, a.FK_mscBranches, c.PK_TRXNO,z.FK_faGLAcct, c.jvno, c.docdate, e.pattrantype, a.FK_faCustomers
+	End
+
+	fetch next from c into @CMTrxno, @JVTrxno
+End
+close c
+deallocate c

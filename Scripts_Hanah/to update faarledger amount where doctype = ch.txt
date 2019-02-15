@@ -1,0 +1,36 @@
+ /** CH Amount **/
+   
+    declare @ARTrxno int,
+			@FaArledgerAmt decimal(18,2),
+			@FaArinvAmt decimal(18,2)
+			
+
+	declare CHamount cursor for
+			select 
+				PK_faArledgers,
+				round(debit,2) as FaArledgerAmt,
+				FaArinvAmt = (select round(a.amount,2)
+				from faArinv as a
+				where a.PK_TRXNO = faArledgers.FK_TRXNO and a.artype = 'PF' and a.doctype = 'CH' and a.FK_faCustomers = 1003
+				and cancelflag = 0)
+				from faArLedgers where cancelflag <> 1 and artype not in ('CM', 'OR') and doctype = 'CH' and debit <> 0
+				group by PK_faArledgers, debit, FK_TRXNO
+				having
+				round(debit,2) <> (select round(a.amount,2)
+				from faArinv as a
+				where a.PK_TRXNO = faArledgers.FK_TRXNO and a.artype = 'PF' and a.doctype = 'CH' and a.FK_faCustomers = 1003
+				and cancelflag = 0)
+
+	Open CHamount
+	fetch next from CHamount into @ARTrxno, @FaArledgerAmt, @FaArinvAmt
+
+	While @@FETCH_STATUS = 0
+	Begin
+
+			Update faArledgers set debit = @FaArinvAmt where PK_faArledgers = @ARTrxno
+
+    fetch next from CHamount into @ARTrxno, @FaArledgerAmt, @FaArinvAmt
+
+	End
+	Close CHamount
+	deallocate CHamount

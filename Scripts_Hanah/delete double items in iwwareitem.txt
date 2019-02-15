@@ -1,0 +1,25 @@
+--------------------- Query for Details ---------------------------------
+
+Select b.PK_mscWarehouse,b.description as department,a.FK_iwItems,dbo.udf_GetItemDescription(a.FK_iwItems) as ItemDesc,
+count(a.FK_iwItems) as ItemCount,stuff((Select ',' + convert(varchar,y.PK_iwWareitem) from iwWareitem y 
+where y.FK_mscWarehouse = b.PK_mscWarehouse and y.FK_iwItems = a.FK_iwItems for xml path('')),1,1,'') as PK_iwWareitem,
+(Select top 1 y.PK_iwWareitem from iwWareitem y 
+where y.FK_mscWarehouse = b.PK_mscWarehouse and y.FK_iwItems = a.FK_iwItems) as TopRow
+From iwWareitem a inner join mscWarehouse b on a.FK_mscWarehouse = b.PK_mscWarehouse
+Group by b.PK_mscWarehouse,b.description,a.FK_iwItems
+having count(a.FK_iwItems) > 1 order by department,ItemDesc
+
+
+
+-------------------- Query for Delete -----------------------------------
+--
+delete from iwWareitem where PK_iwWareitem in 
+(Select TopRow from
+(Select b.PK_mscWarehouse,b.description as department,a.FK_iwItems,dbo.udf_GetItemDescription(a.FK_iwItems) as ItemDesc,
+count(a.FK_iwItems) as ItemCount,stuff((Select ',' + convert(varchar,y.PK_iwWareitem) from iwWareitem y 
+where y.FK_mscWarehouse = b.PK_mscWarehouse and y.FK_iwItems = a.FK_iwItems for xml path('')),1,1,'') as PK_iwWareitem,
+(Select top 1 y.PK_iwWareitem from iwWareitem y 
+where y.FK_mscWarehouse = b.PK_mscWarehouse and y.FK_iwItems = a.FK_iwItems) as TopRow
+From iwWareitem a inner join mscWarehouse b on a.FK_mscWarehouse = b.PK_mscWarehouse
+Group by b.PK_mscWarehouse,b.description,a.FK_iwItems
+having count(a.FK_iwItems) > 1) as a)

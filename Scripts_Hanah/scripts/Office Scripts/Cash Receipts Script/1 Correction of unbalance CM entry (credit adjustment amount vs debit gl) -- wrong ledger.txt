@@ -1,0 +1,50 @@
+/******	1. Run GL tool for the period affected ******/
+/******	2. Correction of unbalance CM entry (credit adjustment amount vs debit gl) -- wrong ledger ******/
+
+declare @CMTrxno nvarchar(20),
+		@ARTrxno nvarchar(20),
+		@othersAmt decimal(18,4),
+		@CMAmt decimal(18,4),
+		@totalMemoDtls decimal(18,4),
+		@totalArCredit decimal(18,4),
+		@gldebit decimal(18,4),
+		@glcredit decimal(18,4)
+
+declare CMrow cursor for
+select b.PK_TRXNO, a.amount, b.amount, 
+totalMemoDtls = round(sum(c.memoamount),2),
+totalArCredit = (select round(sum(credit),2) from faArledgers where FK_TRXNO_CM = b.PK_TRXNO),
+gldebit = isnull((select sum(debit) from fagl where FK_TRXNO = b.PK_TRXNO),0),
+glcredit = isnull((select sum(credit) from fagl where FK_TRXNO = b.PK_TRXNO),0)
+from faCROthers as a
+inner join faDMCMPayer as b on a.FK_TRXNO_faDMCMPayer = b.PK_TRXNO
+inner join faDMCMPayerTrans as c on b.PK_TRXNO = c.FK_TRXNO
+
+group by  a.amount, b.amount, b.PK_TRXNO
+having a.amount <> round(sum(c.memoamount),2) or  b.amount <> round(sum(c.memoamount),2)  or a.amount <> b.amount
+order by b.PK_TRXNO
+
+open CMrow
+
+Fetch next from CMRow into @CMTrxno, @othersAmt, @CMAmt, @totalMemoDtls, @totalArCredit, @gldebit, @glcredit
+While @@FETCH_STATUS = 0
+Begin
+	if (@gldebit != @glcredit and @CMAmt = @othersAmt and @CMAmt = @gldebit)
+	Begin
+		If Not Exists (select * from fagl where FK_TRXNO = @CMTrxno and auditflag = 1)
+		Begin
+			update fagl set credit = Round((credit / @glcredit) * @gldebit,2) where FK_TRXNO = @CMTrxno and credit > 0
+		End
+	End
+
+	If (@totalMemoDtls != @othersAmt)
+	Begin
+		update faDMCMPayerTrans set memoamount = (memoamount/@totalMemoDtls) * @othersAmt where FK_TRXNO = @CMTrxno
+		update faArledgers set credit = (credit / @totalMemoDtls) * @othersAmt where FK_TRXNO_CM = @CMTrxno and doctype = 'CM' and credit > 0
+	End
+
+Fetch next from CMRow into @CMTrxno, @othersAmt, @CMAmt, @totalMemoDtls, @totalArCredit, @gldebit, @glcredit
+End
+
+close CMrow
+deallocate CMrow

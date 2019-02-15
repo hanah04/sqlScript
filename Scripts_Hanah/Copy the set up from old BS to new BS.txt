@@ -1,0 +1,40 @@
+/* Run this script to copy the setup from old Balance Sheet to new Balance Sheet setup. 
+*/
+
+
+--Copy all old BS details to new Balance Sheet setup
+
+
+
+Insert Into faGLBSClassAcctsOpt2 (FK_faGLAcct, FK_faGLAcctGrp, FK_faGLAcctGrp2, accttype, acctclass, FK_faGLBSClass, FK_mscCashFlowTypes)
+
+select b.FK_faGLAcct, FK_faGLAcctGrp, FK_faGLAcctGrp2, accttype, a.acctclass, a.PK_faGLBSClass, FK_mscCashFlowTypes
+
+from faGLBSClass a
+
+inner join faGLBSClassAccts b on a.PK_faGLBSClass = b.FK_faGLBSClass
+
+inner join faGLA c on b.FK_faGLAcct = c.FK_faGLAcct
+
+where c.glperiod < '01/01/2016' --and a.FK_faGLFSReports = 1001
+
+group by b.FK_faGLAcct, FK_faGLAcctGrp, FK_faGLAcctGrp2, accttype, a.acctclass, a.PK_faGLBSClass, FK_mscCashFlowTypes, a.FK_faGLFSReports
+
+
+
+
+
+
+-- To check / validate the templates 
+
+select b.FK_faGLAcct, b.FK_faGLAcctGrp, b.FK_faGLAcctGrp2, b.accttype, a.acctclass, a.PK_faGLBSClass, FK_mscCashFlowTypes
+
+from faGLBSClass a
+
+inner join faGLBSClassAcctsOpt2 b on a.PK_faGLBSClass = b.FK_faGLBSClass
+
+inner join faGLA c on b.FK_faGLAcct = c.FK_faGLAcct and b.FK_faGLAcctGrp = c.FK_faGLAcctGrp and b.FK_faGLAcctGrp2 = c.FK_faGLAcctGrp2
+
+where c.glperiod < '01/01/2014' --and a.FK_faGLFSReports = 1001
+
+group by b.FK_faGLAcct, b.FK_faGLAcctGrp, b.FK_faGLAcctGrp2, b.accttype, a.acctclass, a.PK_faGLBSClass, FK_mscCashFlowTypes, a.FK_faGLFSReports

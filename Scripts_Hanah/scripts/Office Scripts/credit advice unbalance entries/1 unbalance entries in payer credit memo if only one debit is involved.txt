@@ -1,0 +1,27 @@
+
+declare @CMTrxno nvarchar(20),
+		@debit decimal(18,4),
+		@credit decimal(18,4)
+
+
+declare c cursor for
+select a.PK_TRXNO, debit = sum(b.debit), credit = sum(b.credit) from faDMCMPayer as a
+inner join faGL as b on a.PK_TRXNO = b.FK_TRXNO
+where a.iscreditadvice = 1
+group by a.PK_TRXNO
+having sum(b.debit) != sum(b.credit)
+
+open c
+
+fetch next from c into @CMTrxno, @debit, @credit
+while (@@FETCH_STATUS = 0)
+Begin
+	If ((select Count(*) from fagl where FK_TRXNO = @CMTrxno and debit > 0) = 1)
+	Begin
+		update fagl set debit = @credit where FK_TRXNO = @CMTrxno and debit > 0 and debit != @credit
+	End
+	
+	fetch next from c into @CMTrxno, @debit, @credit
+End
+close c
+deallocate c

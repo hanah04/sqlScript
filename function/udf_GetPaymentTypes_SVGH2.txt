@@ -1,0 +1,48 @@
+USE [LiveDB_SVGH]
+GO
+/****** Object:  UserDefinedFunction [dbo].[udf_GetPaymentTypes_SVGH2]    Script Date: 7/26/2018 9:26:57 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date, ,>
+-- Description:	<Description, ,>
+-- =============================================
+alter function [dbo].[udf_GetPaymentTypes_SVGH2]
+(
+	@fkpspatregisters	varchar(max)
+)
+returns		varchar(max)
+as
+
+begin
+
+	declare @str varchar(400)
+
+set @str = ''
+
+select @str = @str + cast(table1.PaymentType as varchar) + ', '
+from
+	(
+		select 
+		case when provamount > 0 or cashamount > 0 then concat('Cash - #', orno)
+			 when cardamount > 0 then concat('Card - #', orno )
+			 when checkamount > 0 then concat('Check - #', orno)
+			 when cardamount > 0 and provamount > 0 or cashamount > 0 and checkamount > 0then concat('Card / Check / Card - #', orno)
+			 when checkamount > 0 and cardamount > 0 then concat('Check / Card - #', orno)
+			 when checkamount > 0 and cashamount > 0 then concat('Cash / Check - #', orno)
+			 when cardamount > 0 and cashamount > 0 then concat('Cash / Card - #', orno)
+		end as PaymentType
+		from facrmstr 
+		where PK_TRXNO = @fkpspatregisters
+		
+	)	as table1
+
+	if (Len(@str) > 1)
+				select @str = substring(@str,1,len(@str)-1)
+return @str
+
+end
+

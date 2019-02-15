@@ -1,0 +1,12 @@
+case x.deliverytype
+									when 'A' then 'Not Applicable'
+									when 'I' then 'Induction'
+									when 'C' then 'Caesarean Section'
+									when 'E' then 'Episiotomy'
+									when 'F' then 'Forceps'
+									when 'V' then 'Ventouse - Vacuum Extraction'
+									when 'N' then 'NSD'
+									when 'B' then 'Breech Extraction'
+									when 'O' then 'Others'
+									else 'Not Applicable'
+								end DeliveryType

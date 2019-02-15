@@ -1,0 +1,24 @@
+declare @CRTrxno bigint,
+		@CMAmount decimal(20,2)
+
+declare @sql nvarchar(max)
+
+declare a cursor for
+					select a.FK_TRXNO, b.amount from faCROthers as a
+					inner join faDMCMPayer as b on a.FK_TRXNO_faDMCMPayer = b.PK_TRXNO
+					inner join faCRMstr as c on a.FK_TRXNO = c.PK_TRXNO
+					where a.amount != b.amount or a.amount != c.otheramount or b.amount != c.otheramount
+
+Open a
+
+Fetch Next from a into @CRTrxno, @CMAmount
+	while (@@FETCH_STATUS = 0)
+	Begin
+			set @sql = '
+						update faCROthers set amount = ' + Convert(varchar(30), @CMAmount) + ' where FK_TRXNO = ' + Convert(varchar(30), @CRTrxno) + '
+						update faCRMstr set otheramount = ' + Convert(varchar(30), @CMAmount) + ' where PK_TRXNO = ' + Convert(varchar(30), @CRTrxno)
+			print @sql
+		Fetch Next from a into @CRTrxno, @CMAmount
+	End
+Close a
+Deallocate a

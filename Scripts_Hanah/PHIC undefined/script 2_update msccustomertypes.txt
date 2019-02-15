@@ -1,0 +1,10 @@
+/*for faarinv msccustomertype*/
+select a.FK_mscCustomerTypes, b.FK_mscCustomerTypes, * from faarinv a
+inner join mscTranTypesAR b on a.FK_mscTranTypesAR = b.PK_mscTranTypesAR
+where a.FK_mscCustomerTypes = 1000 and a.FK_faCustomers = 1003 and a.glpostflag = 1
+and a.FK_mscTranTypesAR <> 1000
+
+--update a set a.fk_msccustomertypes = b.FK_mscCustomerTypes from faarinv a
+inner join mscTranTypesAR b on a.FK_mscTranTypesAR = b.PK_mscTranTypesAR
+where a.FK_mscCustomerTypes = 1000 and a.FK_faCustomers = 1003 and a.glpostflag = 1
+and a.FK_mscTranTypesAR <> 1000

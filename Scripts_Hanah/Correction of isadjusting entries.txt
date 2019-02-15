@@ -1,0 +1,25 @@
+Step 1
+
+select		dbo.udf_ConcatAccountDesc (a.PK_faGL) Name, a.debit, a.credit, a.glperiod, a.auditflag, a.FK_faGLA, a.docno, 
+			a.FK_faGLAcct, a.FK_faGLAcctGrp, a.FK_faGLAcctGrp2, isMonthlyClosedFlag, isAdjustingEntries, a.cancelflag
+from		faGL a
+		join faGLAcct b on a.FK_faGLAcct = b.PK_faGlAcct
+where 
+			a.FK_TRXNO in 
+			(select pk_trxno from faJVMstr where isAdjustingEntries = 1 and CONVERT(date, docdate) 
+			between '10/01/2013' and '10/31/2013') and b.fstype = 'I'
+
+Step 2
+
+select *from faGLA where PK_faGLA = 80182
+
+Step 3
+select *from faGLA where PK_faGLA = 93157
+--update faGLA set IsPreclosing = 1, isMonthlyClosedFlag = 0, isAdjustment = 0 where PK_faGLA = 93157
+
+Step 4
+----- to change the jv details
+
+select jvno,* 
+--update  a  set isadjustingentries = 0
+from faJVMstr a where jvno  = 234737

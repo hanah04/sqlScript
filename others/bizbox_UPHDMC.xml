@@ -1,0 +1,1380 @@
+
+		
+		<!--CM Parasitology-->
+		<test id="LAB1005" description="MICRAL TEST" testcode="cmmicral2test" group="micral" />
+
+		<test id="LAB32" description="PREGNANCY TEST" testcode="pregresult" group="pregnancytest" />
+
+		<test id="LAB435" description="URINE UROBILINOGEN" combo="1" >
+			<test testcode="uriascorbicacid" group="urineurobili" />
+			<test testcode="uribact" group="urineurobili" />
+			<test testcode="uribilirubin" group="urineurobili" />
+			<test testcode="uriblood" group="urineurobili" />
+			<test testcode="uricolor" group="urineurobili" />
+			<test testcode="uricrytals" group="urineurobili" />
+			<test testcode="uriepithcells" group="urineurobili" />
+			<test testcode="uriglucose" group="urineurobili" />
+			<test testcode="uriketone" group="urineurobili" />
+			<test testcode="urimucs" group="urineurobili" />
+			<test testcode="uriprotein" group="urineurobili" />
+			<test testcode="uripuscell" group="urineurobili" />
+			<test testcode="urirbc" group="urineurobili" />
+			<test testcode="urireaction" group="urineurobili" />
+			<test testcode="urigravity" group="urineurobili" />
+			<test testcode="uritransparency" group="urineurobili" />
+			<test testcode="uriurobilinogen" group="urineurobili" />
+			<test testcode="uricasts" group="urineurobili" />
+			<test testcode="uriothers" group="urineurobili" />
+		</test>
+
+		<test id="LAB312" description="SPERM ANALYSIS" combo="1" >
+			<test testcode="semenaforms" group="semenalysis" />
+			<test testcode="semenliqtime" group="semenalysis" />
+			<test testcode="semenmotil1hr" group="semenalysis" />
+			<test testcode="semenmotil30min" group="semenalysis" />
+			<test testcode="semenmot" group="semenalysis" />
+			<test testcode="semennh" group="semenalysis" />
+			<test testcode="semenpuscell" group="semenalysis" />
+			<test testcode="semenRBC" group="semenalysis" />
+			<test testcode="semenscount" group="semenalysis" />
+			<test testcode="sementwo" group="semenalysis" />
+			<test testcode="sementhree" group="semenalysis" />
+			<test testcode="semenmorph" group="semenalysis" />
+			<test testcode="semendescrip" group="semenalysis" />
+		</test>
+
+		<test id="LAB23" description="URINALYSIS" combo="1" >
+			<test testcode="uriascorbicacid" group="urinalysis" />
+			<test testcode="uribact" group="urinalysis" />
+			<test testcode="uribilirubin" group="urinalysis" />
+			<test testcode="uriblood" group="urinalysis" />
+			<test testcode="uricolor" group="urinalysis" />
+			<test testcode="uricrytals" group="urinalysis" />
+			<test testcode="uriepithcells" group="urinalysis" />
+			<test testcode="uriglucose" group="urinalysis" />
+			<test testcode="uriketone" group="urinalysis" />
+			<test testcode="urimucs" group="urinalysis" />
+			<test testcode="uriprotein" group="urinalysis" />
+			<test testcode="uripuscell" group="urinalysis" />
+			<test testcode="urirbc" group="urinalysis" />
+			<test testcode="urireaction" group="urinalysis" />
+			<test testcode="urigravity" group="urinalysis" />
+			<test testcode="uritransparency" group="urinalysis" />
+			<test testcode="uriurobilinogen" group="urinalysis" />
+			<test testcode="uricasts" group="urinalysis" />
+			<test testcode="uriothers" group="urinalysis" />
+		</test>
+
+		<test id="LAB434" description="URINE HEMOGLOBIN" combo="1" >
+			<test testcode="uriascorbicacid" group="urinehemoglobin" />
+			<test testcode="uribact" group="urinehemoglobin" />
+			<test testcode="uribilirubin" group="urinehemoglobin" />
+			<test testcode="uriblood" group="urinehemoglobin" />
+			<test testcode="uricolor" group="urinehemoglobin" />
+			<test testcode="uricrytals" group="urinehemoglobin" />
+			<test testcode="uriepithcells" group="urinehemoglobin" />
+			<test testcode="uriglucose" group="urinehemoglobin" />
+			<test testcode="uriketone" group="urinehemoglobin" />
+			<test testcode="urimucs" group="urinehemoglobin" />
+			<test testcode="uriprotein" group="urinehemoglobin" />
+			<test testcode="uripuscell" group="urinehemoglobin" />
+			<test testcode="urirbc" group="urinehemoglobin" />
+			<test testcode="urireaction" group="urinehemoglobin" />
+			<test testcode="urigravity" group="urinehemoglobin" />
+			<test testcode="uritransparency" group="urinehemoglobin" />
+			<test testcode="uriurobilinogen" group="urinehemoglobin" />
+			<test testcode="uricasts" group="urinehemoglobin" />
+			<test testcode="uriothers" group="urinehemoglobin" />
+		</test>
+
+		<test id="LAB35" description="FECALYSIS" combo="1" >
+			<test testcode="fecaova" group="fecalysis" />
+			<test testcode="fecaconsistency" group="fecalysis" />
+			<test testcode="fecapuscell" group="fecalysis" />
+			<test testcode="fecalbloodchem" group="fecalysis" />
+			<test testcode="fecalbile" group="fecalysis" />
+			<test testcode="fecalbloodgross" group="fecalysis" />
+			<test testcode="fecalcells" group="fecalysis" />
+			<test testcode="fecalcolor" group="fecalysis" />
+			<test testcode="fecalmucus" group="fecalysis" />
+		</test>
+
+		<test id="LAB36" description="OCCULT BLOOD FECALYSIS" testcode="fecaoccultblood" group="occultblood" />
+
+		<test id="LAB1178" description="SCOTCH TAPE TECHNIQUE" testcode="cmscotchtapeswab" group="scotchtapeswab" />
+
+		<test id="LAB502" description="SPECIFIC GRAVITY" combo="1" >
+			<test testcode="uriascorbicacid" group="urinespecificg" />
+			<test testcode="uribact" group="urinespecificg" />
+			<test testcode="uribilirubin" group="urinespecificg" />
+			<test testcode="uriblood" group="urinespecificg" />
+			<test testcode="uricolor" group="urinespecificg" />
+			<test testcode="uricrytals" group="urinespecificg" />
+			<test testcode="uriepithcells" group="urinespecificg" />
+			<test testcode="uriglucose" group="urinespecificg" />
+			<test testcode="uriketone" group="urinespecificg" />
+			<test testcode="urimucs" group="urinespecificg" />
+			<test testcode="uriprotein" group="urinespecificg" />
+			<test testcode="uripuscell" group="urinespecificg" />
+			<test testcode="urirbc" group="urinespecificg" />
+			<test testcode="urireaction" group="urinespecificg" />
+			<test testcode="urigravity" group="urinespecificg" />
+			<test testcode="uritransparency" group="urinespecificg" />
+			<test testcode="uriurobilinogen" group="urinespecificg" />
+			<test testcode="uricasts" group="urinespecificg" />
+			<test testcode="uriothers" group="urinespecificg" />
+		</test>
+
+		<test id="LAB1119" description="pH" combo="1" >
+			<test testcode="uriascorbicacid" group="uriph" />
+			<test testcode="uribact" group="uriph" />
+			<test testcode="uribilirubin" group="uriph" />
+			<test testcode="uriblood" group="uriph" />
+			<test testcode="uricolor" group="uriph" />
+			<test testcode="uricrytals" group="uriph" />
+			<test testcode="uriepithcells" group="uriph" />
+			<test testcode="uriglucose" group="uriph" />
+			<test testcode="uriketone" group="uriph" />
+			<test testcode="urimucs" group="uriph" />
+			<test testcode="uriprotein" group="uriph" />
+			<test testcode="uripuscell" group="uriph" />
+			<test testcode="urirbc" group="uriph" />
+			<test testcode="urireaction" group="uriph" />
+			<test testcode="urigravity" group="uriph" />
+			<test testcode="uritransparency" group="uriph" />
+			<test testcode="uriurobilinogen" group="uriph" />
+			<test testcode="uricasts" group="uriph" />
+			<test testcode="uriothers" group="uriph" />
+		</test>
+
+		<test id="LAB1210" description="FECAL LEUKOCYTE DETERMINATION" testcode="fecleukocyte" group="fecalleukocyte" />
+
+		<test id="LAB454" description="URINE KETONE" combo="1" >
+			<test testcode="uriascorbicacid" group="urineketone" />
+			<test testcode="uribact" group="urineketone" />
+			<test testcode="uribilirubin" group="urineketone" />
+			<test testcode="uriblood" group="urineketone" />
+			<test testcode="uricolor" group="urineketone" />
+			<test testcode="uricrytals" group="urineketone" />
+			<test testcode="uriepithcells" group="urineketone" />
+			<test testcode="uriglucose" group="urineketone" />
+			<test testcode="uriketone" group="urineketone" />
+			<test testcode="urimucs" group="urineketone" />
+			<test testcode="uriprotein" group="urineketone" />
+			<test testcode="uripuscell" group="urineketone" />
+			<test testcode="urirbc" group="urineketone" />
+			<test testcode="urireaction" group="urineketone" />
+			<test testcode="urigravity" group="urineketone" />
+			<test testcode="uritransparency" group="urineketone" />
+			<test testcode="uriurobilinogen" group="urineketone" />
+			<test testcode="uricasts" group="urineketone" />
+			<test testcode="uriothers" group="urineketone" />
+		</test>
+		<!--CM Parasitology-->
+		
+		<!--Bacteriology-->
+
+		<test id="LAB64" description="AFB" combo="1" >
+			<test testcode="afbresult" group="afb" />
+			<test testcode="afbspecimen" group="afb" />
+		</test>
+
+		<test id="LAB195" description="INDIA INK" combo="1" >
+			<test testcode="indiainkresult" group="indiaink" />
+			<test testcode="indiainkspecimen" group="indiaink" />
+		</test>
+
+		<test id="LAB66" description="KOH" combo="1" >
+			<test testcode="kohresult" group="koh" />
+			<test testcode="kohspecimen" group="koh" />
+		</test>
+
+		<test id="LAB65" description="GRAMSTAIN" combo="1" >
+			<test testcode="gramstainspecimen" group="gramstain" />
+			<test testcode="gramstainepith" group="gramstain" />
+			<test testcode="gramstainpmn" group="gramstain" />
+			<test testcode="gramstainoption1" group="gramstain" />
+			<test testcode="gramstainoption2" group="gramstain" />
+			<test testcode="gramstainoption3" group="gramstain" />
+			<test testcode="gramstainoption4" group="gramstain" />
+			<test testcode="gramstainoption5" group="gramstain" />
+			<test testcode="gramstainoption6" group="gramstain" />
+			<test testcode="gramstainoption7" group="gramstain" />
+		</test>
+		
+		<test id="LAB1030" description="GRAMSTAIN THROAT SWAB" combo="1" >
+			<test testcode="gramstainspecimen" group="gramstain" />
+			<test testcode="gramstainepith" group="gramstain" />
+			<test testcode="gramstainpmn" group="gramstain" />
+			<test testcode="gramstainoption1" group="gramstain" />
+			<test testcode="gramstainoption2" group="gramstain" />
+			<test testcode="gramstainoption3" group="gramstain" />
+			<test testcode="gramstainoption4" group="gramstain" />
+			<test testcode="gramstainoption5" group="gramstain" />
+			<test testcode="gramstainoption6" group="gramstain" />
+			<test testcode="gramstainoption7" group="gramstain" />
+		</test>
+		
+		<test id="LAB114" description="Trichomonas Monilia Gardnerella" testcode="bactetmg" group="bactetgm" />
+
+		<test id="LAB59" description="CULTURE" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB516" description="CS BLOOD" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB60" description="CULTURE AND SENSITIVITY" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB519" description="CS OTHER SPECIMEN" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB515" description="CS SPUTUM" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB517" description="CS STOOL" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB518" description="CS URINE" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB513" description="CS VAGINAL DISCHARGE" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+
+		<test id="LAB514" description="CS WOUND DISCHARGE" combo="1" >
+			<test testcode="microbiospecimen" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioakan" group="cands" />
+			<test testcode="microbioamx" group="cands" />
+			<test testcode="microbioamcaug" group="cands" />
+			<test testcode="microbioamap" group="cands" />
+			<test testcode="microbioamapsam" group="cands" />
+			<test testcode="microbioazm" group="cands" />
+			<test testcode="microbioatm" group="cands" />
+			<test testcode="microbioczo" group="cands" />
+			
+			<test testcode="microbiofep" group="cands" />
+			<test testcode="microbiocfm" group="cands" />
+			<test testcode="microbioctx" group="cands" />
+			<test testcode="microbiofox" group="cands" />
+			<test testcode="microbiocaz" group="cands" />
+			<test testcode="microbioczx" group="cands" />
+			<test testcode="microbiocro" group="cands" />
+			<test testcode="microbiocxm" group="cands" />
+			<test testcode="microbiocep" group="cands" />
+			<test testcode="microbioc" group="cands" />
+			
+			<test testcode="microbiocip" group="cands" />
+			<test testcode="microbiocccd" group="cands" />
+			<test testcode="microbiodap" group="cands" />
+			<test testcode="microbiodor" group="cands" />
+			<test testcode="microbioetp" group="cands" />
+			<test testcode="microbioe" group="cands" />
+			<test testcode="microbiogm" group="cands" />
+			<test testcode="microbiona" group="cands" />
+			<test testcode="microbiofdni" group="cands" />
+			<test testcode="microbionor" group="cands" />
+			
+			<test testcode="microbionov" group="cands" />
+			<test testcode="microbioofx" group="cands" />
+			<test testcode="microbioox" group="cands" />
+			<test testcode="microbiopgp" group="cands" />
+			<test testcode="microbiopip" group="cands" />
+			<test testcode="microbiotzp" group="cands" />
+			<test testcode="microbiopol" group="cands" />
+			<test testcode="microbiora" group="cands" />
+			<test testcode="microbiostr" group="cands" />
+			<test testcode="microbiosam" group="cands" />
+			
+			<test testcode="microbiotte" group="cands" />
+			<test testcode="microbiotc" group="cands" />
+			<test testcode="microbiotm" group="cands" />
+			<test testcode="microbiotnnn" group="cands" />
+			<test testcode="microbiosxt" group="cands" />
+			<test testcode="microbiova" group="cands" />
+			<test testcode="microbioculture" group="cands" />
+			<test testcode="microcefo" group="cands" />
+			<test testcode="microcefca" group="cands" />
+			<test testcode="microbiocl" group="cands" />
+			
+			<test testcode="microbiosxtts" group="cands" />
+			<test testcode="microresistant" group="cands" />
+			<test testcode="microbiomethod" group="cands" />
+			<test testcode="microbiospecimentxt" group="cands" />
+			<test testcode="microbioresult" group="cands" />
+			<test testcode="microbioorgname" group="cands" />
+			<test testcode="microbioorganism" group="cands" />
+			<test testcode="microbioipm" group="cands" />
+			<test testcode="microbiolvx" group="cands" />
+			<test testcode="microbiolzd" group="cands" />
+			
+			<test testcode="microbiomem" group="cands" />
+			<test testcode="microbiospt" group="cands" />
+		</test>
+		<!--Bacteriology-->	
+		
+		<!--Blood Bank-->
+
+		<test id="LAB44" description="BLOOD TYPING" combo="1" >
+			<test testcode="bttype" group="bloodtyping" />
+			<test testcode="btrh" group="bloodtyping" />
+		</test>
+
+		<test id="LAB50" description="VDRL" testcode="serovdrl" group="vdrlgroup" />
+		
+		<test id="LAB172" description="COOMBS TEST" testcode="serocoomb" group="bbcoombstest" />
+
+		<test id="LAB45" description="RH TYPING" combo="1" >
+			<test testcode="bttype" group="bloodtyping" />
+			<test testcode="btrh" group="bloodtyping" />
+		</test>
+		
+		<test id="LAB47" description="CROSS MATCHING" combo="1" >
+			<test testcode="dcompatible" group="cbbcrossmatch" />
+			<test testcode="dcompatiblefinal" group="cbbcrossmatch" />
+			<test testcode="drh" group="cbbcrossmatch" />
+			<test testcode="dtype" group="cbbcrossmatch" />
+			<test testcode="pcompatible" group="cbbcrossmatch" />
+			<test testcode="dpackedRBC" group="cbbcrossmatch" />
+			<test testcode="prh" group="cbbcrossmatch" />
+			<test testcode="serial1a" group="cbbcrossmatch" />
+			<test testcode="serial1b" group="cbbcrossmatch" />
+			<test testcode="serial1c" group="cbbcrossmatch" />
+			<test testcode="serial2a" group="cbbcrossmatch" />
+			<test testcode="serial2b" group="cbbcrossmatch" />
+			<test testcode="serial2c" group="cbbcrossmatch" />
+			<test testcode="serial3a" group="cbbcrossmatch" />
+			<test testcode="serial3b" group="cbbcrossmatch" />
+			<test testcode="serial3c" group="cbbcrossmatch" />
+			<test testcode="serial4a" group="cbbcrossmatch" />
+			<test testcode="serial4b" group="cbbcrossmatch" />
+			<test testcode="serial4c" group="cbbcrossmatch" />
+			<test testcode="serial5a" group="cbbcrossmatch" />
+			<test testcode="serial5b" group="cbbcrossmatch" />
+			<test testcode="serial5c" group="cbbcrossmatch" />
+			<test testcode="serial6a" group="cbbcrossmatch" />
+			<test testcode="serial6b" group="cbbcrossmatch" />
+			<test testcode="serial6c" group="cbbcrossmatch" />
+			<test testcode="serial7a" group="cbbcrossmatch" />
+			<test testcode="serial7b" group="cbbcrossmatch" />
+			<test testcode="serial7c" group="cbbcrossmatch" />
+			<test testcode="serial8a" group="cbbcrossmatch" />
+			<test testcode="serial8b" group="cbbcrossmatch" />
+			<test testcode="serial8c" group="cbbcrossmatch" />
+			<test testcode="ptype" group="cbbcrossmatch" />
+		</test>
+
+		<test id="LAB1206" description="LEUKOPHERESIS" combo="1" >
+			<test testcode="dcompatible" group="bbeukopheresis" />
+			<test testcode="dcompatiblefinal" group="bbeukopheresis" />
+			<test testcode="drh" group="bbeukopheresis" />
+			<test testcode="dtype" group="bbeukopheresis" />
+			<test testcode="pcompatible" group="bbeukopheresis" />
+			<test testcode="dpackedRBC" group="bbeukopheresis" />
+			<test testcode="prh" group="bbeukopheresis" />
+			<test testcode="serial1a" group="bbeukopheresis" />
+			<test testcode="serial1b" group="bbeukopheresis" />
+			<test testcode="serial1c" group="bbeukopheresis" />
+			<test testcode="serial2a" group="bbeukopheresis" />
+			<test testcode="serial2b" group="bbeukopheresis" />
+			<test testcode="serial2c" group="bbeukopheresis" />
+			<test testcode="serial3a" group="bbeukopheresis" />
+			<test testcode="serial3b" group="bbeukopheresis" />
+			<test testcode="serial3c" group="bbeukopheresis" />
+			<test testcode="serial4a" group="bbeukopheresis" />
+			<test testcode="serial4b" group="bbeukopheresis" />
+			<test testcode="serial4c" group="bbeukopheresis" />
+			<test testcode="serial5a" group="bbeukopheresis" />
+			<test testcode="serial5b" group="bbeukopheresis" />
+			<test testcode="serial5c" group="bbeukopheresis" />
+			<test testcode="serial6a" group="bbeukopheresis" />
+			<test testcode="serial6b" group="bbeukopheresis" />
+			<test testcode="serial6c" group="bbeukopheresis" />
+			<test testcode="serial7a" group="bbeukopheresis" />
+			<test testcode="serial7b" group="bbeukopheresis" />
+			<test testcode="serial7c" group="bbeukopheresis" />
+			<test testcode="serial8a" group="bbeukopheresis" />
+			<test testcode="serial8b" group="bbeukopheresis" />
+			<test testcode="serial8c" group="bbeukopheresis" />
+			<test testcode="ptype" group="bbeukopheresis" />
+		</test>
+
+		<test id="LAB1202" description="PLATELET APHERESIS" combo="1" >
+			<test testcode="dcompatible" group="bbplateletape" />
+			<test testcode="dcompatiblefinal" group="bbplateletape" />
+			<test testcode="drh" group="bbplateletape" />
+			<test testcode="dtype" group="bbplateletape" />
+			<test testcode="pcompatible" group="bbplateletape" />
+			<test testcode="dpackedRBC" group="bbplateletape" />
+			<test testcode="prh" group="bbplateletape" />
+			<test testcode="serial1a" group="bbplateletape" />
+			<test testcode="serial1b" group="bbplateletape" />
+			<test testcode="serial1c" group="bbplateletape" />
+			<test testcode="serial2a" group="bbplateletape" />
+			<test testcode="serial2b" group="bbplateletape" />
+			<test testcode="serial2c" group="bbplateletape" />
+			<test testcode="serial3a" group="bbplateletape" />
+			<test testcode="serial3b" group="bbplateletape" />
+			<test testcode="serial3c" group="bbplateletape" />
+			<test testcode="serial4a" group="bbplateletape" />
+			<test testcode="serial4b" group="bbplateletape" />
+			<test testcode="serial4c" group="bbplateletape" />
+			<test testcode="serial5a" group="bbplateletape" />
+			<test testcode="serial5b" group="bbplateletape" />
+			<test testcode="serial5c" group="bbplateletape" />
+			<test testcode="serial6a" group="bbplateletape" />
+			<test testcode="serial6b" group="bbplateletape" />
+			<test testcode="serial6c" group="bbplateletape" />
+			<test testcode="serial7a" group="bbplateletape" />
+			<test testcode="serial7b" group="bbplateletape" />
+			<test testcode="serial7c" group="bbplateletape" />
+			<test testcode="serial8a" group="bbplateletape" />
+			<test testcode="serial8b" group="bbplateletape" />
+			<test testcode="serial8c" group="bbplateletape" />
+			<test testcode="ptype" group="bbplateletape" />
+		</test>
+
+		<test id="LAB1222" description="THERAPEUTIC PLASMA APHERESIS" combo="1" >
+			<test testcode="dcompatible" group="bbtpa" />
+			<test testcode="dcompatiblefinal" group="bbtpa" />
+			<test testcode="drh" group="bbtpa" />
+			<test testcode="dtype" group="bbtpa" />
+			<test testcode="pcompatible" group="bbtpa" />
+			<test testcode="dpackedRBC" group="bbtpa" />
+			<test testcode="prh" group="bbtpa" />
+			<test testcode="serial1a" group="bbtpa" />
+			<test testcode="serial1b" group="bbtpa" />
+			<test testcode="serial1c" group="bbtpa" />
+			<test testcode="serial2a" group="bbtpa" />
+			<test testcode="serial2b" group="bbtpa" />
+			<test testcode="serial2c" group="bbtpa" />
+			<test testcode="serial3a" group="bbtpa" />
+			<test testcode="serial3b" group="bbtpa" />
+			<test testcode="serial3c" group="bbtpa" />
+			<test testcode="serial4a" group="bbtpa" />
+			<test testcode="serial4b" group="bbtpa" />
+			<test testcode="serial4c" group="bbtpa" />
+			<test testcode="serial5a" group="bbtpa" />
+			<test testcode="serial5b" group="bbtpa" />
+			<test testcode="serial5c" group="bbtpa" />
+			<test testcode="serial6a" group="bbtpa" />
+			<test testcode="serial6b" group="bbtpa" />
+			<test testcode="serial6c" group="bbtpa" />
+			<test testcode="serial7a" group="bbtpa" />
+			<test testcode="serial7b" group="bbtpa" />
+			<test testcode="serial7c" group="bbtpa" />
+			<test testcode="serial8a" group="bbtpa" />
+			<test testcode="serial8b" group="bbtpa" />
+			<test testcode="serial8c" group="bbtpa" />
+			<test testcode="ptype" group="bbtpa" />
+		</test>
+
+		<test id="LAB138" description="SCREENING" combo="1" >
+			<test testcode="drh" group="bbscreening" />
+			<test testcode="dtype" group="bbscreening" />
+			<test testcode="dpackedRBC" group="bbscreening" />
+			<test testcode="prh" group="bbscreening" />
+			<test testcode="ptype" group="bbscreening" />
+			<test testcode="serial1a" group="bbscreening" />
+			<test testcode="serial1b" group="bbscreening" />
+			<test testcode="serial1c" group="bbscreening" />
+			<test testcode="serial2a" group="bbscreening" />
+			<test testcode="serial2b" group="bbscreening" />
+			<test testcode="serial2c" group="bbscreening" />
+			<test testcode="serial3a" group="bbscreening" />
+			<test testcode="serial3b" group="bbscreening" />
+			<test testcode="serial3c" group="bbscreening" />
+			<test testcode="serial4a" group="bbscreening" />
+			<test testcode="serial4b" group="bbscreening" />
+			<test testcode="serial4c" group="bbscreening" />
+			<test testcode="serial5a" group="bbscreening" />
+			<test testcode="serial5b" group="bbscreening" />
+			<test testcode="serial5c" group="bbscreening" />
+			<test testcode="serial6a" group="bbscreening" />
+			<test testcode="serial6b" group="bbscreening" />
+			<test testcode="serial6c" group="bbscreening" />
+			<test testcode="serial7a" group="bbscreening" />
+			<test testcode="serial7b" group="bbscreening" />
+			<test testcode="serial7c" group="bbscreening" />
+			<test testcode="serial8a" group="bbscreening" />
+			<test testcode="serial8b" group="bbscreening" />
+			<test testcode="serial8c" group="bbscreening" />
+		</test>
+		<!--Blood Bank-->
+		
+		<!-- START OF HEMATOLOGY -->
+			
+		<test id="LAB501" description="CSF CELL COUNT & DIFFERENTIAL COUNT" combo="1" >
+			<test testcode="cbcseg" group="csfcellanddiffcount" />
+			<test testcode="cbclym" group="csfcellanddiffcount" />
+			<test testcode="cbcdescription" group="csfcellanddiffcount" />
+			<test testcode="hamsresult" group="csfcellanddiffcount" />
+			<test testcode="cbcwbc" group="csfcellanddiffcount" />
+			<test testcode="cbcrbc" group="csfcellanddiffcount" />
+		</test>
+
+		<test id="LAB4" description="CLOT RETRACTION TIME (CRT)" combo="1" >
+			<test testcode="hemaclotretractime" group="crt" />
+		</test>
+
+		<test id="LAB505" description="Clotting Time/ Bleeding Time" combo="1" >
+			<test testcode="bleedingtime" group="ctbt" />
+			<test testcode="clottingtime" group="ctbt" />
+		</test>
+
+		<test id="LAB6" description="Complete Blood Count" combo="1" >
+			<test testcode="cbcrbc" group="cbc" />
+			<test testcode="cbchct" group="cbc" />
+			<test testcode="cbchgb" group="cbc" />
+			<test testcode="cbcwbc" group="cbc" />
+			<test testcode="cbcstab" group="cbc" />
+			<test testcode="cbcseg" group="cbc" />
+			<test testcode="cbceos" group="cbc" />
+			<test testcode="cbcbaso" group="cbc" />
+			<test testcode="cbclym" group="cbc" />
+			<test testcode="cbcmono" group="cbc" />
+			<test testcode="cbcplt" group="cbc" />
+			<test testcode="cbcmcv" group="cbc" />
+			<test testcode="cbcmch" group="cbc" />
+			<test testcode="cbcmchc" group="cbc" />
+		</test>
+
+		<test id="LAB196" description="Differential Count" combo="1" >
+			<test testcode="cbcseg" group="cbc" />
+			<test testcode="cbceos" group="cbc" />
+			<test testcode="cbcbaso" group="cbc" />
+			<test testcode="cbclym" group="cbc" />
+			<test testcode="cbcmono" group="cbc" />
+		</test>
+
+		<test id="LAB550" description="Differential Count Fluids" combo="1" >
+			<test testcode="cbcseg" group="diffcountfluids" />
+			<test testcode="cbclym" group="diffcountfluids" />
+			<test testcode="cbcdescription" group="diffcountfluids" />
+			<test testcode="hamsresult" group="diffcountfluids" />
+			<test testcode="cbcwbc" group="diffcountfluids" />
+			<test testcode="cbcrbc" group="diffcountfluids" />
+		</test>
+
+		<test id="LAB8" description="ESR" combo="1" >
+			<test testcode="esr" group="esr" />
+		</test>
+
+		<test id="LAB11" description="Hematocrit" combo="1" >
+			<test testcode="cbchct" group="hematocrit" />
+		</test>
+
+		<test id="LAB10" description="Hemoglobin" combo="1" >
+			<test testcode="cbchgb" group="hemoglobin" />
+		</test>
+
+		<test id="LAB539" description="LE PREPARATION" combo="1" >
+			<test testcode="le" group="le" />
+		</test>
+
+		<test id="LAB20" description="Malarial Smear" combo="1" >
+			<test testcode="malarialresult" group="malarialsmear" />
+		</test>
+
+		<test id="LAB7" description="APTT" combo="1" >
+			<test testcode="aptt" group="aptt" />
+			<test testcode="apttpatient" group="aptt" />
+		</test>
+
+		<test id="LAB18" description="Reticulocyte Count" combo="1" >
+			<test testcode="cbcretic" group="reticcount" />
+		</test>
+
+		<test id="LAB19" description="Peripheral Smear" combo="1" >
+			<test testcode="pbsfindings" group="pbs" />
+		</test>
+
+		<test id="LAB5" description="Protime" combo="1" >
+			<test testcode="ptcontrol" group="protime" />
+			<test testcode="pttest" group="protime" />
+			<test testcode="ptactivity" group="protime" />
+			<test testcode="ptinr" group="protime" />
+		</test>
+
+		<test id="LAB1096" description="RBC Count" combo="1" >
+			<test testcode="cbcrbc" group="wbcrbccount" />
+		</test>
+
+		<test id="LAB1003" description="RBC Indices" combo="1" >
+			<test testcode="cbcmch" group="rbcindices" />
+			<test testcode="cbcmchc" group="rbcindices" />
+			<test testcode="cbcmcv" group="rbcindices" />
+		</test>
+
+		<test id="LAB15" description="WBC w/ Diff" combo="1" >
+			<test testcode="cbcwbc" group="wbcdiff" />
+			<test testcode="cbcseg" group="wbcdiff" />
+			<test testcode="cbcmono" group="wbcdiff" />
+			<test testcode="cbclym" group="wbcdiff" />
+			<test testcode="cbceos" group="wbcdiff" />
+			<test testcode="cbcbaso" group="wbcdiff" />
+		</test>
+
+
+		<test id="LAB549" description="WBC Count Other Fluids" combo="1" >
+			<test testcode="cbcseg" group="wbccountotherfluids" />
+			<test testcode="cbclym" group="wbccountotherfluids" />
+			<test testcode="cbcdescription" group="wbccountotherfluids" />
+			<test testcode="hamsresult" group="wbccountotherfluids" />
+			<test testcode="cbcwbc" group="wbccountotherfluids" />
+			<test testcode="cbcrbc" group="wbccountotherfluids" />
+		</test>
+
+		<test id="LAB305" description="Toxic Granulation" combo="1" >
+			<test testcode="toxicgranulation" group="toxicgranulation" />
+		</test>
+
+		<test id="LAB151" description="PLT" combo="1" >
+			<test testcode="cbcplt" group="plt" />
+		</test>
+			
+		<!-- END OF HEMATOLOGY -->
+		
+		<!--START OF IMMUNOLOGY AND SEROLOGY-->
+
+		<test id="LAB54" description="ALPHA-FETO PROTEIN" testcode="immafp" group="immunology" />
+
+		<test id="LAB201" description="Anti-Nuclear Antibody" testcode="immunoanares" group="immunoana" />
+
+		<test id="LAB201" description="ANTI HAV IGG" testcode="immahavigg" group="serology" />
+
+		<test id="LAB551" description="ANTI HAV IGM" testcode="immahavigm" group="serology" />
+
+		<test id="LAB124" description="ANTI HBC IGG" testcode="immahbctotal" group="serology" />
+
+		<test id="LAB552" description="ANTI HBC IGM" testcode="immahbcigm" group="serology" />
+
+		<test id="LAB126" description="ANTI HBE" testcode="immahbe" group="serology" />
+
+		<test id="LAB135" description="ANTI-HCV" testcode="immantihcv" group="serology" />
+
+		<test id="LAB1127" description="ANTI-THYROGLOBULIN" testcode="refantithyroglobulin" group="serology" />
+
+		<test id="LAB303" description="BETA HUMAN CHORIONIC GONADOTROPIN" testcode="immbhcg" group="immunology" />
+
+		<test id="LAB1190" description="DENGUE NS1 Ag (SOLO)" combo="1" >
+			<test testcode="seroNS1" group="denguequadro" />
+		</test>
+
+		<test id="LAB1153" description="DENGUE NS1 Ag DUO" combo="1" >
+			<test testcode="seroIgG" group="denguedot" />
+			<test testcode="seroNS1" group="denguedot" />
+			<test testcode="seroIgM" group="denguedot" />
+		</test>
+
+		<test id="LAB495" description="DENGUE NS1 Ag DUO" combo="1" >
+			<test testcode="seroIgG" group="denguedot" />
+			<test testcode="seroNS1" group="denguedot" />
+			<test testcode="seroIgM" group="denguedot" />
+		</test>
+
+		<test id="LAB446" description="" testcode="immcorti" group="immunology" />
+
+		<test id="LAB308" description="ESTRADIOL" testcode="immestra" group="immunology" />
+
+		<test id="LAB320" description="FERRITIN" testcode="immferri" group="immunology" />
+
+		<test id="LAB479" description="FOLLICLE STIMULATING HORMONE" testcode="immfsh" group="immunology" />
+
+		<test id="LAB178" description="FREE THYROID 3" testcode="immft3" group="immunology" />
+
+		<test id="LAB186" description="FREE THYROID 4" testcode="immft4" group="immunology" />
+
+		<test id="LAB623" description="D-DIMER ASSAY" testcode="immddimer" group="immunology" />
+
+		<test id="LAB309" description="G6PD DETERMINATION " testcode="immcorti" group="immunology" />
+
+		<test id="LAB9" description="HBA1C" testcode="immhba1c" group="immunology" />
+
+		<test id="LAB429" description="HBE AG" testcode="immhbeag" group="serology" />
+
+		<test id="LAB122" description="HBS AB" testcode="hbsab" group="serology" />
+
+		<test id="LAB1067" description="HBS AB - SPECIAL PACKAGE" testcode="hbsabspecial" group="serology" />
+
+		<test id="LAB46" description="HBS AG" testcode="immhbsagquanti" group="serology" />
+
+		<test id="LAB1066" description="HBS AG - SPECIAL PACKAGE" testcode="hbsag" group="serology" />
+
+		<test id="LAB16" description="HBS AG-AB" testcode="hbsagab" group="serology" />
+
+		<test id="LAB1050" description="HEPATITIS PANEL" combo="1" >
+			<test testcode="immahavigg" group="HEPATITISPROFILE" />
+			<test testcode="immahavigm" group="HEPATITISPROFILE" />
+			<test testcode="immahbctotal" group="HEPATITISPROFILE" />
+			<test testcode="immahbcigm" group="HEPATITISPROFILE" />
+			<test testcode="immahbe" group="HEPATITISPROFILE" />
+			<test testcode="immahbs" group="HEPATITISPROFILE" />
+			<test testcode="immantihcv" group="HEPATITISPROFILE" />
+			<test testcode="immhbeag" group="HEPATITISPROFILE" />
+			<test testcode="immhbsagquanti" group="HEPATITISPROFILE" />
+		</test>
+
+		<test id="LAB528" description="HIV" combo="1" >
+			<test testcode="immhivagab" group="hiv" />
+		</test>
+
+		<test id="LAB1014" description="H-PYLORI" combo="1" >
+			<test testcode="seripylori" group="serohpylori" />
+		</test>
+
+		<test id="LAB480" description="LEUTINIZING HORMONE" testcode="immlh" group="immunology" />
+
+		<test id="LAB1204" description="NT-PROBNP" testcode="immbnp" group="immunology" />
+
+		<test id="LAB1165" description="NT-PROBNP" testcode="immprocal" group="immunology" />
+
+		<test id="LAB197" description="PROLACTIN" testcode="immprolac" group="immunology" />
+
+		<test id="LAB203" description="PROSTATIC SPECIFIC ANTIGEN" testcode="immpsa" group="immunology" />
+
+		<test id="LAB144" description="RHEUMATOID FACTOR (RA)" testcode="serorf" group="immunology" />
+
+		<test id="LAB432" description="RUBELLA IGG" testcode="immrubellag" group="immunology" />
+
+		<test id="LAB599" description="RUBELLA IGM" testcode="immrebellam" group="immunology" />
+
+		<test id="LAB192" description="T3-THYROID FUNCTION" testcode="immt3" group="immunology" />
+
+		<test id="LAB193" description="T4-THYROID FUNCTION" testcode="immt4" group="immunology" />
+
+		<test id="LAB295" description="TOTAL IRON BINDING CAPACITY" testcode="chemtibc" group="immunology" />
+
+		<test id="LAB503" description="TESTOSTERONE" testcode="immtesto" group="immunology" />
+
+		<test id="LAB147" description="THYROID STIMULATING HORMONE" testcode="immtsh" group="immunology" />
+
+		<test id="LAB402" description="C3" testcode="seroc3" group="immunology" />
+
+		<test id="LAB442" description="TYPHIDOT" combo="1" >
+			<test testcode="typhidotigg" group="typhidotiggigm" />
+			<test testcode="typhidotigm" group="typhidotiggigm" />
+		</test>
+
+		<test id="LAB1" description="CA 125" testcode="immca125" group="immunology" />
+
+		<test id="LAB562" description="CA 15-3" testcode="immca153" group="immunology" />
+
+		<test id="LAB504" description="CA 19-9" testcode="immca199" group="immunology" />
+
+		<test id="LAB597" description="CEA (CARCINOMA EMBRYONIC ANTIGEN)" testcode="immcea" group="immunology" />
+
+		<test id="LAB313" description="TROPONIN - I" testcode="immtropoquanti" group="immunology" />
+
+		<test id="LAB1094" description="VITAMIN D" testcode="chemvd" group="immunology" />
+		<!--END OF IMMUNOLOGY AND SEROLOGY-->
+		
+		<!-- START OF CHEMISTRY -->
+		
+		<test id="LAB545" description="2HR PPBS" testcode="chemppbs" group="chemistry" />
+		<test id="LAB107" description="ALBUMIN" testcode="chemalb" group="chemistry" />
+		<test id="LAB304" description="AMMONIA" testcode="chemammonia" group="chemistry" />
+		<test id="LAB94" description="AMYLASE" testcode="chemamy" group="chemistry" />
+		<test id="LAB556" description="Bilirubin" combo="1" >
+			<test testcode="chemdb" group="bilirubin" />
+			<test testcode="chemib" group="bilirubin" />
+			<test testcode="chemtb" group="bilirubin" />
+		</test>
+		<test id="LAB117" description="CALCIUM" testcode="chemca" group="chemistry" />
+		<test id="LAB83" description="CHLORIDE" testcode="chemcl" group="chemistry" />
+		<test id="LAB99" description="CHOLESTEROL" testcode="chemchol" group="chemistry" />
+		<test id="LAB91" description="CPK-MB" testcode="chemcpkmb" group="chemistry" />
+		<test id="LAB424" description="CPK-MM" testcode="chemckmm" group="chemistry" />
+		<test id="LAB182" description="CPK-TOTAL" testcode="chemckt" group="chemistry" />
+		<test id="LAB49" description="CRP QUALITATIVE" testcode="chemcrpquali" group="chemistry" />
+		<test id="LAB103" description="CREATININE" testcode="chemcrea" group="chemistry" />
+		<test id="LAB121" description="CREATININE CLEARANCE" testcode="chemcrc" group="chemistry" />
+		<test id="LAB104" description="BLOOD UREA NITROGEN" testcode="chembun" group="chemistry" />
+		<test id="LAB557" description="CRP" testcode="chemcrp" group="chemistry" />
+		<test id="LAB129" description="FBS" testcode="chemfbs" group="chemistry" />
+		<test id="LAB108" description="GLOBULIN" testcode="chemglob" group="chemistry" />
+		<test id="LAB188" description="OGCT" testcode="chemogct" group="chemistry" />
+		<test id="LAB616" description="IONIZED CALCIUM" testcode="chemica" group="chemistry" />
+		<test id="LAB145" description="LACTATE DEHYDROGENASE" testcode="chemldh" group="chemistry" />
+		<test id="LAB548" description="LDH (FLUIDS)" testcode="chemldfluid" group="chemistry" />
+		<test id="LAB95" description="LIPASE" testcode="chemlip" group="chemistry" />
+		<test id="LAB153" description="LDL CHOLESTEROL" testcode="chemldl" group="chemistry" />
+		<test id="LAB51" description="MAGNESIUM" testcode="chemmg" group="chemistry" />
+		<test id="LAB176" description="PHOSPHORUS" testcode="chempo" group="chemistry" />
+		<test id="LAB82" description="POTASSIUM" testcode="chemk" group="chemistry" />
+		<test id="LAB111" description="PROTEIN CSF" testcode="chemprotcsf" group="chemistry" />
+		<test id="LAB401" description="RBS" testcode="chemrbs" group="chemistry" />
+		<test id="LAB87" description="SGOT" testcode="chemsgot" group="chemistry" />
+		<test id="LAB88" description="SGPT" testcode="chemsgpt" group="chemistry" />
+		<test id="LAB81" description="SODIUM" testcode="chemna" group="chemistry" />
+		<test id="LAB547" description="SUGAR" testcode="chemsugar" group="chemistry" />
+		<test id="LAB106" description="TOTAL PROTEIN" testcode="chemtp" group="chemistry" />
+		<test id="LAB546" description="AG RATIO" testcode="chemag" group="chemistry" />
+		<test id="LAB171" description="BUA" testcode="chembua" group="chemistry" />
+		<test id="LAB150" description="VLDL CHOLESTEROL" testcode="chemvldl" group="chemistry" />
+		<test id="LAB496" description="URINE ALBUMIN" testcode="chemurineal" group="chemistry" />
+		<test id="LAB449" description="URINE CALCIUM" testcode="chemurinecal" group="chemistry" />
+		<test id="LAB448" description="URINE CHLORIDE" testcode="chemurinechlo" group="chemistry" />
+		<test id="LAB437" description="URINE CREATININE" testcode="chemcreaurine" group="chemistry" />
+		<test id="LAB1032" description="URINE MAGNESIUM" testcode="chem24umg" group="chemistry" />
+		<test id="LAB102" description="TRIGLYCERIDES" testcode="chemtrig" group="chemistry" />
+		<test id="LAB319" description="SERUM IRON" testcode="chemserumfe" group="chemistry" />
+		<test id="LAB455" description="SERUM KETONE" testcode="chemserumket" group="chemistry" />
+		<test id="LAB438" description="URINE POTASSIUM" testcode="chemuk" group="chemistry" />
+		<test id="LAB576" description="URINE PROTEIN RANDOM" testcode="chemurineprotr" group="chemistry" />
+		<test id="LAB439" description="URINE SODIUM" testcode="chemurinesodium" group="chemistry" />
+		<test id="LAB100" description="HDL CHOLESTEROL" testcode="chemhdl" group="chemistry" />
+		<test id="LAB89" description="ALKALINE PHOSPHATASE" testcode="chemalp" group="chemistry" />
+		<test id="LAB415" description="24 HRS URINE CREA" testcode="chem24uc" group="chemistry" />
+		<test id="LAB466" description="24 HRS URINE PROTEIN" testcode="chem24up" group="chemistry" />
+		<test id="LAB155" description="24 HRS URINE SODIUM-SO" testcode="chem24una" group="chemistry" />
+		<test id="LAB48" description="ASO" testcode="immaso" group="chemistry" />
+		<test id="LAB93" description="GGT" testcode="chemggt" group="chemistry" />
+		<test id="LAB130" description="ORAL GGT" testcode="chemogttfbs" group="chemistry" />
+		<!--<test id="LAB1000" description="SERUM OSMOLALITY" testcode="chemogttfbs" group="chemistry" />-->
+		
+		<!-- END OF CHEMISTRY -->

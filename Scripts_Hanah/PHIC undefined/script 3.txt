@@ -1,0 +1,73 @@
+/*NOTE: ALTER MEMBERSHIP TYPE PORTION; EX: 1004,1003,ETC. DEPENDING ON THE CLIENT'S CODE FOR PHICENTITIES*/
+
+Declare @HSTransactionNo nvarchar(max)
+Declare @MembershipType nvarchar(5)
+Declare @PK_PHIC nvarchar(max)
+Declare @PK_AR nvarchar(max)
+Declare @PK_type nvarchar(max)
+Declare @FK_mscPHICEntities nvarchar(max)
+Declare @FK_mscPHICMemberships nvarchar(max)
+Declare @FK_mscTranTypesAR nvarchar(max)
+Declare @FK_mscCustomerTypes nvarchar(max)
+Declare @FK_faGLAcct nvarchar(max) 
+Declare @FK_faGLAcctGrp nvarchar(max)
+Declare @FK_faGLAcctGrp2 nvarchar(max)
+Declare @PK_mscPHICEntities2 nvarchar(max)
+Declare @PK_mscPHICMemberships2 nvarchar(max)
+Declare @FK_mscCustomerTypes2 nvarchar(max)
+Declare @FK_mscTranTypesAR2 nvarchar(max)
+Declare @PK_mscPHICMemberships nvarchar(max)
+
+Declare PHICEtnries cursor for
+
+Select  
+		a.HSTransactionNo, a.MembershipType,a.PK_PHIC,a.PK_AR,a.PK_type,b.FK_faGLAcct,b.FK_faGLAcctGrp,b.FK_faGLAcctGrp2,
+		b.PK_mscPHICEntities2,b.PK_mscPHICMemberships2,
+		b.FK_mscCustomerTypes2,b.FK_mscTranTypesAR2,b.PK_mscPHICMemberships
+
+from (Select
+a.HSTransactionNo, a.MembershipType,b.PK_TRXNO as PK_PHIC,c.PK_TRXNO as PK_AR,
+(case 
+			when MembershipType = 'NS' then '1006'
+			when MembershipType = 'S' then '1001'
+			when MembershipType = 'G' then '1002'
+			when MembershipType = 'I' then '1005'
+			when MembershipType = 'NO' then '1006'
+			when MembershipType = 'PS' then '1001'
+			when MembershipType = 'PG' then '1002'
+			when MembershipType = 'P' then '1013' 
+		end) as PK_type
+from PHICEligibility a
+inner join psPHICLedgers b on a.HSTransactionNo = b.FK_psPatRegisters and transmitflag = 1
+inner join faArinv c on b.PK_TRXNO = c.FK_TRXNO_Source and b.FK_psPatRegisters = c.FK_psPatRegisters and c.glpostflag = 0
+where b.FK_mscPHICEntities = '1000' and c.FK_mscCustomerTypes = '1000') as a
+inner join 
+(Select c.FK_faGLAcct,d.FK_faGLAcctGrp,c.FK_faGLAcctGrp as FK_faGLAcctGrp2,b.PK_mscPHICEntities as PK_mscPHICEntities2,a.PK_mscPHICMemberships as PK_mscPHICMemberships2,
+		c.FK_mscCustomerTypes as FK_mscCustomerTypes2,b.FK_mscTranTypesAR as FK_mscTranTypesAR2,a.PK_mscPHICMemberships
+		from mscPHICMemberships a
+		inner join mscPHICEntities b on a.FK_mscPHICEntities = b.PK_mscPHICEntities
+		inner join mscTranTypesAR c on b.FK_mscTranTypesAR = c.PK_mscTranTypesAR
+		inner join mscCustomerTypes d on c.FK_mscCustomerTypes = d.PK_mscCustomerTypes
+		where a.PK_mscPHICMemberships in ('1006','1001','1002','1005','1013')) b on a.PK_type = b.PK_mscPHICMemberships
+
+Open PHICEtnries
+fetch next from PHICEtnries into @HSTransactionNo,@MembershipType,@PK_PHIC,@PK_AR,@PK_type,
+								 @FK_faGLAcct,@FK_faGLAcctGrp,@FK_faGLAcctGrp2,@PK_mscPHICEntities2,@PK_mscPHICMemberships2,@FK_mscCustomerTypes2,@FK_mscTranTypesAR2,@PK_mscPHICMemberships
+
+while @@FETCH_STATUS = 0
+Begin
+
+	update psPHICLedgers set FK_mscPHICEntities = @PK_mscPHICEntities2, FK_mscPHICMemberships = @PK_mscPHICMemberships2 where PK_TRXNO = @PK_PHIC
+	--Select a.FK_mscPHICEntities,@PK_mscPHICEntities2,a.FK_mscPHICMemberships,@PK_mscPHICMemberships2 from psPHICLedgers a where a.PK_TRXNO = @PK_PHIC
+	
+	update faArinv set FK_mscTranTypesAR = @FK_mscTranTypesAR2, FK_mscCustomerTypes = @FK_mscCustomerTypes2 where PK_TRXNO = @PK_AR
+	--Select aa.FK_mscTranTypesAR,@FK_mscTranTypesAR2,aa.FK_mscCustomerTypes,@FK_mscCustomerTypes2 from faArinv aa where aa.PK_TRXNO = @PK_AR
+	
+	--update faGL set FK_faGLAcct = @FK_faGLAcct, FK_faGLAcctGrp = @FK_faGLAcctGrp, FK_faGLAcctGrp2 = @FK_faGLAcctGrp2 where sorter = 1 and FK_TRXNO = @PK_AR and auditflag = 0
+	--Select aaa.FK_faGLAcct,@FK_faGLAcct,aaa.FK_faGLAcctGrp,@FK_faGLAcctGrp,aaa.FK_faGLAcctGrp2,@FK_faGLAcctGrp2 from faGL aaa where aaa.sorter = 1 and aaa.FK_TRXNO = @PK_AR
+
+Fetch next from PHICEtnries into @HSTransactionNo,@MembershipType,@PK_PHIC,@PK_AR,@PK_type,
+								 @FK_faGLAcct,@FK_faGLAcctGrp,@FK_faGLAcctGrp2,@PK_mscPHICEntities2,@PK_mscPHICMemberships2,@FK_mscCustomerTypes2,@FK_mscTranTypesAR2,@PK_mscPHICMemberships
+End
+Close PHICEtnries
+Deallocate PHICEtnries

@@ -1,0 +1,148 @@
+step _00
+update faVPMstr set netamount = round(netamount,2) where FK_TRXNO_faCRMstrPF
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 and cancelflag = 1
+group by FK_TRXNO_faCRMstrPF)
+
+Step_01
+update faVPMstr set netamount = round(netamount,2), cvamount = round(cvamount,2) from (
+Select * from (Select *,
+case 
+when PK_CASH = 0 and PK_GNTR <> 0 then 
+	case
+		when PK_CASH_Amount = 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then 0
+		when PK_CASH_Amount = 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno_VP
+		when PK_CASH_Amount <> 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then PK_trxno_VP
+		when PK_CASH_Amount <> 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno_VP
+	end
+when PK_CASH <> 0 and PK_GNTR = 0 then 
+	case
+		when PK_GNTR_Amount = 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover = 0 then 0
+		when PK_GNTR_Amount = 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 then PK_trxno_VP
+		when PK_GNTR_Amount <> 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover = 0 then PK_trxno_VP
+		when PK_GNTR_Amount <> 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 then PK_trxno_VP
+	end
+when PK_CASH <> 0 and PK_GNTR <> 0 then
+	case
+		when PK_CASH_Amount - PK_CASH_Amount_Cover = 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then 0
+		when PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then PK_trxno_VP
+		when PK_CASH_Amount - PK_CASH_Amount_Cover = 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno_VP
+	End
+end as LocateTrxno
+From (Select a.FK_TRXNO_faCRMstrPF as PK_trxno_VP,
+(Select count(x.FK_faCRMstrPF) from faCRMstrPFRemit x where x.FK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF) as PK_CASH,
+(Select count(y.FK_faCRMstrPFCH) from faCRMstrPFRemitCH y where y.FK_faCRMstrPFCH = a.FK_TRXNO_faCRMstrPF) as PK_GNTR,
+isnull((Select sum(xx.amount) from faCRMstrPF xx where xx.PK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF),0) as PK_CASH_Amount,
+isnull((Select sum(xxxx.amount) from faCRMstrPF xxx inner join faCRMstrPFRemit xxxx on xxx.PK_faCRMstrPF = xxxx.FK_faCRMstrPF 
+where xxx.PK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF),0) as PK_CASH_Amount_Cover,
+isnull((Select sum(yy.amount) from faCRMstrPFCh yy where yy.PK_faCRMstrPFCh = a.FK_TRXNO_faCRMstrPF),0) as PK_GNTR_Amount,
+isnull((Select sum(yyyy.amount) from faCRMstrPFCh yyy inner join faCRMstrPFRemitCH yyyy on yyy.PK_faCRMstrPFCh = yyyy.FK_faCRMstrPFCH 
+where yyy.PK_faCRMstrPFCh = a.FK_TRXNO_faCRMstrPF),0) as PK_GNTR_Amount_Cover
+From faVPMstr a where a.FK_TRXNO_faCRMstrPF <> 0 and a.cancelflag = 0
+group by a.FK_TRXNO_faCRMstrPF) as tab1) as tab2 where LocateTrxno <> 0
+) as final where FK_TRXNO_faCRMstrPF = LocateTrxno
+
+
+Step_02
+update faVPMstr set netamount = round(netamount,2),  cvamount = round(cvamount,2) where FK_TRXNO_faCRMstrPF
+in (Select PK_TRXNO from (Select *,
+case 
+when PK_CASH = 0 and PK_GNTR <> 0 then 
+	case
+		when PK_CASH_Amount = 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then 0
+		when PK_CASH_Amount = 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno
+		when PK_CASH_Amount <> 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then PK_trxno
+		when PK_CASH_Amount <> 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno
+	end
+when PK_CASH <> 0 and PK_GNTR = 0 then 
+	case
+		when PK_GNTR_Amount = 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover = 0 then 0
+		when PK_GNTR_Amount = 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 then PK_trxno
+		when PK_GNTR_Amount <> 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover = 0 then PK_trxno
+		when PK_GNTR_Amount <> 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 then PK_trxno
+	end
+when PK_CASH <> 0 and PK_GNTR <> 0 then
+	case
+		when PK_CASH_Amount - PK_CASH_Amount_Cover = 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then 0
+		when PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then PK_trxno
+		when PK_CASH_Amount - PK_CASH_Amount_Cover = 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno
+	End
+end as LocateTrxno
+From (Select a.FK_TRXNO_faCRMstrPF as PK_trxno,
+(Select count(x.FK_faCRMstrPF) from faCRMstrPFRemit x where x.FK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF) as PK_CASH,
+(Select count(y.FK_faCRMstrPFCH) from faCRMstrPFRemitCH y where y.FK_faCRMstrPFCH = a.FK_TRXNO_faCRMstrPF) as PK_GNTR,
+isnull((Select sum(xx.amount) from faCRMstrPF xx where xx.PK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF),0) as PK_CASH_Amount,
+isnull((Select sum(xxxx.amount) from faCRMstrPF xxx inner join faCRMstrPFRemit xxxx on xxx.PK_faCRMstrPF = xxxx.FK_faCRMstrPF 
+where xxx.PK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF),0) as PK_CASH_Amount_Cover,
+isnull((Select sum(yy.amount) from faCRMstrPFCh yy where yy.PK_faCRMstrPFCh = a.FK_TRXNO_faCRMstrPF),0) as PK_GNTR_Amount,
+isnull((Select sum(yyyy.amount) from faCRMstrPFCh yyy inner join faCRMstrPFRemitCH yyyy on yyy.PK_faCRMstrPFCh = yyyy.FK_faCRMstrPFCH 
+where yyy.PK_faCRMstrPFCh = a.FK_TRXNO_faCRMstrPF),0) as PK_GNTR_Amount_Cover
+From faVPMstr a where a.FK_TRXNO_faCRMstrPF <> 0 and a.cancelflag = 0
+group by a.FK_TRXNO_faCRMstrPF) as tab1) as tab2 where LocateTrxno = 0)
+
+
+
+STEP_03
+update faVPMstr set dmamount = round(dmamount,2),balance = round(balance,2) where FK_TRXNO_faCRMstrPF
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 group by FK_TRXNO_faCRMstrPF)
+
+stepp_04
+update faApledgers set debit = round(debit,2), credit = round(credit,2) where FK_TRXNO_DM
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+where a.FK_TRXNO_faCRMstrPF <> 0)
+
+STEP_05
+update faDMCMPayeeTrans set memoamount = round(memoamount,2) where FK_TRXNO_faVPMstr
+in (Select PK_TRXNO from faVPMstr where FK_TRXNO_faCRMstrPF <> 0)
+
+STEP_06
+update faDMCMPayee set amount = round(amount,2) where PK_TRXNO
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+where a.FK_TRXNO_faCRMstrPF <> 0) and isDebitAdvice = 0
+
+STEP_07
+update faGL set debit = round(debit,2), credit = round(credit,2) where FK_TRXNO
+in (Select b.FK_TRXNO from faVPMstr a inner join faDMCMPayeeTrans b on a.PK_TRXNO = b.FK_TRXNO_faVPMstr 
+inner join faDMCMPayee c on b.FK_TRXNO = c.PK_TRXNO where a.FK_TRXNO_faCRMstrPF <> 0 and c.isDebitAdvice = 0)
+
+STEP_08
+update faVPMstr set netamount = (netamount + 0.0001) where FK_TRXNO_faCRMstrPF
+in (Select FK_TRXNO_faCRMstrPF from faVPMstr where FK_TRXNO_faCRMstrPF <> 0 and cancelflag = 1
+group by FK_TRXNO_faCRMstrPF)
+
+STEP_09
+update faVPMstr set netamount = (netamount + 0.0001), cvamount = (cvamount + 0.0001) from (
+Select * from (Select *,
+case 
+when PK_CASH = 0 and PK_GNTR <> 0 then 
+	case
+		when PK_CASH_Amount = 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then 0
+		when PK_CASH_Amount = 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno_VP
+		when PK_CASH_Amount <> 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then PK_trxno_VP
+		when PK_CASH_Amount <> 0 and PK_GNTR_Amount <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno_VP
+	end
+when PK_CASH <> 0 and PK_GNTR = 0 then 
+	case
+		when PK_GNTR_Amount = 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover = 0 then 0
+		when PK_GNTR_Amount = 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 then PK_trxno_VP
+		when PK_GNTR_Amount <> 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover = 0 then PK_trxno_VP
+		when PK_GNTR_Amount <> 0 and PK_CASH_Amount <> 0 and PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 then PK_trxno_VP
+	end
+when PK_CASH <> 0 and PK_GNTR <> 0 then
+	case
+		when PK_CASH_Amount - PK_CASH_Amount_Cover = 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then 0
+		when PK_CASH_Amount - PK_CASH_Amount_Cover <> 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover = 0 then PK_trxno_VP
+		when PK_CASH_Amount - PK_CASH_Amount_Cover = 0 and PK_GNTR_Amount - PK_GNTR_Amount_Cover <> 0 then PK_trxno_VP
+	End
+end as LocateTrxno
+From (Select a.FK_TRXNO_faCRMstrPF as PK_trxno_VP,
+(Select count(x.FK_faCRMstrPF) from faCRMstrPFRemit x where x.FK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF) as PK_CASH,
+(Select count(y.FK_faCRMstrPFCH) from faCRMstrPFRemitCH y where y.FK_faCRMstrPFCH = a.FK_TRXNO_faCRMstrPF) as PK_GNTR,
+isnull((Select sum(xx.amount) from faCRMstrPF xx where xx.PK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF),0) as PK_CASH_Amount,
+isnull((Select sum(xxxx.amount) from faCRMstrPF xxx inner join faCRMstrPFRemit xxxx on xxx.PK_faCRMstrPF = xxxx.FK_faCRMstrPF 
+where xxx.PK_faCRMstrPF = a.FK_TRXNO_faCRMstrPF),0) as PK_CASH_Amount_Cover,
+isnull((Select sum(yy.amount) from faCRMstrPFCh yy where yy.PK_faCRMstrPFCh = a.FK_TRXNO_faCRMstrPF),0) as PK_GNTR_Amount,
+isnull((Select sum(yyyy.amount) from faCRMstrPFCh yyy inner join faCRMstrPFRemitCH yyyy on yyy.PK_faCRMstrPFCh = yyyy.FK_faCRMstrPFCH 
+where yyy.PK_faCRMstrPFCh = a.FK_TRXNO_faCRMstrPF),0) as PK_GNTR_Amount_Cover
+From faVPMstr a where a.FK_TRXNO_faCRMstrPF <> 0 and a.cancelflag = 0
+group by a.FK_TRXNO_faCRMstrPF) as tab1) as tab2 where LocateTrxno <> 0
+) as final where FK_TRXNO_faCRMstrPF = LocateTrxno

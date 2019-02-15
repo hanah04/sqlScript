@@ -1,0 +1,30 @@
+select * from faArinv where FK_psPatRegisters = '62862' and glpostflag = '0'
+
+select * from psGntrLedgers where FK_psPatRegisters = '62862' 
+and FK_faCustomers = '1360'
+delete psGntrLedgers where FK_psPatRegisters = '62862' 
+and FK_faCustomers = '1360'
+
+select * from psGntrLedgerItems where fk_trxno_psgntrledgers 
+in  (select pk_trxno from psGntrLedgers where FK_psPatRegisters = '62862'
+ and FK_faCustomers = '1360')
+ --delete psGntrLedgerItems where fk_trxno_psgntrledgers 
+in  (select pk_trxno from psGntrLedgers where FK_psPatRegisters = '62862'
+ and FK_faCustomers = '1360')
+ 
+ 
+ select * from psgntrledgerrooms where fk_trxno_psgntrledgers 
+in  (select pk_trxno from psGntrLedgers where FK_psPatRegisters = '62862'
+ and FK_faCustomers = '1360')
+ --delete psgntrledgerrooms  where fk_trxno_psgntrledgers 
+in  (select pk_trxno from psGntrLedgers where FK_psPatRegisters = '62862'
+ and FK_faCustomers = '1360')
+ 
+ select * from pspatledgers where FK_psPatRegisters = '62862' 
+ and billtrancode = 'GAHB' and fk_trxno = '1743019'
+ 
+ --delete pspatledgers where FK_psPatRegisters = '62862' 
+ and billtrancode = 'GAHB' and docno in ( '241476', '241477') and 
+  pk_pspatledgers in (1385525,1385526)
+ 
+ 

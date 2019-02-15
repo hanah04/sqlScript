@@ -1,0 +1,18 @@
+select * from mscItemCategory
+select * from mscTranTypesAP
+select * from mscTranTypesAR.
+
+--ap
+update mscTranTypesAP set FK_faGLAcct = 'XXXX-XXXX'
+--ar
+update mscTranTypesAR set FK_faGLAcct = 'XXXX-XXXX'
+--item category
+update mscItemCategory set FK_faGLAcctSalesIPD  = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctSalesOPD   = 'XXXX-XXXX' 
+update mscItemCategory set FK_faGLAcctSalesERD   = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctCostIPD   = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctCostOPD   = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctCostERD   = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctRF   = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctInven   = 'XXXX-XXXX'
+update mscItemCategory set FK_faGLAcctExpense   = 'XXXX-XXXX'

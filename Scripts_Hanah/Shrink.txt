@@ -1,0 +1,10 @@
+Script 1
+Use <database name>
+go
+alter database <database name> 
+set recovery simple 
+
+Script 2
+Use <database name>
+go
+dbcc shrinkdatabase(<database name>,5)

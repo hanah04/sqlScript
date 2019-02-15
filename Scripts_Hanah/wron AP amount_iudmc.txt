@@ -1,0 +1,2 @@
+select * from faVPMstr where docno = 52746
+--update faVPMstr set vatrate = '0.00', vatamount = '0.00', netamount = '11250.00', balance = '11250.00' where docno = 52746
